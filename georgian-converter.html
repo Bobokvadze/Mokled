@@ -35,10 +35,9 @@
       <div class="grid-3" style="align-items: end;">
         <div class="form-group">
           <label class="form-label" for="source-format">საწყისი ფორმატი:</label>
-          <select id="source-format" class="input">
-            <option value="parliament" selected>ყოფილი პარლამენტის სტანდარტი (პარლამენტის სტანდარტი: ÀÁÂÃ...ä)</option>
-            <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
-            <option value="latin">ლათინური (ინგლისური ანბანით აკრეფილი)</option>
+                    <select id="source-format" class="input">
+            <option value="acadnusx" selected>ლათინური / ძველი ქართული ფონტი (AcadNusx / LitNusx)</option>
+            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
             <option value="unicode">უნიკოდი (UTF-8 / Sylfaen)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
           </select>
@@ -52,12 +51,11 @@
 
         <div class="form-group">
           <label class="form-label" for="target-format">სასურველი (საბოლოო) ფორმატი:</label>
-          <select id="target-format" class="input">
+                    <select id="target-format" class="input">
             <option value="unicode" selected>უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (პარლამენტის სტანდარტი: ÀÁÂÃ...ä)</option>
-            <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
+            <option value="acadnusx">ლათინური / ძველი ქართული ფონტი (AcadNusx / LitNusx)</option>
+            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
-            <option value="latin">ლათინური (ინგლისური)</option>
           </select>
         </div>
       </div>
@@ -84,8 +82,7 @@
           <div class="btn-row">
             <span style="font-size: 0.84rem; color: var(--text-muted); align-self: center;">საცდელი მაგალითები:</span>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის (SPParliament)</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">AcadNusx</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="latin">ლათინური</button>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">ლათინური (AcadNusx)</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="unicode">უნიკოდი → პარლამენტი</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="asomtavruli">ასომთავრული</button>
           </div>
