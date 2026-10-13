@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#FAF8F5"/>
+  <rect x="96" y="130" width="86" height="268" rx="43" fill="#0E2B6C"/>
+  <rect x="330" y="130" width="86" height="185" rx="43" fill="#0E2B6C"/>
+  <path d="M96 176 C96 124 152 104 194 132 L256 174 L318 132 C360 104 416 124 416 176 L416 188 L276 282 C264 290 248 290 236 282 L146 220 C118 202 96 206 96 226 Z" fill="#1668F3"/>
+  <path d="M308 268 L318 408 C319 420 333 425 341 416 L364 390 L386 430 C391 440 404 443 414 438 L426 431 C436 426 439 413 434 403 L412 363 L446 358 C458 356 462 341 453 333 L338 253 C326 245 307 253 308 268 Z" fill="#FAF8F5"/>
+  <path d="M322 276 L330 392 L356 364 L382 412 C386 420 396 422 403 418 C410 414 413 405 409 397 L383 349 L422 343 L322 276 Z" fill="#0E2B6C"/>
+  <line x1="380" y1="228" x2="380" y2="268" stroke="#1668F3" stroke-width="18" stroke-linecap="round"/>
+  <line x1="442" y1="258" x2="408" y2="280" stroke="#1668F3" stroke-width="18" stroke-linecap="round"/>
+  <line x1="452" y1="308" x2="424" y2="296" stroke="#1668F3" stroke-width="16" stroke-linecap="round"/>
+</svg>
