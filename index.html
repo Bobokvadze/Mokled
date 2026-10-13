@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</title>
-  <meta name="description" content="Mokled (მოკლედ) - 14 უფასო ქართული ციფრული ხელსაწყო: ტექსტის კონვერტერი, სესხის და იპოთეკის კალკულატორი, PDF ხელსაწყოები, თანხა სიტყვიერად, ხელფასისა და დღგ-ის კალკულატორი, IBAN, QR კოდი და სურათის შეკუმშვა." />
+  <meta name="description" content="Mokled (მოკლედ) - 14 უფასო ქართული ციფრული ხელსაწყო: ტექსტის კონვერტერი, სესხის და იპოთეკის კალკულატორი, PDF ხელსაწყოები, საფოსტო ინდექსები, თანხა სიტყვიერად, ხელფასისა და დღგ-ის კალკულატორი, IBAN, QR კოდი და სურათის შეკუმშვა." />
   <link rel="canonical" href="https://mokled.pages.dev/" />
   <meta property="og:title" content="Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი" />
   <meta property="og:description" content="სწრაფი, უსაფრთხო და უფასო ქართული ონლაინ ხელსაწყოები რეალური ამოცანების მოკლედ და მარტივად გადასაჭრელად." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/" />
   <meta property="og:locale" content="ka_GE" />
+  <meta property="og:image" content="https://mokled.pages.dev/assets/logo.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
   <meta name="theme-color" content="#2563eb" />
@@ -27,17 +28,7 @@
         ქართული ციფრული ხელსაწყოების პორტალი ყოველდღიური ტექსტური, ფინანსური, საოფისე და PDF/მედია ამოცანების სწრაფად გადასაჭრელად.
         რეგისტრაციის გარეშე - მუშაობს პირდაპირ თქვენს ბრაუზერში.
       </p>
-
       <div class="filter-bar">
-        <div class="search-input-wrap">
-          <input
-            type="search"
-            id="tool-search"
-            class="input"
-            placeholder="მოძებნეთ ხელსაწყო (მაგ.: სესხი, PDF, ხელფასი, პარლამენტის, IBAN, QR, დღგ)..."
-            aria-label="ხელსაწყოების ძიება"
-          />
-        </div>
         <div class="category-pills" id="category-pills" role="group" aria-label="კატეგორიები"></div>
       </div>
     </section>
@@ -66,9 +57,6 @@
         <span id="tools-count" class="badge">14 ხელსაწყო</span>
       </div>
       <div class="cards-grid" id="catalog-grid"></div>
-      <div id="empty-search-msg" class="alert alert-info hidden">
-        არჩეული საძიებო სიტყვით ხელსაწყო ვერ მოიძებნა. სცადეთ სხვა საძიებო სიტყვა ან აირჩიეთ კატეგორია „ყველა“.
-      </div>
     </section>
   </main>
 
@@ -91,11 +79,9 @@
 
       initLayout('home');
 
-      const searchInput = document.getElementById('tool-search');
       const pillsContainer = document.getElementById('category-pills');
       const catalogGrid = document.getElementById('catalog-grid');
       const toolsCount = document.getElementById('tools-count');
-      const emptyMsg = document.getElementById('empty-search-msg');
       const favoritesSection = document.getElementById('favorites-section');
       const favoritesGrid = document.getElementById('favorites-grid');
       const frequentSection = document.getElementById('frequent-section');
@@ -162,9 +148,7 @@
       function renderAllSections() {
         const favList = getFavorites();
         const counts = getUsageCounts();
-        const q = searchInput.value.trim().toLowerCase();
 
-        // 1. რჩეულები
         const favTools = TOOLS_CATALOG.filter(function (t) { return favList.indexOf(t.id) >= 0; });
         if (favTools.length === 0) {
           favoritesSection.classList.add('hidden');
@@ -174,7 +158,6 @@
           bindFavButtons(favoritesGrid);
         }
 
-        // 2. ხშირად გამოყენებული
         const usedTools = TOOLS_CATALOG
           .filter(function (t) { return (counts[t.id] || 0) > 0; })
           .sort(function (a, b) { return (counts[b.id] || 0) - (counts[a.id] || 0); })
@@ -188,29 +171,14 @@
           bindFavButtons(frequentGrid);
         }
 
-        // 3. მთავარი კატალოგი
         const filtered = TOOLS_CATALOG.filter(function (tool) {
-          const matchesCat = activeCategory === 'ყველა' || tool.category === activeCategory;
-          const matchesQuery =
-            q === '' ||
-            tool.title.toLowerCase().includes(q) ||
-            tool.description.toLowerCase().includes(q) ||
-            tool.category.toLowerCase().includes(q);
-          return matchesCat && matchesQuery;
+          return activeCategory === 'ყველა' || tool.category === activeCategory;
         });
 
         toolsCount.textContent = filtered.length + ' ხელსაწყო';
-        if (filtered.length === 0) {
-          catalogGrid.innerHTML = '';
-          emptyMsg.classList.remove('hidden');
-        } else {
-          emptyMsg.classList.add('hidden');
-          catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0, favList); }).join('');
-          bindFavButtons(catalogGrid);
-        }
+        catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0, favList); }).join('');
+        bindFavButtons(catalogGrid);
       }
-
-      searchInput.addEventListener('input', renderAllSections);
 
       resetFrequentBtn.addEventListener('click', function () {
         resetUsageCounts();
