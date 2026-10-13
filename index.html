@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</title>
+  <meta name="description" content="Mokled (მოკლედ) — 12 უფასო ქართული ციფრული ხელსაწყო: ტექსტის კონვერტერი, სტილის შემცვლელი, თანხა სიტყვიერად, ხელფასისა და დღგ-ის კალკულატორი, IBAN შემმოწმებელი, QR კოდი, CSV/JSON და სურათის შეკუმშვა." />
+  <link rel="canonical" href="https://geotools.pages.dev/" />
+  <meta property="og:title" content="Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი" />
+  <meta property="og:description" content="სწრაფი, უსაფრთხო და უფასო ქართული ონლაინ ხელსაწყოები რეალური ამოცანების მოკლედ და მარტივად გადასაჭრელად." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Mokled — მოკლედ</h1>
+      <p>
+        ქართული ციფრული ხელსაწყოების პორტალი ყოველდღიური ტექსტური, ფინანსური, საოფისე და ტექნიკური ამოცანების სწრაფად გადასაჭრელად.
+        რეგისტრაციის გარეშე — მუშაობს პირდაპირ თქვენს ბრაუზერში.
+      </p>
+
+      <div class="filter-bar">
+        <div class="search-input-wrap">
+          <input
+            type="search"
+            id="tool-search"
+            class="input"
+            placeholder="მოძებნეთ ხელსაწყო (მაგ.: ხელფასი, თანხა სიტყვიერად, IBAN, QR, ასომთავრული, დღგ)..."
+            aria-label="ხელსაწყოების ძიება"
+          />
+          <span class="kbd-hint">Ctrl + K</span>
+        </div>
+        <div class="category-pills" id="category-pills" role="group" aria-label="კატეგორიები"></div>
+      </div>
+    </section>
+
+    <section id="frequent-section" class="hidden">
+      <div class="section-header">
+        <h2 class="section-title">თქვენ მიერ ხშირად გამოყენებული</h2>
+        <button type="button" id="reset-frequent-btn" class="btn btn-secondary btn-sm">ისტორიის გასუფთავება</button>
+      </div>
+      <div class="cards-grid" id="frequent-grid"></div>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">ყველა ხელსაწყო</h2>
+        <span id="tools-count" class="badge">12 ხელსაწყო</span>
+      </div>
+      <div class="cards-grid" id="catalog-grid"></div>
+      <div id="empty-search-msg" class="alert alert-info hidden">
+        არჩეული საძიებო სიტყვით ხელსაწყო ვერ მოიძებნა. სცადეთ სხვა საძიებო სიტყვა ან აირჩიეთ კატეგორია „ყველა“.
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { TOOLS_CATALOG, initLayout, getUsageCounts, resetUsageCounts, escapeHtml, showToast } = window.GeoCommon;
+      initLayout('home');
+
+      const searchInput = document.getElementById('tool-search');
+      const pillsContainer = document.getElementById('category-pills');
+      const catalogGrid = document.getElementById('catalog-grid');
+      const toolsCount = document.getElementById('tools-count');
+      const emptyMsg = document.getElementById('empty-search-msg');
+      const frequentSection = document.getElementById('frequent-section');
+      const frequentGrid = document.getElementById('frequent-grid');
+      const resetFrequentBtn = document.getElementById('reset-frequent-btn');
+
+      let activeCategory = 'ყველა';
+      const categories = ['ყველა'].concat(Array.from(new Set(TOOLS_CATALOG.map(function (t) { return t.category; }))));
+
+      function renderCategories() {
+        pillsContainer.innerHTML = categories.map(function (cat) {
+          return '<button type="button" class="pill-btn ' + (cat === activeCategory ? 'active' : '') + '" data-cat="' + escapeHtml(cat) + '">' + escapeHtml(cat) + '</button>';
+        }).join('');
+
+        pillsContainer.querySelectorAll('.pill-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            activeCategory = btn.getAttribute('data-cat');
+            renderCategories();
+            renderCatalog();
+          });
+        });
+      }
+
+      function createCardHtml(tool, usageCount) {
+        const count = usageCount || 0;
+        const usageBadge = count > 0
+          ? '<span class="badge">გახსნილია ' + count + '-ჯერ</span>'
+          : '<span class="badge">' + escapeHtml(tool.category) + '</span>';
+
+        return (
+          '<a href="' + tool.url + '" class="tool-card">' +
+            '<div>' +
+              '<div class="card-top">' +
+                '<span class="tool-icon" aria-hidden="true">' + escapeHtml(tool.icon) + '</span>' +
+                usageBadge +
+              '</div>' +
+              '<h3>' + escapeHtml(tool.title) + '</h3>' +
+              '<p>' + escapeHtml(tool.description) + '</p>' +
+            '</div>' +
+            '<span class="card-action">ხელსაწყოს გახსნა →</span>' +
+          '</a>'
+        );
+      }
+
+      function renderCatalog() {
+        const q = searchInput.value.trim().toLowerCase();
+        const filtered = TOOLS_CATALOG.filter(function (tool) {
+          const matchesCat = activeCategory === 'ყველა' || tool.category === activeCategory;
+          const matchesQuery =
+            q === '' ||
+            tool.title.toLowerCase().includes(q) ||
+            tool.description.toLowerCase().includes(q) ||
+            tool.category.toLowerCase().includes(q);
+          return matchesCat && matchesQuery;
+        });
+
+        toolsCount.textContent = filtered.length + ' ხელსაწყო';
+        if (filtered.length === 0) {
+          catalogGrid.innerHTML = '';
+          emptyMsg.classList.remove('hidden');
+        } else {
+          emptyMsg.classList.add('hidden');
+          catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0); }).join('');
+        }
+      }
+
+      function renderFrequentTools() {
+        const counts = getUsageCounts();
+        const usedTools = TOOLS_CATALOG
+          .filter(function (t) { return (counts[t.id] || 0) > 0; })
+          .sort(function (a, b) { return (counts[b.id] || 0) - (counts[a.id] || 0); })
+          .slice(0, 3);
+
+        if (usedTools.length === 0) {
+          frequentSection.classList.add('hidden');
+        } else {
+          frequentSection.classList.remove('hidden');
+          frequentGrid.innerHTML = usedTools.map(function (t) { return createCardHtml(t, counts[t.id]); }).join('');
+        }
+      }
+
+      searchInput.addEventListener('input', renderCatalog);
+
+      resetFrequentBtn.addEventListener('click', function () {
+        resetUsageCounts();
+        renderFrequentTools();
+        showToast('ხშირად გამოყენებული ხელსაწყოების ისტორია გასუფთავდა.');
+      });
+
+      if (window.location.hash === '#search') {
+        searchInput.focus();
+      }
+
+      renderCategories();
+      renderCatalog();
+      renderFrequentTools();
+    })();
+  </script>
+</body>
+</html>

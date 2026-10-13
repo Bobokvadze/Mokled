@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://geotools.pages.dev/sitemap.xml

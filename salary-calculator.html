@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ხელფასის კალკულატორი (ხელზე ასაღები Net ⇄ დარიცხული Gross) | Mokled - მოკლედ</title>
+  <meta name="description" content="გამოთვალეთ დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასი საქართველოში. საშემოსავლო გადასახადის (20% / 5%) და დაგროვებითი პენსიის (2% + 2%) ზუსტი კალკულატორი." />
+  <link rel="canonical" href="https://geotools.pages.dev/salary-calculator.html" />
+  <meta property="og:title" content="ხელფასის კალკულატორი (Net ⇄ Gross) | Mokled - მოკლედ" />
+  <meta property="og:description" content="ხელზე ასაღები და დარიცხული ხელფასის გამოთვლა საშემოსავლო გადასახადისა და საპენსიო შენატანის გათვალისწინებით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/salary-calculator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ხელფასის კალკულატორი (Net ⇄ Gross)</h1>
+      <p>
+        გამოთვალეთ ხელზე ასაღები (Net) ხელფასი დარიცხულიდან (Gross), ან პირიქით — გაიგეთ რამდენი უნდა დაგერიცხოთ სასურველი ხელზე ასაღები თანხის მისაღებად.
+      </p>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>შენიშვნა:</strong> ეს კალკულატორი ეყრდნობა საქართველოს სტანდარტულ საგადასახადო განაკვეთებს (20% საშემოსავლო და 2% საპენსიო) და არ ცვლის ინდივიდუალური საგადასახადო შეღავათების ბუღალტრულ შეფასებას.
+    </div>
+
+    <section class="panel">
+      <div id="sal-error" class="alert alert-error hidden" role="alert"></div>
+
+      <div class="grid-3" style="align-items: end;">
+        <div class="form-group">
+          <label class="form-label" for="sal-amount">ხელფასის თანხა (₾):</label>
+          <input type="number" id="sal-amount" class="input" value="2000" min="0" step="10" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sal-direction">გამოთვლის მიმართულება:</label>
+          <select id="sal-direction" class="input">
+            <option value="net_to_gross" selected>ვიცი ხელზე ასაღები (Net) → მინდა დარიცხული (Gross)</option>
+            <option value="gross_to_net">ვიცი დარიცხული (Gross) → მინდა ხელზე ასაღები (Net)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sal-tax-rate">საშემოსავლო გადასახადი:</label>
+          <select id="sal-tax-rate" class="input">
+            <option value="20" selected>20% (სტანდარტული განაკვეთი)</option>
+            <option value="5">5% (საერთაშორისო კომპანიის სტატუსი / IT)</option>
+            <option value="0">0% (საშემოსავლოს გარეშე)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.1rem;">
+        <label class="checkbox-label">
+          <input type="checkbox" id="sal-pension" checked />
+          <span>დაგროვებითი პენსიის სქემაში ჩართული (2% დასაქმებული + 2% დამსაქმებელი)</span>
+        </label>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">ხელზე ასაღები (Net)</span>
+          <span class="stat-value" id="res-sal-net" style="color: var(--success);">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დარიცხული ხელფასი (Gross)</span>
+          <span class="stat-value" id="res-sal-gross">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">საშემოსავლო გადასახადი</span>
+          <span class="stat-value" id="res-sal-tax">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">საპენსიო (დასაქმებულის 2%)</span>
+          <span class="stat-value" id="res-sal-emp-pen">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დამსაქმებლის სრული ხარჯი</span>
+          <span class="stat-value" id="res-sal-total-cost">0.00 ₾</span>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-top: 1rem;">
+        <div><strong>გამოთვლის ფორმულა:</strong></div>
+        <div id="res-sal-formula" style="margin-top: 0.3rem; font-family: monospace;"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-copy-sal" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" id="btn-sal-to-words" class="btn btn-secondary">ხელზე ასაღები თანხა სიტყვიერად</button>
+      </div>
+      <div id="sal-words-box" class="alert alert-success hidden" style="margin-top: 0.85rem;"></div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">როგორ იანგარიშება ხელფასი საქართველოში?</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted);">
+        • <strong>როდესაც ჩართულია საპენსიო (2%) და სტანდარტული საშემოსავლო (20%):</strong> დარიცხული ხელფასიდან (Gross) ჯერ აკლდება 2% საპენსიო შენატანი (რჩება 98%), ხოლო დარჩენილი თანხიდან იბეგრება 20% საშემოსავლო გადასახადი (<code>0.98 × 0.20 = 19.6%</code>). შესაბამისად, ხელზე ასაღები თანხა შეადგენს დარიცხულის <strong>78.4%</strong>-ს (<code>Net = Gross × 0.784</code>, ხოლო <code>Gross = Net / 0.784</code>).<br />
+        • <strong>როდესაც საპენსიო გამორთულია:</strong> ხელზე ასაღები თანხა შეადგენს დარიცხულის <strong>80%</strong>-ს (<code>Net = Gross × 0.80</code>).
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateSalary, amountToGeorgianWords } = window.GeoCore;
+      const { initLayout, copyToClipboard } = window.GeoCommon;
+
+      initLayout('salary-calculator');
+
+      const amountInput = document.getElementById('sal-amount');
+      const dirSelect = document.getElementById('sal-direction');
+      const taxSelect = document.getElementById('sal-tax-rate');
+      const pensionCheck = document.getElementById('sal-pension');
+      const errorBox = document.getElementById('sal-error');
+      const wordsBox = document.getElementById('sal-words-box');
+
+      const resNet = document.getElementById('res-sal-net');
+      const resGross = document.getElementById('res-sal-gross');
+      const resTax = document.getElementById('res-sal-tax');
+      const resEmpPen = document.getElementById('res-sal-emp-pen');
+      const resTotalCost = document.getElementById('res-sal-total-cost');
+      const resFormula = document.getElementById('res-sal-formula');
+
+      let currentCalc = null;
+
+      function runSalaryCalc() {
+        errorBox.classList.add('hidden');
+        wordsBox.classList.add('hidden');
+        try {
+          const res = calculateSalary(amountInput.value, {
+            direction: dirSelect.value,
+            incomeTaxRate: Number(taxSelect.value),
+            includePension: pensionCheck.checked
+          });
+          currentCalc = res;
+
+          resNet.textContent = res.net.toFixed(2) + ' ₾';
+          resGross.textContent = res.gross.toFixed(2) + ' ₾';
+          resTax.textContent = res.incomeTax.toFixed(2) + ' ₾';
+          resEmpPen.textContent = res.employeePension.toFixed(2) + ' ₾';
+          resTotalCost.textContent = res.totalEmployerCost.toFixed(2) + ' ₾';
+          resFormula.textContent = res.formula;
+        } catch (err) {
+          currentCalc = null;
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      [amountInput, dirSelect, taxSelect, pensionCheck].forEach(function (el) {
+        el.addEventListener('input', runSalaryCalc);
+        el.addEventListener('change', runSalaryCalc);
+      });
+
+      document.getElementById('btn-copy-sal').addEventListener('click', function () {
+        if (!currentCalc) return;
+        const summary =
+          'ხელზე ასაღები (Net): ' + currentCalc.net.toFixed(2) + ' ₾\n' +
+          'დარიცხული (Gross): ' + currentCalc.gross.toFixed(2) + ' ₾\n' +
+          'საშემოსავლო გადასახადი: ' + currentCalc.incomeTax.toFixed(2) + ' ₾\n' +
+          'დასაქმებულის საპენსიო (2%): ' + currentCalc.employeePension.toFixed(2) + ' ₾\n' +
+          'დამსაქმებლის სრული ხარჯი: ' + currentCalc.totalEmployerCost.toFixed(2) + ' ₾';
+        copyToClipboard(summary, 'ხელფასის გაანგარიშება დაკოპირდა!');
+      });
+
+      document.getElementById('btn-sal-to-words').addEventListener('click', function () {
+        if (!currentCalc) return;
+        const words = amountToGeorgianWords(currentCalc.net, { currency: 'GEL' });
+        wordsBox.textContent = 'ხელზე ასაღები თანხა: ' + words.contractText;
+        wordsBox.classList.remove('hidden');
+      });
+
+      runSalaryCalc();
+    })();
+  </script>
+</body>
+</html>

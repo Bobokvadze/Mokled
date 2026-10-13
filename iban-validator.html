@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ქართული IBAN ანგარიშის შემმოწმებელი და ბანკის ამომცნობი | Mokled - მოკლედ</title>
+  <meta name="description" content="შეამოწმეთ ქართული საბანკო ანგარიშის ნომერი (IBAN) MOD-97 სტანდარტით. ავტომატურად ამოიცანით ბანკი (საქართველოს ბანკი, თიბისი, ლიბერთი, ბაზისბანკი, კრედო, ხაზინა) და SWIFT კოდი." />
+  <link rel="canonical" href="https://geotools.pages.dev/iban-validator.html" />
+  <meta property="og:title" content="ქართული IBAN ანგარიშის შემმოწმებელი | Mokled - მოკლედ" />
+  <meta property="og:description" content="საბანკო IBAN ანგარიშის სისწორის შემოწმება (MOD-97) და ქართული ბანკის ავტომატური იდენტიფიკაცია." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/iban-validator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ქართული IBAN შემმოწმებელი და ბანკის ამომცნობი</h1>
+      <p>
+        შეამოწმეთ 22-ნიშნა ქართული (ან საერთაშორისო) საბანკო ანგარიშის ნომრის სისწორე საერთაშორისო <code>ISO 13616 / MOD-97</code> ალგორითმით,
+        გაიგეთ რომელ ბანკს ეკუთვნის ანგარიში და დააკოპირეთ ბეჭდურ ან უინტერვალო ფორმატში.
+      </p>
+    </div>
+
+    <section class="panel">
+      <div class="form-group">
+        <label class="form-label" for="iban-input">შეიყვანეთ IBAN ანგარიშის ნომერი:</label>
+        <input
+          type="text"
+          id="iban-input"
+          class="input"
+          value="GE29TB7777777777777777"
+          placeholder="მაგ.: GE29TB7777777777777777"
+          style="font-family: monospace; font-size: 1.08rem;"
+        />
+      </div>
+
+      <div id="iban-status-banner" class="alert alert-info" role="status"></div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">ბანკი / ორგანიზაცია</span>
+          <span class="stat-value" id="res-iban-bank" style="font-size: 1rem;">—</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">ბანკის კოდი და SWIFT</span>
+          <span class="stat-value" id="res-iban-swift" style="font-size: 1.05rem;">—</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">ბეჭდური ფორმატი (4-ნიშნა ჯგუფებით)</span>
+          <span class="stat-value" id="res-iban-formatted" style="font-size: 0.98rem; font-family: monospace;">—</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-copy-clean-iban" class="btn btn-primary btn-sm">უინტერვალო IBAN-ის კოპირება</button>
+        <button type="button" id="btn-copy-fmt-iban" class="btn btn-secondary btn-sm">დაყოფილი IBAN-ის კოპირება</button>
+        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE60BG0000000123456789">საქართველოს ბანკის მაგალითი</button>
+        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE29TB7777777777777777">თიბისი ბანკის მაგალითი</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">ქართული ბანკების 2-ასოიანი IBAN კოდების ცნობარი</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>IBAN კოდი</th>
+              <th>ბანკის / უწყების დასახელება</th>
+              <th>SWIFT / BIC კოდი</th>
+            </tr>
+          </thead>
+          <tbody id="banks-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { validateIBAN, GEORGIAN_BANKS_BY_CODE } = window.GeoCore;
+      const { initLayout, copyToClipboard, escapeHtml } = window.GeoCommon;
+
+      initLayout('iban-validator');
+
+      const ibanInput = document.getElementById('iban-input');
+      const statusBanner = document.getElementById('iban-status-banner');
+      const resBank = document.getElementById('res-iban-bank');
+      const resSwift = document.getElementById('res-iban-swift');
+      const resFormatted = document.getElementById('res-iban-formatted');
+      const banksTableBody = document.getElementById('banks-table-body');
+
+      let lastResult = null;
+
+      function populateBankDirectory() {
+        banksTableBody.innerHTML = Object.keys(GEORGIAN_BANKS_BY_CODE).map(function (code) {
+          const info = GEORGIAN_BANKS_BY_CODE[code];
+          return (
+            '<tr>' +
+              '<td><code>' + escapeHtml(code) + '</code></td>' +
+              '<td>' + escapeHtml(info.name) + '</td>' +
+              '<td><code>' + escapeHtml(info.swift) + '</code></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      function runValidation() {
+        const val = ibanInput.value;
+        if (!val.trim()) {
+          statusBanner.className = 'alert alert-info';
+          statusBanner.textContent = 'შეიყვანეთ IBAN ანგარიშის ნომერი შესამოწმებლად.';
+          resBank.textContent = '—';
+          resSwift.textContent = '—';
+          resFormatted.textContent = '—';
+          lastResult = null;
+          return;
+        }
+
+        try {
+          const res = validateIBAN(val);
+          lastResult = res;
+
+          statusBanner.className = res.isValid ? 'alert alert-success' : 'alert alert-error';
+          statusBanner.textContent = (res.isValid ? '✓ ' : '✗ ') + res.reason;
+
+          resBank.textContent = res.bankName || '—';
+          resSwift.textContent = res.bankCode ? (res.bankCode + ' / ' + res.swift) : '—';
+          resFormatted.textContent = res.formatted || '—';
+        } catch (err) {
+          statusBanner.className = 'alert alert-error';
+          statusBanner.textContent = err.message;
+        }
+      }
+
+      ibanInput.addEventListener('input', runValidation);
+
+      document.getElementById('btn-copy-clean-iban').addEventListener('click', function () {
+        if (lastResult && lastResult.cleaned) {
+          copyToClipboard(lastResult.cleaned, 'უინტერვალო IBAN დაკოპირდა!');
+        }
+      });
+
+      document.getElementById('btn-copy-fmt-iban').addEventListener('click', function () {
+        if (lastResult && lastResult.formatted) {
+          copyToClipboard(lastResult.formatted, 'დაყოფილი IBAN დაკოპირდა!');
+        }
+      });
+
+      document.querySelectorAll('.iban-sample').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          ibanInput.value = btn.getAttribute('data-iban');
+          runValidation();
+        });
+      });
+
+      populateBankDirectory();
+      runValidation();
+    })();
+  </script>
+</body>
+</html>

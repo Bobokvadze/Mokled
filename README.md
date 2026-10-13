@@ -1,0 +1,15 @@
+# Mokled — მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი (v3.0)
+
+პორტალი აერთიანებს 12 სრულფასოვან ქართულენოვან ხელსაწყოს:
+1. ქართული ტექსტის კონვერტერი (georgian-converter.html)
+2. ტექსტის სტილის შემცვლელი და შეჯამება „მოკლედ“ (style-changer.html + functions/api/restyle.js)
+3. თანხის და რიცხვის სიტყვიერად ჩაწერა (number-to-words.html)
+4. ხელფასის კალკულატორი Net და Gross (salary-calculator.html)
+5. ქართული IBAN შემმოწმებელი და ბანკის ამომცნობი (iban-validator.html)
+6. დღგ-ის კალკულატორი 18% (vat-calculator.html)
+7. QR კოდის გენერატორი (qr-generator.html)
+8. ქართული ტექსტის გარდაქმნა (translit.html)
+9. ტექსტის დამმუშავებელი (text-tools.html)
+10. CSV / JSON გარდამქმნელი (csv-json.html)
+11. თარიღების კალკულატორი (date-calculator.html)
+12. სურათის ხელსაწყო (image-tools.html)

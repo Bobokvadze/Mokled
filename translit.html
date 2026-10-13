@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ქართული ტექსტის გარდაქმნა (ლათინურიდან ქართულზე) | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ ლათინური ასოებით აკრეფილი ქართული ტექსტი ქართულ მხედრულ ანბანზე. დიგრაფების (sh, ch, ts, dz, kh, gh) და სადავო სიტყვების ალტერნატივების არჩევით." />
+  <link rel="canonical" href="https://geotools.pages.dev/translit.html" />
+  <meta property="og:title" content="ქართული ტექსტის გარდაქმნა (ლათინურიდან ქართულზე)" />
+  <meta property="og:description" content="ლათინური ასოებით აკრეფილი ქართული ტექსტის ქართულ ანბანზე გადაყვანა ალტერნატივების არჩევით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/translit.html" />
+  <meta property="og:locale" content="ka_GE" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ტექსტი</div>
+      <h1>ქართული ტექსტის გარდაქმნა (ლათინური → ქართული)</h1>
+      <p>
+        გადაიყვანეთ ლათინური სიმბოლოებით აკრეფილი ქართული ტექსტი ქართულ ანბანზე. აირჩიეთ ჭკვიანი რეჟიმი (რომელიც ითვალისწინებს
+        შეთანხმებებს: <code>sh, ch, tch, ts, dz, kh, gh, zh</code>) ან სტანდარტული QWERTY კლავიატურის განლაგება.
+      </p>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>მნიშვნელოვანი შენიშვნა:</strong> ლათინურ ანბანში ერთსა და იმავე ასოს (მაგ.: <code>t, k, p, c, w</code>) შეიძლება შეესაბამებოდეს
+      რამდენიმე ქართული ასო (ტ/თ, კ/ქ, პ/ფ, ც/წ). ავტომატური ტრანსლიტერაცია ვერ უზრუნველყოფს ყველა კონტექსტის უშეცდომოდ აღდგენას, ამიტომ
+      ქვემოთ მოცემულ პანელში შეგიძლიათ ერთი დაწკაპუნებით აირჩიოთ სადავო სიტყვების სწორი ვარიანტები.
+    </div>
+
+    <section class="panel">
+      <div class="form-group">
+        <label class="form-label" for="translit-mode">გარდაქმნის რეჟიმი:</label>
+        <select id="translit-mode" class="input" style="max-width: 480px;">
+          <option value="smart">ჭკვიანი რეჟიმი (დიგრაფები sh, ch, ts, dz, kh, gh + კლავიატურა)</option>
+          <option value="qwerty">მკაცრი QWERTY კლავიატურა (მხოლოდ Shift-ით: T=თ, t=ტ, S=შ, W=ჭ)</option>
+        </select>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label class="form-label" for="latin-input">ლათინური ტექსტი:</label>
+          <textarea id="latin-input" placeholder="მაგ.: gamarjoba, rogor khar? tbilisi saqartvelos dedaqalaqia."></textarea>
+          <div class="btn-row">
+            <button type="button" id="sample-btn" class="btn btn-secondary btn-sm">მაგალითის ჩასმა</button>
+            <button type="button" id="clear-btn" class="btn btn-danger btn-sm">გასუფთავება</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" for="geo-output">გარდაქმნილი ქართული ტექსტი (შეგიძლიათ ჩაასწოროთ):</label>
+          <textarea id="geo-output" placeholder="აქ გამოჩნდება ქართული ტექსტი..."></textarea>
+          <div class="btn-row">
+            <button type="button" id="copy-btn" class="btn btn-primary btn-sm">ტექსტის კოპირება</button>
+            <a href="text-tools.html" class="btn btn-secondary btn-sm">ტექსტის დამმუშავებელში გადასვლა →</a>
+          </div>
+        </div>
+      </div>
+
+      <div id="ambiguities-box" class="hidden" style="margin-top: 1.35rem;">
+        <h2 class="panel-title" style="margin-bottom: 0.35rem;">სადავო სიტყვების ალტერნატივები</h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">
+          დააწკაპუნეთ სასურველ ვარიანტზე, რათა შედეგში ჩანაცვლდეს შესაბამისი სიტყვა:
+        </p>
+        <div id="ambiguities-list" class="chip-list"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">ტრანსლიტერაციის წესები და ინსტრუქცია</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ლათინური ჩანაწერი</th>
+              <th>ჭკვიანი რეჟიმი</th>
+              <th>QWERTY რეჟიმი (Shift-ით)</th>
+              <th>მაგალითი</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>sh / S</code></td>
+              <td>შ</td>
+              <td><code>S</code> → შ, <code>s</code> → ს</td>
+              <td><code>shida</code> → შიდა</td>
+            </tr>
+            <tr>
+              <td><code>ch / C / tch / W</code></td>
+              <td><code>ch</code> → ჩ, <code>tch</code> → ჭ</td>
+              <td><code>C</code> → ჩ, <code>W</code> → ჭ</td>
+              <td><code>chemi</code> → ჩემი, <code>tchama</code> → ჭამა</td>
+            </tr>
+            <tr>
+              <td><code>ts / c / w</code></td>
+              <td><code>ts</code> → ც, <code>w</code> → წ</td>
+              <td><code>c</code> → ც, <code>w</code> → წ</td>
+              <td><code>tsigni</code> → ცინგი / წიგნი</td>
+            </tr>
+            <tr>
+              <td><code>kh / x / gh / R</code></td>
+              <td><code>kh</code> ან <code>x</code> → ხ, <code>gh</code> ან <code>R</code> → ღ</td>
+              <td><code>x</code> → ხ, <code>R</code> → ღ</td>
+              <td><code>migho</code> → მიღო, <code>khe</code> → ხე</td>
+            </tr>
+            <tr>
+              <td><code>t / T, k / K, p / P</code></td>
+              <td><code>t</code> → ტ (<code>th</code>/<code>T</code> → თ), <code>k</code> → კ (<code>K</code> → ქ), <code>p</code> → პ (<code>ph</code>/<code>P</code> → ფ)</td>
+              <td>პატარა ასო = მკვეთრი, დიდი ასო = ფშვინვიერი</td>
+              <td><code>Tbilisi</code> → თბილისი</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { transliterateGeorgian } = window.GeoCore;
+      const { initLayout, copyToClipboard, escapeHtml, showToast } = window.GeoCommon;
+
+      initLayout('translit');
+
+      const latinInput = document.getElementById('latin-input');
+      const geoOutput = document.getElementById('geo-output');
+      const modeSelect = document.getElementById('translit-mode');
+      const sampleBtn = document.getElementById('sample-btn');
+      const clearBtn = document.getElementById('clear-btn');
+      const copyBtn = document.getElementById('copy-btn');
+      const ambiguitiesBox = document.getElementById('ambiguities-box');
+      const ambiguitiesList = document.getElementById('ambiguities-list');
+
+      function updateConversion() {
+        const text = latinInput.value;
+        const mode = modeSelect.value;
+        const result = transliterateGeorgian(text, mode);
+        geoOutput.value = result.output;
+        renderAmbiguities(result.ambiguities);
+      }
+
+      function renderAmbiguities(ambiguities) {
+        if (!ambiguities || ambiguities.length === 0) {
+          ambiguitiesBox.classList.add('hidden');
+          ambiguitiesList.innerHTML = '';
+          return;
+        }
+
+        ambiguitiesBox.classList.remove('hidden');
+        ambiguitiesList.innerHTML = ambiguities.map(function (item) {
+          const buttons = item.alternatives.map(function (alt) {
+            return '<button type="button" class="btn btn-secondary btn-sm alt-replace-btn" data-from="' +
+              escapeHtml(item.current) + '" data-to="' + escapeHtml(alt) + '">' + escapeHtml(alt) + '</button>';
+          }).join(' ');
+
+          return (
+            '<div class="alt-group">' +
+              '<strong>' + escapeHtml(item.latin) + ' (' + escapeHtml(item.current) + '):</strong> ' +
+              buttons +
+            '</div>'
+          );
+        }).join('');
+
+        ambiguitiesList.querySelectorAll('.alt-replace-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const fromWord = btn.getAttribute('data-from');
+            const toWord = btn.getAttribute('data-to');
+            geoOutput.value = geoOutput.value.split(fromWord).join(toWord);
+            showToast('ჩანაცვლდა: "' + fromWord + '" → "' + toWord + '"');
+          });
+        });
+      }
+
+      latinInput.addEventListener('input', updateConversion);
+      modeSelect.addEventListener('change', updateConversion);
+
+      sampleBtn.addEventListener('click', function () {
+        latinInput.value = 'gamarjoba! es aris qartuli teqstis gardamqmneli. kari, tavi, puri da tsigni.';
+        updateConversion();
+      });
+
+      clearBtn.addEventListener('click', function () {
+        latinInput.value = '';
+        updateConversion();
+      });
+
+      copyBtn.addEventListener('click', function () {
+        copyToClipboard(geoOutput.value);
+      });
+    })();
+  </script>
+</body>
+</html>

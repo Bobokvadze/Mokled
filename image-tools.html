@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>სურათის შეკუმშვა და ზომის შეცვლა ბრაუზერში | Mokled - მოკლედ</title>
+  <meta name="description" content="შეკუმშეთ სურათი, შეუცვალეთ ზომები პროპორციების დაცვით და გადაიყვანეთ JPEG, PNG ან WebP ფორმატში პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე." />
+  <link rel="canonical" href="https://geotools.pages.dev/image-tools.html" />
+  <meta property="og:title" content="სურათის შეკუმშვა და ზომის შეცვლა ბრაუზერში" />
+  <meta property="og:description" content="სურათის უსაფრთხო შეკუმშვა და ზომების შეცვლა (JPEG, PNG, WebP) სერვერზე გაგზავნის გარეშე." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/image-tools.html" />
+  <meta property="og:locale" content="ka_GE" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / მედია</div>
+      <h1>სურათის შეკუმშვა და ზომების შეცვლა</h1>
+      <p>
+        შეამცირეთ სურათის ფაილის მოცულობა და შეცვალეთ მისი პიქსელური ზომები უშუალოდ თქვენს ბრაუზერში.
+        თქვენი ფოტოები არ იტვირთება არცერთ გარე სერვერზე — დამუშავება ხდება 100%-ით ადგილობრივად.
+      </p>
+    </div>
+
+    <div id="img-error" class="alert alert-error hidden" role="alert"></div>
+    <div id="png-notice" class="alert alert-warning hidden">
+      <strong>შენიშვნა PNG ფორმატზე:</strong> PNG არის უდანაკარგო (Lossless) ფორმატი, ამიტომ ხარისხის სლაიდერი მის ზომაზე გავლენას არ ახდენს. ფაილის მოცულობის მნიშვნელოვნად შესამცირებლად აირჩიეთ <strong>WebP</strong> ან <strong>JPEG</strong> ფორმატი, ან შეამცირეთ სიგანე/სიმაღლე.
+    </div>
+
+    <section class="panel">
+      <div class="form-group">
+        <label class="form-label" for="img-input">აირჩიეთ სურათი (JPEG, PNG, WebP — მაქს. 25 MB):</label>
+        <input type="file" id="img-input" accept="image/jpeg,image/png,image/webp" class="input" />
+      </div>
+
+      <div id="controls-area" class="hidden">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label" for="img-width">სიგანე (px):</label>
+            <input type="number" id="img-width" class="input" min="1" max="8000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="img-height">სიმაღლე (px):</label>
+            <input type="number" id="img-height" class="input" min="1" max="8000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="img-format">საბოლოო ფორმატი:</label>
+            <select id="img-format" class="input">
+              <option value="image/webp">WebP (საუკეთესო შეკუმშვა)</option>
+              <option value="image/jpeg">JPEG (ფოტოებისთვის)</option>
+              <option value="image/png">PNG (გამჭვირვალობის შენარჩუნებით)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2" style="align-items: center; margin-bottom: 1rem;">
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="lock-aspect" checked />
+              <span>პროპორციების შენარჩუნება (Aspect Ratio)</span>
+            </label>
+          </div>
+          <div id="quality-wrap">
+            <label class="form-label" for="img-quality">ხარისხი / შეკუმშვის დონე: <strong id="quality-val">80%</strong></label>
+            <input type="range" id="img-quality" min="10" max="100" value="80" style="width: 100%;" />
+          </div>
+        </div>
+
+        <div class="stats-grid" aria-live="polite">
+          <div class="stat-box">
+            <span class="stat-label">საწყისი ზომა</span>
+            <span class="stat-value" id="stat-orig-size">—</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">საბოლოო ზომა</span>
+            <span class="stat-value" id="stat-new-size">—</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">ცვლილება / დაზოგვა</span>
+            <span class="stat-value" id="stat-saving">—</span>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 1rem;">
+          <div class="preview-box">
+            <strong style="margin-bottom: 0.5rem;">საწყისი სურათი (<span id="orig-dim-label">0×0</span>)</strong>
+            <img id="preview-orig" alt="საწყისი სურათის ესკიზი" />
+          </div>
+          <div class="preview-box">
+            <strong style="margin-bottom: 0.5rem;">დამუშავებული სურათი (<span id="new-dim-label">0×0</span>)</strong>
+            <img id="preview-new" alt="დამუშავებული სურათის ესკიზი" />
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 1.25rem;">
+          <button type="button" id="btn-download-img" class="btn btn-primary">დამუშავებული სურათის ჩამოტვირთვა</button>
+          <button type="button" id="btn-reset-dim" class="btn btn-secondary">საწყისი პიქსელების დაბრუნება</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateAspectDimensions, formatBytes } = window.GeoCore;
+      const { initLayout, showToast } = window.GeoCommon;
+
+      initLayout('image-tools');
+
+      const imgInput = document.getElementById('img-input');
+      const controlsArea = document.getElementById('controls-area');
+      const widthInput = document.getElementById('img-width');
+      const heightInput = document.getElementById('img-height');
+      const formatSelect = document.getElementById('img-format');
+      const lockAspect = document.getElementById('lock-aspect');
+      const qualitySlider = document.getElementById('img-quality');
+      const qualityVal = document.getElementById('quality-val');
+      const errorBox = document.getElementById('img-error');
+      const pngNotice = document.getElementById('png-notice');
+
+      const statOrigSize = document.getElementById('stat-orig-size');
+      const statNewSize = document.getElementById('stat-new-size');
+      const statSaving = document.getElementById('stat-saving');
+      const origDimLabel = document.getElementById('orig-dim-label');
+      const newDimLabel = document.getElementById('new-dim-label');
+      const previewOrig = document.getElementById('preview-orig');
+      const previewNew = document.getElementById('preview-new');
+      const downloadBtn = document.getElementById('btn-download-img');
+      const resetDimBtn = document.getElementById('btn-reset-dim');
+
+      let loadedImage = null;
+      let originalFile = null;
+      let currentBlobUrl = null;
+      let currentBlob = null;
+
+      // შევამოწმოთ ბრაუზერში WebP კოდირების მხარდაჭერა
+      (function checkWebpSupport() {
+        const testCanvas = document.createElement('canvas');
+        testCanvas.width = 1;
+        testCanvas.height = 1;
+        const dataUrl = testCanvas.toDataURL('image/webp');
+        if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+          const webpOpt = formatSelect.querySelector('option[value="image/webp"]');
+          if (webpOpt) {
+            webpOpt.disabled = true;
+            webpOpt.textContent = 'WebP (არ არის მხარდაჭერილი ამ ბრაუზერში)';
+          }
+          formatSelect.value = 'image/jpeg';
+        }
+      })();
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('hidden');
+      }
+
+      function clearError() {
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
+      }
+
+      imgInput.addEventListener('change', function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        clearError();
+
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+          showError('დაშვებულია მხოლოდ JPEG, PNG და WebP ფორმატის სურათები.');
+          return;
+        }
+
+        if (file.size > 25 * 1024 * 1024) {
+          showError('ფაილის ზომა აღემატება 25 MB-ს. გთხოვთ აირჩიოთ უფრო მცირე ზომის სურათი.');
+          return;
+        }
+
+        originalFile = file;
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          const img = new Image();
+          img.onload = function () {
+            loadedImage = img;
+            widthInput.value = String(img.naturalWidth);
+            heightInput.value = String(img.naturalHeight);
+            origDimLabel.textContent = img.naturalWidth + '×' + img.naturalHeight;
+            previewOrig.src = ev.target.result;
+            statOrigSize.textContent = formatBytes(file.size);
+            controlsArea.classList.remove('hidden');
+            processImage();
+          };
+          img.onerror = function () {
+            showError('სურათის ფაილი დაზიანებულია ან ვერ წაიკითხა.');
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      widthInput.addEventListener('input', function () {
+        if (!loadedImage) return;
+        if (lockAspect.checked) {
+          const dims = calculateAspectDimensions(
+            loadedImage.naturalWidth,
+            loadedImage.naturalHeight,
+            widthInput.value,
+            heightInput.value,
+            'width'
+          );
+          heightInput.value = String(dims.height);
+        }
+        processImage();
+      });
+
+      heightInput.addEventListener('input', function () {
+        if (!loadedImage) return;
+        if (lockAspect.checked) {
+          const dims = calculateAspectDimensions(
+            loadedImage.naturalWidth,
+            loadedImage.naturalHeight,
+            widthInput.value,
+            heightInput.value,
+            'height'
+          );
+          widthInput.value = String(dims.width);
+        }
+        processImage();
+      });
+
+      qualitySlider.addEventListener('input', function () {
+        qualityVal.textContent = qualitySlider.value + '%';
+        processImage();
+      });
+
+      formatSelect.addEventListener('change', function () {
+        if (formatSelect.value === 'image/png') {
+          pngNotice.classList.remove('hidden');
+        } else {
+          pngNotice.classList.add('hidden');
+        }
+        processImage();
+      });
+
+      resetDimBtn.addEventListener('click', function () {
+        if (!loadedImage) return;
+        widthInput.value = String(loadedImage.naturalWidth);
+        heightInput.value = String(loadedImage.naturalHeight);
+        processImage();
+      });
+
+      function processImage() {
+        if (!loadedImage || !originalFile) return;
+        clearError();
+
+        const targetW = Math.min(8000, Math.max(1, Math.round(Number(widthInput.value) || loadedImage.naturalWidth)));
+        const targetH = Math.min(8000, Math.max(1, Math.round(Number(heightInput.value) || loadedImage.naturalHeight)));
+        const mime = formatSelect.value;
+        const quality = Number(qualitySlider.value) / 100;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+
+        // თუ JPEG ფორმატში გადაგვყავს გამჭვირვალე ფონიანი სურათი, შევავსოთ თეთრი ფონით
+        if (mime === 'image/jpeg') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, targetW, targetH);
+        }
+
+        ctx.drawImage(loadedImage, 0, 0, targetW, targetH);
+
+        canvas.toBlob(
+          function (blob) {
+            if (!blob) {
+              showError('სურათის კოდირება ვერ მოხერხდა.');
+              return;
+            }
+            if (currentBlobUrl) {
+              URL.revokeObjectURL(currentBlobUrl);
+            }
+            currentBlob = blob;
+            currentBlobUrl = URL.createObjectURL(blob);
+            previewNew.src = currentBlobUrl;
+            newDimLabel.textContent = targetW + '×' + targetH;
+            statNewSize.textContent = formatBytes(blob.size);
+
+            const diffPercent = ((originalFile.size - blob.size) / originalFile.size) * 100;
+            if (diffPercent >= 0) {
+              statSaving.textContent = '-' + diffPercent.toFixed(1) + '%';
+              statSaving.style.color = 'var(--success)';
+            } else {
+              statSaving.textContent = '+' + Math.abs(diffPercent).toFixed(1) + '%';
+              statSaving.style.color = 'var(--warning)';
+            }
+          },
+          mime,
+          quality
+        );
+      }
+
+      downloadBtn.addEventListener('click', function () {
+        if (!currentBlob || !currentBlobUrl || !originalFile) {
+          showError('ჯერ აირჩიეთ სურათი.');
+          return;
+        }
+        const extMap = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
+        const ext = extMap[formatSelect.value] || 'jpg';
+        const baseName = originalFile.name.replace(/\.[^/.]+$/, '');
+        const a = document.createElement('a');
+        a.href = currentBlobUrl;
+        a.download = baseName + '-optimized.' + ext;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('სურათი ჩამოიტვირთა!');
+      });
+    })();
+  </script>
+</body>
+</html>

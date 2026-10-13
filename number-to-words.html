@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>თანხის და რიცხვის სიტყვიერად ჩაწერა (ლარსა და თეთრში) | Mokled - მოკლედ</title>
+  <meta name="description" content="ჩაწერეთ ნებისმიერი თანხა ან რიცხვი სიტყვიერად გამართული ქართულით (ლარი და თეთრი, აშშ დოლარი, ევრო) ხელშეკრულებების, მიღება-ჩაბარების აქტებისა და ინვოისებისთვის." />
+  <link rel="canonical" href="https://geotools.pages.dev/number-to-words.html" />
+  <meta property="og:title" content="თანხის და რიცხვის სიტყვიერად ჩაწერა | Mokled - მოკლედ" />
+  <meta property="og:description" content="თანხისა და რიცხვის უშეცდომო სიტყვიერი ჩაწერა ქართულად ხელშეკრულებებისა და საბუღალტრო დოკუმენტებისთვის." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/number-to-words.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>თანხის და რიცხვის სიტყვიერად ჩაწერა</h1>
+      <p>
+        გადაიყვანეთ ნებისმიერი რიცხვითი თანხა ქართულ სიტყვიერ ფორმაში ხელშეკრულებების, ინვოისებისა და მიღება-ჩაბარების აქტებისთვის.
+        ალგორითმი სრულად იცავს ქართული ოცობითი თვლის სისტემისა და რიცხვითი სახელების მართლწერის წესებს.
+      </p>
+    </div>
+
+    <div id="num-error" class="alert alert-error hidden" role="alert"></div>
+
+    <section class="panel">
+      <div class="grid-3" style="align-items: end;">
+        <div class="form-group">
+          <label class="form-label" for="num-input">თანხა ან რიცხვი:</label>
+          <input type="text" id="num-input" class="input" value="14250.85" placeholder="მაგ.: 14250.85" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="currency-select">ვალუტა / ფორმატი:</label>
+          <select id="currency-select" class="input">
+            <option value="GEL" selected>ლარი და თეთრი (₾ / GEL)</option>
+            <option value="USD">აშშ დოლარი და ცენტი ($ / USD)</option>
+            <option value="EUR">ევრო და ევროცენტი (€ / EUR)</option>
+            <option value="NONE">მხოლოდ რიცხვი (ვალუტის გარეშე)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="sub-as-words" />
+            <span>თეთრების / ცენტების სიტყვიერად ჩაწერა</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <span class="result-card-label">სიტყვიერი ჩანაწერი:</span>
+        <div class="result-card-value" id="res-words-only">—</div>
+        <div class="btn-row">
+          <button type="button" id="btn-copy-words" class="btn btn-primary btn-sm">სიტყვიერი ჩანაწერის კოპირება</button>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <span class="result-card-label">ხელშეკრულების / ინვოისის სტანდარტული ფორმატი (ციფრებით + ფრჩხილებში სიტყვიერად):</span>
+        <div class="result-card-value" id="res-contract-format">—</div>
+        <div class="btn-row">
+          <button type="button" id="btn-copy-contract" class="btn btn-secondary btn-sm">ხელშეკრულების ფორმატის კოპირება</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top: 1rem;">
+        <button type="button" class="btn btn-secondary btn-sm num-sample" data-val="1250.00">1,250.00 ₾</button>
+        <button type="button" class="btn btn-secondary btn-sm num-sample" data-val="14250.85">14,250.85 ₾</button>
+        <button type="button" class="btn btn-secondary btn-sm num-sample" data-val="1000000.00">1,000,000.00 ₾</button>
+        <button type="button" id="btn-clear-num" class="btn btn-danger btn-sm">გასუფთავება</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">ქართული რიცხვითი სახელების მართლწერის წესები</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted);">
+        • <strong>ფუძის კვეცა რთულ რიცხვებში:</strong> როდესაც <em>ასი, ათასი, მილიონი, მილიარდი</em> მოსდევს მომდევნო არანულოვანი თანრიგი, მათ ეკვეცებათ ბოლო ხმოვანი <strong>-ი</strong>: იწერება <code>ორი ათას ხუთას ოცდაათი</code> (და არა <code>ორი ათასი ხუთასი ოცდაათი</code>).<br />
+        • <strong>1000-ის ჩაწერა:</strong> ქართულ სალიტერატურო ენაში 1000 იწერება როგორც <code>ათასი</code> (და არა <code>ერთი ათასი</code>), ხოლო 1,000,000 — <code>ერთი მილიონი</code>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { amountToGeorgianWords } = window.GeoCore;
+      const { initLayout, copyToClipboard } = window.GeoCommon;
+
+      initLayout('number-to-words');
+
+      const numInput = document.getElementById('num-input');
+      const currencySelect = document.getElementById('currency-select');
+      const subAsWords = document.getElementById('sub-as-words');
+      const resWordsOnly = document.getElementById('res-words-only');
+      const resContractFormat = document.getElementById('res-contract-format');
+      const errorBox = document.getElementById('num-error');
+
+      function updateWords() {
+        errorBox.classList.add('hidden');
+        try {
+          const res = amountToGeorgianWords(numInput.value, {
+            currency: currencySelect.value,
+            subUnitAsWords: subAsWords.checked
+          });
+          resWordsOnly.textContent = res.wordsText;
+          resContractFormat.textContent = res.contractText;
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+          resWordsOnly.textContent = '—';
+          resContractFormat.textContent = '—';
+        }
+      }
+
+      numInput.addEventListener('input', updateWords);
+      currencySelect.addEventListener('change', updateWords);
+      subAsWords.addEventListener('change', updateWords);
+
+      document.getElementById('btn-copy-words').addEventListener('click', function () {
+        if (resWordsOnly.textContent !== '—') {
+          copyToClipboard(resWordsOnly.textContent, 'სიტყვიერი ჩანაწერი დაკოპირდა!');
+        }
+      });
+
+      document.getElementById('btn-copy-contract').addEventListener('click', function () {
+        if (resContractFormat.textContent !== '—') {
+          copyToClipboard(resContractFormat.textContent, 'ხელშეკრულების ფორმატი დაკოპირდა!');
+        }
+      });
+
+      document.querySelectorAll('.num-sample').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          numInput.value = btn.getAttribute('data-val');
+          updateWords();
+        });
+      });
+
+      document.getElementById('btn-clear-num').addEventListener('click', function () {
+        numInput.value = '0';
+        updateWords();
+      });
+
+      updateWords();
+    })();
+  </script>
+</body>
+</html>

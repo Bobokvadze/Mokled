@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR კოდის გენერატორი (PNG და SVG ჩამოტვირთვით) | Mokled - მოკლედ</title>
+  <meta name="description" content="შექმენით უფასო და უვადო QR კოდი ვებგვერდის ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi ქსელისთვის პირდაპირ ბრაუზერში. ჩამოტვირთეთ მაღალი ხარისხის PNG ან ვექტორულ SVG ფორმატში." />
+  <link rel="canonical" href="https://geotools.pages.dev/qr-generator.html" />
+  <meta property="og:title" content="QR კოდის გენერატორი (PNG და SVG) | Mokled - მოკლედ" />
+  <meta property="og:description" content="უვადო QR კოდების გენერაცია პირდაპირ ბრაუზერში PNG და SVG ჩამოტვირთვით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/qr-generator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / მედია</div>
+      <h1>QR კოდის გენერატორი</h1>
+      <p>
+        შექმენით სტანდარტული <code>ISO/IEC 18004</code> QR კოდი ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi ქსელისთვის.
+        გენერაცია სრულდება 100%-ით თქვენს ბრაუზერში — კოდი არ გადის გარე სერვისებზე და არასოდეს გაუვა ვადა.
+      </p>
+    </div>
+
+    <div id="qr-error" class="alert alert-error hidden" role="alert"></div>
+
+    <section class="panel">
+      <div class="grid-2">
+        <div>
+          <div class="form-group">
+            <label class="form-label" for="qr-type">მონაცემის ტიპი:</label>
+            <select id="qr-type" class="input">
+              <option value="text" selected>ბმული (URL) ან ნებისმიერი ტექსტი</option>
+              <option value="wifi">Wi-Fi ქსელთან სწრაფი მიერთება</option>
+            </select>
+          </div>
+
+          <div id="qr-text-group" class="form-group">
+            <label class="form-label" for="qr-input">ბმული ან ტექსტი (მაქს. 250 სიმბოლო):</label>
+            <textarea id="qr-input" style="min-height: 110px;" placeholder="მაგ.: https://geotools.pages.dev">https://geotools.pages.dev</textarea>
+          </div>
+
+          <div id="qr-wifi-group" class="hidden">
+            <div class="form-group">
+              <label class="form-label" for="wifi-ssid">Wi-Fi ქსელის სახელი (SSID):</label>
+              <input type="text" id="wifi-ssid" class="input" placeholder="მაგ.: Home_WiFi" />
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label" for="wifi-pass">პაროლი:</label>
+                <input type="text" id="wifi-pass" class="input" placeholder="პაროლი" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="wifi-enc">უსაფრთხოება:</label>
+                <select id="wifi-enc" class="input">
+                  <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">უპაროლო (Open)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label" for="qr-size">ზომა (px):</label>
+              <select id="qr-size" class="input">
+                <option value="280">280 × 280 px</option>
+                <option value="400" selected>400 × 400 px</option>
+                <option value="600">600 × 600 px (ბეჭდვისთვის)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qr-dark">კოდის ფერი:</label>
+              <input type="color" id="qr-dark" class="input" value="#0f172a" style="height: 42px; padding: 0.2rem;" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qr-light">ფონის ფერი:</label>
+              <input type="color" id="qr-light" class="input" value="#ffffff" style="height: 42px; padding: 0.2rem;" />
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-box">
+          <canvas id="qr-canvas" width="400" height="400"></canvas>
+          <div id="qr-meta" style="margin-top: 0.65rem; font-size: 0.84rem; color: var(--text-muted);"></div>
+          <div class="btn-row" style="justify-content: center; margin-top: 0.85rem;">
+            <button type="button" id="btn-dl-png" class="btn btn-primary">PNG ჩამოტვირთვა</button>
+            <button type="button" id="btn-dl-svg" class="btn btn-secondary">SVG (ვექტორული) ჩამოტვირთვა</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { generateQrMatrix, generateQrSvg } = window.GeoCore;
+      const { initLayout, downloadTextFile, showToast } = window.GeoCommon;
+
+      initLayout('qr-generator');
+
+      const qrType = document.getElementById('qr-type');
+      const qrTextGroup = document.getElementById('qr-text-group');
+      const qrWifiGroup = document.getElementById('qr-wifi-group');
+      const qrInput = document.getElementById('qr-input');
+      const wifiSsid = document.getElementById('wifi-ssid');
+      const wifiPass = document.getElementById('wifi-pass');
+      const wifiEnc = document.getElementById('wifi-enc');
+
+      const qrSizeSelect = document.getElementById('qr-size');
+      const qrDarkInput = document.getElementById('qr-dark');
+      const qrLightInput = document.getElementById('qr-light');
+      const canvas = document.getElementById('qr-canvas');
+      const qrMeta = document.getElementById('qr-meta');
+      const errorBox = document.getElementById('qr-error');
+
+      let currentPayload = '';
+
+      function buildPayload() {
+        if (qrType.value === 'wifi') {
+          const ssid = wifiSsid.value.trim() || 'MyWiFi';
+          const pass = wifiPass.value;
+          const enc = wifiEnc.value;
+          return 'WIFI:T:' + enc + ';S:' + ssid.replace(/[;,:]/g, '\\$&') + ';P:' + pass.replace(/[;,:]/g, '\\$&') + ';;';
+        }
+        return qrInput.value.trim();
+      }
+
+      function renderQr() {
+        errorBox.classList.add('hidden');
+        try {
+          currentPayload = buildPayload();
+          const qr = generateQrMatrix(currentPayload);
+          const targetPx = Number(qrSizeSelect.value) || 400;
+          const margin = 4;
+          const totalModules = qr.size + margin * 2;
+          const scale = targetPx / totalModules;
+
+          canvas.width = targetPx;
+          canvas.height = targetPx;
+          const ctx = canvas.getContext('2d');
+
+          ctx.fillStyle = qrLightInput.value;
+          ctx.fillRect(0, 0, targetPx, targetPx);
+
+          ctx.fillStyle = qrDarkInput.value;
+          for (let r = 0; r < qr.size; r++) {
+            for (let c = 0; c < qr.size; c++) {
+              if (qr.modules[r][c] === 1) {
+                const x = Math.floor((c + margin) * scale);
+                const y = Math.floor((r + margin) * scale);
+                const w = Math.ceil((c + margin + 1) * scale) - x;
+                const h = Math.ceil((r + margin + 1) * scale) - y;
+                ctx.fillRect(x, y, w, h);
+              }
+            }
+          }
+
+          qrMeta.textContent = 'QR ვერსია: ' + qr.version + ' (' + qr.size + '×' + qr.size + ' მოდული)';
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      qrType.addEventListener('change', function () {
+        if (qrType.value === 'wifi') {
+          qrTextGroup.classList.add('hidden');
+          qrWifiGroup.classList.remove('hidden');
+        } else {
+          qrWifiGroup.classList.add('hidden');
+          qrTextGroup.classList.remove('hidden');
+        }
+        renderQr();
+      });
+
+      [qrInput, wifiSsid, wifiPass, wifiEnc, qrSizeSelect, qrDarkInput, qrLightInput].forEach(function (el) {
+        el.addEventListener('input', renderQr);
+        el.addEventListener('change', renderQr);
+      });
+
+      document.getElementById('btn-dl-png').addEventListener('click', function () {
+        if (!currentPayload) return;
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mokled-qr.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('QR კოდი (PNG) ჩამოიტვირთა!');
+      });
+
+      document.getElementById('btn-dl-svg').addEventListener('click', function () {
+        if (!currentPayload) return;
+        try {
+          const svg = generateQrSvg(currentPayload, {
+            darkColor: qrDarkInput.value,
+            lightColor: qrLightInput.value,
+            margin: 4
+          });
+          downloadTextFile('mokled-qr.svg', svg, 'image/svg+xml;charset=utf-8', false);
+          showToast('QR კოდი (SVG) ჩამოიტვირთა!');
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      });
+
+      renderQr();
+    })();
+  </script>
+</body>
+</html>

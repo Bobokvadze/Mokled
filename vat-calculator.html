@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>დღგ-ის კალკულატორი (18%) - დამატება და გამოყოფა | Mokled - მოკლედ</title>
+  <meta name="description" content="გამოთვალეთ 18%-იანი დამატებული ღირებულების გადასახადი (დღგ). დაამატეთ დღგ თანხას ან გამოყავით დღგ-ის ნაწილი დღგ-ის შემცველი თანხიდან ზუსტი ფორმულით." />
+  <link rel="canonical" href="https://geotools.pages.dev/vat-calculator.html" />
+  <meta property="og:title" content="დღგ-ის კალკულატორი (18%) - დამატება და გამოყოფა" />
+  <meta property="og:description" content="18%-იანი დღგ-ის დამატება და გამოყოფა გამოთვლის ფორმულისა და შუალედური შედეგების ჩვენებით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/vat-calculator.html" />
+  <meta property="og:locale" content="ka_GE" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>დღგ-ის კალკულატორი (18%)</h1>
+      <p>
+        სწრაფად დაამატეთ 18%-იანი დღგ საწყის თანხას ან გამოყავით დღგ-ის ნაწილი უკვე დღგ-ის შემცველი ჯამური თანხიდან.
+        კალკულატორი გაჩვენებთ როგორც დამრგვალებულ საბუღალტრო მნიშვნელობებს, ისე ზუსტ შუალედურ შედეგებსა და ფორმულას.
+      </p>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>სამართლებრივი შენიშვნა:</strong> აღნიშნული ხელსაწყო წარმოადგენს ზოგად მათემატიკურ კალკულატორს და არ ცვლის კონკრეტული საგადასახადო ოპერაციის ან შემთხვევის სამართლებრივ/საგადასახადო შეფასებას.
+    </div>
+
+    <section class="panel">
+      <div id="vat-error" class="alert alert-error hidden" role="alert"></div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="vat-amount">თანხა (₾):</label>
+          <input type="number" id="vat-amount" class="input" value="1000" min="0" step="0.01" placeholder="მაგ.: 1000" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="vat-mode">ოპერაციის ტიპი:</label>
+          <select id="vat-mode" class="input">
+            <option value="add">დღგ-ის დამატება (თანხა დღგ-ის გარეშე → დღგ-ით)</option>
+            <option value="extract">დღგ-ის გამოყოფა (დღგ-ის შემცველი თანხიდან)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="vat-rate">დღგ-ის განაკვეთი (%):</label>
+          <input type="number" id="vat-rate" class="input" value="18" min="0" max="100" step="0.1" />
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">თანხა დღგ-ის გარეშე (Net)</span>
+          <span class="stat-value" id="res-net">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დღგ-ის თანხა (VAT)</span>
+          <span class="stat-value" id="res-vat">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">ჯამური თანხა დღგ-ით (Gross)</span>
+          <span class="stat-value" id="res-gross">0.00 ₾</span>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-top: 1rem;">
+        <div><strong>გამოთვლის ფორმულა და შუალედური შედეგები (4 ათწილადის სიზუსტით):</strong></div>
+        <div id="res-formula" style="margin-top: 0.35rem; font-family: monospace;"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-copy-vat" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" id="btn-reset-vat" class="btn btn-secondary">სტანდარტულზე დაბრუნება (1000 ₾ / 18%)</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">როგორ გამოითვლება 18%-იანი დღგ?</h2>
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size: 1rem; margin-bottom: 0.4rem;">1. დღგ-ის დამატება თანხაზე</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            როდესაც გაქვთ საქონლის ან მომსახურების ღირებულება დღგ-ის გარეშე (მაგალითად, <strong>100 ₾</strong>):<br />
+            • დღგ = <code>100 × 0.18 = 18 ₾</code><br />
+            • სულ გადასახდელი (დღგ-ის ჩათვლით) = <code>100 + 18 = 118 ₾</code>
+          </p>
+        </div>
+        <div>
+          <h3 style="font-size: 1rem; margin-bottom: 0.4rem;">2. დღგ-ის გამოყოფა ჯამური თანხიდან</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            როდესაც თანხა უკვე შეიცავს 18% დღგ-ს (მაგალითად, <strong>118 ₾</strong>), არასწორია მისი პირდაპირ 18%-ზე გამრავლება. სწორი ფორმულაა:<br />
+            • თანხა დღგ-ის გარეშე = <code>118 / 1.18 = 100 ₾</code><br />
+            • დღგ-ის ნაწილი = <code>118 - 100 = 18 ₾</code> (ან <code>118 × 18 / 118</code>)
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateVAT } = window.GeoCore;
+      const { initLayout, copyToClipboard } = window.GeoCommon;
+
+      initLayout('vat-calculator');
+
+      const amountInput = document.getElementById('vat-amount');
+      const modeSelect = document.getElementById('vat-mode');
+      const rateInput = document.getElementById('vat-rate');
+      const errorBox = document.getElementById('vat-error');
+      const resNet = document.getElementById('res-net');
+      const resVat = document.getElementById('res-vat');
+      const resGross = document.getElementById('res-gross');
+      const resFormula = document.getElementById('res-formula');
+
+      let lastSummaryText = '';
+
+      function runVatCalc() {
+        try {
+          errorBox.classList.add('hidden');
+          const res = calculateVAT(amountInput.value, modeSelect.value, rateInput.value);
+          resNet.textContent = res.net.toFixed(2) + ' ₾';
+          resVat.textContent = res.vat.toFixed(2) + ' ₾';
+          resGross.textContent = res.gross.toFixed(2) + ' ₾';
+          resFormula.textContent = res.formula;
+
+          lastSummaryText =
+            'თანხა დღგ-ის გარეშე: ' + res.net.toFixed(2) + ' ₾\n' +
+            'დღგ (' + res.rate + '%): ' + res.vat.toFixed(2) + ' ₾\n' +
+            'სულ დღგ-ის ჩათვლით: ' + res.gross.toFixed(2) + ' ₾\n' +
+            'ფორმულა: ' + res.formula;
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+          resNet.textContent = '—';
+          resVat.textContent = '—';
+          resGross.textContent = '—';
+          resFormula.textContent = '—';
+          lastSummaryText = '';
+        }
+      }
+
+      amountInput.addEventListener('input', runVatCalc);
+      modeSelect.addEventListener('change', runVatCalc);
+      rateInput.addEventListener('input', runVatCalc);
+
+      document.getElementById('btn-copy-vat').addEventListener('click', function () {
+        copyToClipboard(lastSummaryText, 'დღგ-ის გამოთვლის შედეგი დაკოპირდა!');
+      });
+
+      document.getElementById('btn-reset-vat').addEventListener('click', function () {
+        amountInput.value = '1000';
+        modeSelect.value = 'add';
+        rateInput.value = '18';
+        runVatCalc();
+      });
+
+      runVatCalc();
+    })();
+  </script>
+</body>
+</html>
