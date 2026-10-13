@@ -95,10 +95,7 @@
 
       headerEl.innerHTML =
         '<div class="container header-inner">' +
-          '<a href="index.html" class="brand" aria-label="Mokled - მოკლედ">' +
-            '<span class="brand-logo"><img src="assets/logo.png" alt="Mokled Logo" /></span>' +
-            '<span>Mokled - მოკლედ</span>' +
-          '</a>' +
+          '<a href="index.html" class="brand" aria-label="Mokled - მთავარი გვერდი"><span class="brand-logo"><img src="assets/logo.png" alt="Mokled" /></span></a>' +
           '<div class="header-controls">' +
             '<button type="button" class="theme-toggle-btn" id="theme-toggle-btn">' + themeLabel + '</button>' +
             '<button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false">მენიუ ☰</button>' +
