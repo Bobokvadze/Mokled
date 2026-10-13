@@ -222,7 +222,7 @@
         '<div class="container footer-inner">' +
           '<div>' +
             '<strong>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
-            '<p>ყველა ლოკალური გამოთვლა სრულდება თქვენს ბრაუზერში. სწრაფი ძიება: <code>Ctrl + K</code></p>' +
+            '<p>ყველა ლოკალური გამოთვლა სრულდება თქვენს ბრაუზერში.</p>' +
           '</div>' +
           '<div class="footer-links">' +
             relatedLinks +
@@ -233,19 +233,6 @@
     if (currentId && currentId !== 'home') {
       recordToolUsage(currentId);
     }
-
-    document.addEventListener('keydown', function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        const searchBox = document.getElementById('tool-search');
-        if (searchBox) {
-          searchBox.focus();
-          searchBox.select();
-        } else {
-          window.location.href = 'index.html#search';
-        }
-      }
-    });
   }
 
   function showToast(message) {
