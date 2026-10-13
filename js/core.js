@@ -7,7 +7,34 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  /* 1. ლათინურ-ქართული ტრანსლიტერაცია */
+  /* ==========================================================================
+     0. რიცხვებისა და თანხების მძიმეებით ფორმატირება (მაგ.: 372,639.00 ₾)
+     ========================================================================== */
+
+  function formatNumber(num, decimals) {
+    const n = Number(num);
+    if (!Number.isFinite(n)) return '0';
+    if (decimals !== undefined && decimals !== null) {
+      const fixed = n.toFixed(decimals);
+      const parts = fixed.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    }
+    const str = String(Math.round((n + Number.EPSILON) * 10000) / 10000);
+    const parts = str.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  }
+
+  function formatMoney(num, decimals) {
+    const d = decimals !== undefined ? decimals : 2;
+    return formatNumber(num, d);
+  }
+
+  /* ==========================================================================
+     1. ლათინურ-ქართული ტრანსლიტერაცია
+     ========================================================================== */
+
   const QWERTY_MAP = {
     a: 'ა', b: 'ბ', g: 'გ', d: 'დ', e: 'ე', v: 'ვ', z: 'ზ', Z: 'ძ',
     t: 'ტ', T: 'თ', i: 'ი', k: 'კ', K: 'ქ', l: 'ლ', m: 'მ', n: 'ნ',
@@ -253,7 +280,7 @@
   function calculateVAT(amount, mode, ratePercent) {
     const activeMode = mode || 'add';
     const rate = ratePercent !== undefined ? Number(ratePercent) : 18;
-    const cleanedAmount = typeof amount === 'number' ? amount : Number(String(amount).trim().replace(',', '.'));
+    const cleanedAmount = typeof amount === 'number' ? amount : Number(String(amount).trim().replace(/,/g, ''));
 
     if (String(amount).trim() === '' || !Number.isFinite(cleanedAmount) || cleanedAmount < 0) {
       throw new Error('გთხოვთ შეიყვანოთ სწორი, დადებითი რიცხვითი თანხა.');
@@ -270,15 +297,15 @@
       vatRaw = netRaw * multiplier;
       grossRaw = netRaw + vatRaw;
       formulaText =
-        'დღგ = ' + netRaw.toFixed(2) + ' × (' + rate + ' / 100) = ' + vatRaw.toFixed(4) + ' ₾ | ' +
-        'ჯამური თანხა = ' + netRaw.toFixed(2) + ' + ' + vatRaw.toFixed(4) + ' = ' + grossRaw.toFixed(4) + ' ₾';
+        'დღგ = ' + formatMoney(netRaw, 2) + ' × (' + rate + ' / 100) = ' + formatMoney(vatRaw, 4) + ' ₾ | ' +
+        'ჯამური თანხა = ' + formatMoney(netRaw, 2) + ' + ' + formatMoney(vatRaw, 4) + ' = ' + formatMoney(grossRaw, 4) + ' ₾';
     } else if (activeMode === 'extract') {
       grossRaw = cleanedAmount;
       netRaw = grossRaw / (1 + multiplier);
       vatRaw = grossRaw - netRaw;
       formulaText =
-        'თანხა დღგ-ის გარეშე = ' + grossRaw.toFixed(2) + ' / (1 + ' + rate + '/100) = ' + netRaw.toFixed(4) + ' ₾ | ' +
-        'დღგ = ' + grossRaw.toFixed(2) + ' - ' + netRaw.toFixed(4) + ' = ' + vatRaw.toFixed(4) + ' ₾';
+        'თანხა დღგ-ის გარეშე = ' + formatMoney(grossRaw, 2) + ' / (1 + ' + rate + '/100) = ' + formatMoney(netRaw, 4) + ' ₾ | ' +
+        'დღგ = ' + formatMoney(grossRaw, 2) + ' - ' + formatMoney(netRaw, 4) + ' = ' + formatMoney(vatRaw, 4) + ' ₾';
     } else {
       throw new Error('უცნობი გამოთვლის რეჟიმი.');
     }
@@ -699,40 +726,30 @@
 
   /* ==========================================================================
      7. ქართული ტექსტის კონვერტერი:
-        - ყოფილი პარლამენტის სტანდარტი (8-ბიტიანი Geo_Parliament: àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ¸)
-        - AcadNusx / LitNusx (abgdevzTiklmnopJrstufqRySCcZwWxjh)
-        - უნიკოდი (UTF-8 / Sylfaen)
-        - ასომთავრული (ႠႡႢ...)
-        - ლათინური
+        - SPParliamentMedium (1997 "Soma Press" Ltd. cmap):
+          U+00C0..U+00E0 (ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßà) <-> ა..ჰ (U+10D0..U+10F0)
+          U+00E1..U+00E5 (áâãäå) <-> ჱ, ჲ, ჳ, ჴ, ჵ (U+10F1..U+10F5)
+        - ასევე Windows-1251 (კირილიცა А..Я, а..е) დეკოდირების მხარდაჭერით.
      ========================================================================== */
 
-  const MKHEDRULI_33 = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ';
-  // ნამდვილი 8-ბიტიანი პარლამენტის სტანდარტის (Geo_Parliament / GEOSTD8) სიმბოლოები:
-  // ა..ჯ = U+00E0..U+00FF (à..ÿ), ჰ = U+00B8 (¸)
-  const PARLIAMENT_8BIT_LOWER = 'àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ¸';
-  // მთავრული/ასომთავრული წყვილები პარლამენტის სტანდარტში:
-  // Ⴀ..Ⴟ = U+00C0..U+00DF (À..ß), Ⴠ = U+00A8 (¨)
-  const PARLIAMENT_8BIT_UPPER = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß¨';
+  const MKHEDRULI_38 = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰჱჲჳჴჵ';
+  // SPParliamentMedium: 0xC0 (À = 192) .. 0xE5 (å = 229) -> 38 ქართული ასო (ა..ჰ + ჱ..ჵ)
+  const SP_PARLIAMENT_38 = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäå';
+  // Windows-1251 შესატყვისი იმავე 0xC0..0xE5 ბაიტებისთვის (А..Я = 0xC0..0xDF, а..е = 0xE0..0xE5)
+  const WIN1251_CYRILLIC_38 = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгде';
 
   const PARLIAMENT_UNICODE_TO_8BIT = {};
   const PARLIAMENT_8BIT_TO_UNICODE = {};
 
-  for (let idx = 0; idx < 33; idx++) {
-    const geoChar = MKHEDRULI_33[idx];
-    const pLower = PARLIAMENT_8BIT_LOWER[idx];
-    const pUpper = PARLIAMENT_8BIT_UPPER[idx];
-    const asomChar = String.fromCodePoint(0x10a0 + idx);
+  for (let idx = 0; idx < 38; idx++) {
+    const geoChar = MKHEDRULI_38[idx];
+    const spChar = SP_PARLIAMENT_38[idx];
+    const cyrChar = WIN1251_CYRILLIC_38[idx];
 
-    PARLIAMENT_UNICODE_TO_8BIT[geoChar] = pLower;
-    PARLIAMENT_UNICODE_TO_8BIT[asomChar] = pUpper;
-    PARLIAMENT_8BIT_TO_UNICODE[pLower] = geoChar;
-    PARLIAMENT_8BIT_TO_UNICODE[pUpper] = geoChar;
+    PARLIAMENT_UNICODE_TO_8BIT[geoChar] = spChar;
+    PARLIAMENT_8BIT_TO_UNICODE[spChar] = geoChar;
+    PARLIAMENT_8BIT_TO_UNICODE[cyrChar] = geoChar;
   }
-  // არქაული ასოები პარლამენტის ფონტში
-  PARLIAMENT_8BIT_TO_UNICODE['š'] = 'ჴ';
-  PARLIAMENT_8BIT_TO_UNICODE['œ'] = 'ჵ';
-  PARLIAMENT_UNICODE_TO_8BIT['ჴ'] = 'š';
-  PARLIAMENT_UNICODE_TO_8BIT['ჵ'] = 'œ';
 
   // AcadNusx / LitNusx ცხრილი
   const ACADNUSX_UNICODE_TO_ASCII = {
@@ -825,16 +842,12 @@
     if (typeof text !== 'string') {
       return { output: '' };
     }
+    const mkhedruli = normalizeToMkhedruli(text);
     let out = '';
-    const chars = Array.from(text);
+    const chars = Array.from(mkhedruli);
     for (let i = 0; i < chars.length; i++) {
       const ch = chars[i];
-      const code = ch.codePointAt(0);
-      // თუ მთავრულია (U+1C90..U+1CBA), გადავიყვანოთ პარლამენტის დიდ ასოებში (À..ß, ¨)
-      if (code >= 0x1c90 && code <= 0x1cb0) {
-        const idx = code - 0x1c90;
-        out += PARLIAMENT_8BIT_UPPER[idx] || ch;
-      } else if (Object.prototype.hasOwnProperty.call(PARLIAMENT_UNICODE_TO_8BIT, ch)) {
+      if (Object.prototype.hasOwnProperty.call(PARLIAMENT_UNICODE_TO_8BIT, ch)) {
         out += PARLIAMENT_UNICODE_TO_8BIT[ch];
       } else {
         out += ch;
@@ -1067,7 +1080,7 @@
     const currencyCode = opts.currency || 'GEL';
     const subUnitAsWords = Boolean(opts.subUnitAsWords);
 
-    const rawStr = String(amountInput).trim().replace(/\s+/g, '').replace(',', '.');
+    const rawStr = String(amountInput).trim().replace(/[\s,]+/g, '');
     if (rawStr === '' || !/^-?\d+(\.\d{1,4})?$/.test(rawStr)) {
       throw new Error('გთხოვთ შეიყვანოთ სწორი თანხა (მაგ.: 14250.85).');
     }
@@ -1089,7 +1102,7 @@
       if (subPart === 0) {
         return {
           wordsText: wholeWords,
-          contractText: wholePart.toLocaleString('en-US') + ' (' + wholeWords + ')',
+          contractText: formatNumber(wholePart) + ' (' + wholeWords + ')',
           wholePart: wholePart,
           subPart: subPart
         };
@@ -1097,7 +1110,7 @@
       const decWords = wholeWords + ' მთელი და ' + (subUnitAsWords ? subWords : subPartPadded) + ' მეასედი';
       return {
         wordsText: decWords,
-        contractText: numericVal.toFixed(2) + ' (' + decWords + ')',
+        contractText: formatMoney(numericVal, 2) + ' (' + decWords + ')',
         wholePart: wholePart,
         subPart: subPart
       };
@@ -1107,7 +1120,7 @@
     const subFormatted = subUnitAsWords ? subWords : subPartPadded;
     const wordsText = wholeWords + ' ' + curr.main + ' და ' + subFormatted + ' ' + curr.sub;
 
-    const formattedNumber = wholePart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + subPartPadded;
+    const formattedNumber = formatNumber(wholePart) + '.' + subPartPadded;
     const contractText = formattedNumber + ' ' + curr.symbol + ' (' + wordsText + ')';
 
     return {
@@ -1130,7 +1143,7 @@
 
     const cleanedAmount = typeof amountInput === 'number'
       ? amountInput
-      : Number(String(amountInput).trim().replace(',', '.'));
+      : Number(String(amountInput).trim().replace(/,/g, ''));
 
     if (String(amountInput).trim() === '' || !Number.isFinite(cleanedAmount) || cleanedAmount < 0) {
       throw new Error('გთხოვთ შეიყვანოთ დადებითი ხელფასის თანხა.');
@@ -1170,8 +1183,8 @@
     }
 
     const formulaText = direction === 'gross_to_net'
-      ? 'დასაბეგრი ბაზა = ' + grossRaw.toFixed(2) + ' - ' + employeePensionRaw.toFixed(2) + ' = ' + taxableBaseRaw.toFixed(2) + ' ₾ | საშემოსავლო (' + incomeTaxRatePercent + '%) = ' + incomeTaxRaw.toFixed(2) + ' ₾ | ხელზე = ' + netRaw.toFixed(2) + ' ₾'
-      : 'დარიცხული (Gross) = ' + netRaw.toFixed(2) + ' / ' + netFactor.toFixed(4) + ' = ' + grossRaw.toFixed(2) + ' ₾ | საპენსიო (2%) = ' + employeePensionRaw.toFixed(2) + ' ₾ | საშემოსავლო (' + incomeTaxRatePercent + '%) = ' + incomeTaxRaw.toFixed(2) + ' ₾';
+      ? 'დასაბეგრი ბაზა = ' + formatMoney(grossRaw, 2) + ' - ' + formatMoney(employeePensionRaw, 2) + ' = ' + formatMoney(taxableBaseRaw, 2) + ' ₾ | საშემოსავლო (' + incomeTaxRatePercent + '%) = ' + formatMoney(incomeTaxRaw, 2) + ' ₾ | ხელზე = ' + formatMoney(netRaw, 2) + ' ₾'
+      : 'დარიცხული (Gross) = ' + formatMoney(netRaw, 2) + ' / ' + netFactor.toFixed(4) + ' = ' + formatMoney(grossRaw, 2) + ' ₾ | საპენსიო (2%) = ' + formatMoney(employeePensionRaw, 2) + ' ₾ | საშემოსავლო (' + incomeTaxRatePercent + '%) = ' + formatMoney(incomeTaxRaw, 2) + ' ₾';
 
     return {
       direction: direction,
@@ -1617,10 +1630,7 @@
     );
   }
 
-  /* ==========================================================================
-     12. სესხის და იპოთეკის კალკულატორი (გრაფიკით და წინსწრებით)
-     ========================================================================== */
-
+  /* 12. სესხის და იპოთეკის კალკულატორი */
   function roundMoney(n) {
     return Math.round((n + Number.EPSILON) * 100) / 100;
   }
@@ -1693,7 +1703,6 @@
 
       remainingMonths = Math.max(1, termMonths - month);
 
-      // თუ მომხმარებელმა აირჩია "ყოველთვიური შენატანის შემცირება" და მოხდა წინსწრება
       if (extraThisMonth > 0 && extraMode === 'reduce_payment' && balance > 0.005 && remainingMonths > 0) {
         if (scheduleType === 'annuity') {
           if (monthlyRate === 0) {
@@ -1722,14 +1731,14 @@
 
   function calculateLoan(principalInput, annualRateInput, termMonthsInput, options) {
     const opts = options || {};
-    const principal = Number(String(principalInput).trim().replace(',', '.'));
-    const annualRate = Number(String(annualRateInput).trim().replace(',', '.'));
+    const principal = Number(String(principalInput).trim().replace(/,/g, ''));
+    const annualRate = Number(String(annualRateInput).trim().replace(/,/g, ''));
     const termMonths = Math.round(Number(termMonthsInput));
-    const scheduleType = opts.scheduleType || 'annuity'; // 'annuity' | 'declining'
-    const extraMonthly = Math.max(0, Number(String(opts.extraMonthly || 0).replace(',', '.')) || 0);
-    const extraOneTime = Math.max(0, Number(String(opts.extraOneTime || 0).replace(',', '.')) || 0);
+    const scheduleType = opts.scheduleType || 'annuity';
+    const extraMonthly = Math.max(0, Number(String(opts.extraMonthly || 0).replace(/,/g, '')) || 0);
+    const extraOneTime = Math.max(0, Number(String(opts.extraOneTime || 0).replace(/,/g, '')) || 0);
     const extraOneTimeMonth = Math.max(1, Math.round(Number(opts.extraOneTimeMonth || 1)));
-    const extraMode = opts.extraMode || 'reduce_term'; // 'reduce_term' | 'reduce_payment'
+    const extraMode = opts.extraMode || 'reduce_term';
 
     if (!Number.isFinite(principal) || principal <= 0) {
       throw new Error('გთხოვთ შეიყვანოთ სესხის დადებითი თანხა.');
@@ -1763,6 +1772,8 @@
   }
 
   return {
+    formatNumber: formatNumber,
+    formatMoney: formatMoney,
     transliterateGeorgian: transliterateGeorgian,
     analyzeText: analyzeText,
     normalizeSpaces: normalizeSpaces,

@@ -134,7 +134,7 @@
   <script src="js/common.js"></script>
   <script>
     (function () {
-      const { calculateLoan } = window.GeoCore;
+      const { calculateLoan, formatMoney } = window.GeoCore;
       const { initLayout, copyToClipboard, downloadTextFile, copyShareUrl } = window.GeoCommon;
 
       initLayout('loan-calculator');
@@ -159,7 +159,6 @@
 
       let lastLoanResult = null;
 
-      // URL პარამეტრების წაკითხვა გაზიარებული ბმულიდან
       (function loadFromQuery() {
         const params = new URLSearchParams(window.location.search);
         if (params.has('p')) principalInput.value = params.get('p');
@@ -185,14 +184,14 @@
           lastLoanResult = res;
 
           if (res.scheduleType === 'declining' || Math.abs(res.firstPayment - res.lastPayment) > 1) {
-            resMonthly.textContent = res.firstPayment.toFixed(2) + ' → ' + res.lastPayment.toFixed(2) + ' ₾';
+            resMonthly.textContent = formatMoney(res.firstPayment, 2) + ' → ' + formatMoney(res.lastPayment, 2) + ' ₾';
           } else {
-            resMonthly.textContent = res.firstPayment.toFixed(2) + ' ₾';
+            resMonthly.textContent = formatMoney(res.firstPayment, 2) + ' ₾';
           }
 
-          resTotal.textContent = res.totalPaid.toFixed(2) + ' ₾';
-          resInterest.textContent = res.totalInterest.toFixed(2) + ' ₾';
-          resSavedInt.textContent = res.savedInterest.toFixed(2) + ' ₾';
+          resTotal.textContent = formatMoney(res.totalPaid, 2) + ' ₾';
+          resInterest.textContent = formatMoney(res.totalInterest, 2) + ' ₾';
+          resSavedInt.textContent = formatMoney(res.savedInterest, 2) + ' ₾';
           resTerm.textContent = res.actualMonths + ' თვე' + (res.savedMonths > 0 ? ' (-' + res.savedMonths + ' თვე)' : '');
           scheduleBadge.textContent = res.actualMonths + ' თვე';
 
@@ -200,11 +199,11 @@
             return (
               '<tr>' +
                 '<td>' + row.month + '</td>' +
-                '<td><strong>' + row.payment.toFixed(2) + '</strong></td>' +
-                '<td>' + row.principal.toFixed(2) + '</td>' +
-                '<td>' + row.interest.toFixed(2) + '</td>' +
-                '<td style="color: var(--success);">' + (row.extraPayment > 0 ? '+' + row.extraPayment.toFixed(2) : '-') + '</td>' +
-                '<td>' + row.balance.toFixed(2) + '</td>' +
+                '<td><strong>' + formatMoney(row.payment, 2) + '</strong></td>' +
+                '<td>' + formatMoney(row.principal, 2) + '</td>' +
+                '<td>' + formatMoney(row.interest, 2) + '</td>' +
+                '<td style="color: var(--success);">' + (row.extraPayment > 0 ? '+' + formatMoney(row.extraPayment, 2) : '-') + '</td>' +
+                '<td>' + formatMoney(row.balance, 2) + '</td>' +
               '</tr>'
             );
           }).join('');
@@ -245,12 +244,12 @@
       document.getElementById('btn-copy-loan-summary').addEventListener('click', function () {
         if (!lastLoanResult) return;
         const summary =
-          'სესხის თანხა: ' + lastLoanResult.principal.toFixed(2) + ' ₾\n' +
+          'სესხის თანხა: ' + formatMoney(lastLoanResult.principal, 2) + ' ₾\n' +
           'წლიური განაკვეთი: ' + lastLoanResult.annualRate + '%\n' +
-          'ყოველთვიური შენატანი: ' + lastLoanResult.firstPayment.toFixed(2) + ' ₾\n' +
-          'სულ გადასახდელი: ' + lastLoanResult.totalPaid.toFixed(2) + ' ₾\n' +
-          'სულ პროცენტი: ' + lastLoanResult.totalInterest.toFixed(2) + ' ₾\n' +
-          'წინსწრებით დაზოგილი პროცენტი: ' + lastLoanResult.savedInterest.toFixed(2) + ' ₾\n' +
+          'ყოველთვიური შენატანი: ' + formatMoney(lastLoanResult.firstPayment, 2) + ' ₾\n' +
+          'სულ გადასახდელი: ' + formatMoney(lastLoanResult.totalPaid, 2) + ' ₾\n' +
+          'სულ პროცენტი: ' + formatMoney(lastLoanResult.totalInterest, 2) + ' ₾\n' +
+          'წინსწრებით დაზოგილი პროცენტი: ' + formatMoney(lastLoanResult.savedInterest, 2) + ' ₾\n' +
           'რეალური ვადა: ' + lastLoanResult.actualMonths + ' თვე';
         copyToClipboard(summary, 'სესხის შეჯამება დაკოპირდა!');
       });
