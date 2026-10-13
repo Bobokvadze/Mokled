@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://geotools.pages.dev/sitemap.xml
+Sitemap: https://mokled.pages.dev/sitemap.xml

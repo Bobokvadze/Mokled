@@ -853,3 +853,39 @@ th {
     font-size: 1.45rem;
   }
 }
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .site-header,
+  .site-footer,
+  .btn-row,
+  .back-to-top,
+  .toast-container,
+  .breadcrumb,
+  .tabs-bar {
+    display: none !important;
+  }
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .panel {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+  }
+  .table-wrap {
+    max-height: none !important;
+    overflow: visible !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+  th {
+    position: static !important;
+    background: #f1f5f9 !important;
+    color: #000 !important;
+  }
+}

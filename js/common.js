@@ -93,6 +93,16 @@
       description: 'სიტყვებისა და სიმბოლოების დათვლა, ზედმეტი გამოტოვებებისა და ცარიელი ხაზების მოცილება, მხედრული/მთავრული რეგისტრის შეცვლა.'
     },
     {
+      {
+      id: 'postal-codes',
+      title: 'საქართველოს საფოსტო ინდექსები',
+      shortTitle: 'საფოსტო კოდები',
+      url: 'postal-codes.html',
+      category: 'მონაცემები',
+      icon: '📮',
+      description: 'თბილისის ყველა უბნის, გამზირისა და საქართველოს ქალაქების/მუნიციპალიტეტების საფოსტო კოდების (0100-6500) სწრაფი საძიებო.'
+    },
+    {
       id: 'csv-json',
       title: 'CSV / JSON გარდამქმნელი',
       shortTitle: 'CSV ⇄ JSON',
@@ -299,6 +309,11 @@
     topBtn.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
   }
 
   function showToast(message) {
