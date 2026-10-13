@@ -96,7 +96,7 @@
       headerEl.innerHTML =
         '<div class="container header-inner">' +
           '<a href="index.html" class="brand" aria-label="Mokled - მოკლედ">' +
-            '<span class="brand-logo"><img src="assets/logo.png" onerror="this.onerror=null;this.src=\'assets/favicon.svg\';" alt="Mokled Logo" /></span>' +
+            '<span class="brand-logo"><img src="assets/logo.png" alt="Mokled Logo" /></span>' +
             '<span>Mokled - მოკლედ</span>' +
           '</a>' +
           '<div class="header-controls">' +
