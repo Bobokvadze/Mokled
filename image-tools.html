@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>სურათის შეკუმშვა და ზომის შეცვლა ბრაუზერში | Mokled - მოკლედ</title>
-  <meta name="description" content="შეკუმშეთ სურათი, შეუცვალეთ ზომები პროპორციების დაცვით და გადაიყვანეთ JPEG, PNG ან WebP ფორმატში პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე." />
+  <meta name="description" content="შეკუმშეთ სურათი, შეუცვალეთ ზომები პროპორციების დაცვით და გადაიყვანეთ JPEG, WebP ან PNG ფორმატში პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე." />
   <link rel="canonical" href="https://geotools.pages.dev/image-tools.html" />
-  <meta property="og:title" content="სურათის შეკუმშვა და ზომის შეცვლა ბრაუზერში" />
-  <meta property="og:description" content="სურათის უსაფრთხო შეკუმშვა და ზომების შეცვლა (JPEG, PNG, WebP) სერვერზე გაგზავნის გარეშე." />
+  <meta property="og:title" content="სურათის შეკუმშვა და ზომის შეცვლა ბრაუზერში | Mokled - მოკლედ" />
+  <meta property="og:description" content="სურათის უსაფრთხო შეკუმშვა და ზომების შეცვლა (JPEG, WebP, PNG) სერვერზე გაგზავნის გარეშე." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://geotools.pages.dev/image-tools.html" />
   <meta property="og:locale" content="ka_GE" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -29,7 +29,7 @@
 
     <div id="img-error" class="alert alert-error hidden" role="alert"></div>
     <div id="png-notice" class="alert alert-warning hidden">
-      <strong>შენიშვნა PNG ფორმატზე:</strong> PNG არის უდანაკარგო (Lossless) ფორმატი, ამიტომ ხარისხის სლაიდერი მის ზომაზე გავლენას არ ახდენს. ფაილის მოცულობის მნიშვნელოვნად შესამცირებლად აირჩიეთ <strong>WebP</strong> ან <strong>JPEG</strong> ფორმატი, ან შეამცირეთ სიგანე/სიმაღლე.
+      <strong>შენიშვნა PNG ფორმატზე:</strong> PNG არის უდანაკარგო (Lossless) ფორმატი, ამიტომ ხარისხის სლაიდერი მის ზომაზე გავლენას არ ახდენს. ფაილის მოცულობის შესამცირებლად აირჩიეთ <strong>JPEG</strong> ან <strong>WebP</strong> ფორმატი.
     </div>
 
     <section class="panel">
@@ -51,8 +51,8 @@
           <div class="form-group">
             <label class="form-label" for="img-format">საბოლოო ფორმატი:</label>
             <select id="img-format" class="input">
-              <option value="image/webp">WebP (საუკეთესო შეკუმშვა)</option>
-              <option value="image/jpeg">JPEG (ფოტოებისთვის)</option>
+              <option value="image/jpeg" selected>JPEG (სტანდარტული - ფოტოებისთვის)</option>
+              <option value="image/webp">WebP (მაქსიმალური შეკუმშვა)</option>
               <option value="image/png">PNG (გამჭვირვალობის შენარჩუნებით)</option>
             </select>
           </div>
@@ -141,22 +141,6 @@
       let originalFile = null;
       let currentBlobUrl = null;
       let currentBlob = null;
-
-      // შევამოწმოთ ბრაუზერში WebP კოდირების მხარდაჭერა
-      (function checkWebpSupport() {
-        const testCanvas = document.createElement('canvas');
-        testCanvas.width = 1;
-        testCanvas.height = 1;
-        const dataUrl = testCanvas.toDataURL('image/webp');
-        if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
-          const webpOpt = formatSelect.querySelector('option[value="image/webp"]');
-          if (webpOpt) {
-            webpOpt.disabled = true;
-            webpOpt.textContent = 'WebP (არ არის მხარდაჭერილი ამ ბრაუზერში)';
-          }
-          formatSelect.value = 'image/jpeg';
-        }
-      })();
 
       function showError(msg) {
         errorBox.textContent = msg;
@@ -270,7 +254,6 @@
         canvas.height = targetH;
         const ctx = canvas.getContext('2d');
 
-        // თუ JPEG ფორმატში გადაგვყავს გამჭვირვალე ფონიანი სურათი, შევავსოთ თეთრი ფონით
         if (mime === 'image/jpeg') {
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, targetW, targetH);
@@ -312,7 +295,7 @@
           showError('ჯერ აირჩიეთ სურათი.');
           return;
         }
-        const extMap = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
+        const extMap = { 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/png': 'png' };
         const ext = extMap[formatSelect.value] || 'jpg';
         const baseName = originalFile.name.replace(/\.[^/.]+$/, '');
         const a = document.createElement('a');

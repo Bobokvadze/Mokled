@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ქართული ტექსტის კონვერტერი (უნიკოდი, Sylfaen, პარლამენტის სტანდარტი, ასომთავრული) | Mokled - მოკლედ</title>
-  <meta name="description" content="გადაიყვანეთ ქართული ტექსტი ლათინურს, თანამედროვე უნიკოდს (UTF-8 / Sylfaen), ყოფილი პარლამენტის სტანდარტსა (AcadNusx) და ისტორიულ ასომთავრულ დამწერლობას შორის." />
+  <title>ქართული ტექსტის კონვერტერი (უნიკოდი, პარლამენტის სტანდარტი, AcadNusx, ასომთავრული) | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ ქართული ტექსტი ყოფილი პარლამენტის სტანდარტს (àáâãäå...), AcadNusx-ს, თანამედროვე უნიკოდს (UTF-8 / Sylfaen), ლათინურსა და ასომთავრულ დამწერლობას შორის." />
   <link rel="canonical" href="https://geotools.pages.dev/georgian-converter.html" />
-  <meta property="og:title" content="ქართული ტექსტის კონვერტერი (უნიკოდი, პარლამენტის სტანდარტი, ასომთავრული)" />
-  <meta property="og:description" content="ორმხრივი კონვერტაცია ლათინურს, ქართულ Unicode-ს (UTF-8 / Sylfaen), ყოფილი პარლამენტის სტანდარტსა და ასომთავრულს შორის." />
+  <meta property="og:title" content="ქართული ტექსტის კონვერტერი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ორმხრივი კონვერტაცია ყოფილი პარლამენტის სტანდარტს, AcadNusx-ს, ქართულ Unicode-ს (Sylfaen) და ასომთავრულს შორის." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://geotools.pages.dev/georgian-converter.html" />
   <meta property="og:locale" content="ka_GE" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -22,9 +22,9 @@
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / ტექსტი</div>
       <h1>ქართული ტექსტის კონვერტერი</h1>
       <p>
-        აირჩიეთ საწყისი და სასურველი ფორმატი ქართული ტექსტის გარდასაქმნელად. ხელსაწყო უზრუნველყოფს კონვერტაციას
-        <strong>ლათინურ ჩანაწერს</strong>, თანამედროვე <strong>უნიკოდს (UTF-8 / Sylfaen)</strong>,
-        <strong>ყოფილი პარლამენტის სტანდარტსა</strong> და ისტორიულ <strong>ასომთავრულ</strong> დამწერლობას შორის.
+        აირჩიეთ საწყისი და სასურველი ფორმატი ქართული ტექსტის გარდასაქმნელად. ხელსაწყო სრულად უჭერს მხარს
+        <strong>ყოფილი პარლამენტის სტანდარტს (<code>àáâãäå...</code>)</strong>, ძველ ფონტებს (<strong>AcadNusx / LitNusx</strong>),
+        თანამედროვე <strong>უნიკოდს (UTF-8 / Sylfaen)</strong>, <strong>ლათინურ ჩანაწერსა</strong> და <strong>ასომთავრულს</strong>.
       </p>
     </div>
 
@@ -35,7 +35,8 @@
         <div class="form-group">
           <label class="form-label" for="source-format">საწყისი ფორმატი:</label>
           <select id="source-format" class="input">
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (AcadNusx / GEO_PS)</option>
+            <option value="parliament" selected>ყოფილი პარლამენტის სტანდარტი (àáâãäå... / Geo_Parliament)</option>
+            <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
             <option value="latin">ლათინური (ინგლისური ანბანით აკრეფილი)</option>
             <option value="unicode">უნიკოდი (UTF-8 / Sylfaen)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
@@ -52,14 +53,14 @@
           <label class="form-label" for="target-format">სასურველი (საბოლოო) ფორმატი:</label>
           <select id="target-format" class="input">
             <option value="unicode" selected>უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (AcadNusx / GEO_PS)</option>
+            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (àáâãäå... / Geo_Parliament)</option>
+            <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
             <option value="latin">ლათინური (ინგლისური)</option>
           </select>
         </div>
       </div>
 
-      <!-- დამატებითი პარამეტრები: Sylfaen ფონტით ჩვენება და ლათინური რეჟიმი -->
       <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-sm);">
         <label class="checkbox-label">
           <input type="checkbox" id="toggle-sylfaen" />
@@ -81,7 +82,8 @@
           <textarea id="conv-input" placeholder="ჩასვით ან აკრიფეთ გარდასაქმნელი ტექსტი..."></textarea>
           <div class="btn-row">
             <span style="font-size: 0.84rem; color: var(--text-muted); align-self: center;">საცდელი მაგალითები:</span>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის სტანდარტი</button>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის (àáâ...)</button>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">AcadNusx</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="latin">ლათინური</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="unicode">უნიკოდი</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="asomtavruli">ასომთავრული</button>
@@ -100,65 +102,44 @@
         </div>
       </div>
 
-      <!-- მრავალმნიშვნელოვანი ლათინური სიტყვების ვარიანტები -->
       <div id="conv-ambiguities-box" class="hidden" style="margin-top: 1.25rem;">
         <h2 class="panel-title" style="margin-bottom: 0.35rem;">მრავალმნიშვნელოვანი ლათინური ჩანაწერების ვარიანტები</h2>
-        <p style="font-size: 0.88rem; color: var(--text-muted);">
-          ლათინურიდან ქართულზე გადაყვანისას ზოგიერთ ასოს (<code>t, k, p, c, w</code>) რამდენიმე ქართული შესატყვისი აქვს. დააწკაპუნეთ სასურველ სიტყვაზე ჩასანაცვლებლად:
-        </p>
         <div id="conv-ambiguities-list" class="chip-list"></div>
       </div>
     </section>
 
-    <!-- განმარტებითი სექცია: კოდირება vs ფონტი, ასომთავრული და პარლამენტის სტანდარტის ცხრილი -->
     <section class="panel">
-      <h2 class="panel-title">ფორმატების განმარტება და დადასტურებული შესაბამისობის ცხრილი</h2>
-      <div class="grid-2" style="margin-bottom: 1.25rem;">
-        <div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.35rem;">1. სიმბოლოების კოდირება (UTF-8) vs ფონტი (Sylfaen)</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted);">
-            <strong>UTF-8 (უნიკოდი)</strong> არის სიმბოლოების საერთაშორისო ციფრული კოდირების სტანდარტი (ქართული მხედრული: <code>U+10D0–U+10FA</code>), ხოლო <strong>Sylfaen</strong> არის ვიზუალური შრიფტი (Font), რომელიც ამ უნიკოდ კოდებს ეკრანზე გამოსახავს. ძველი ფონტებისგან (მაგ. <code>AcadNusx</code>) განსხვავებით, Sylfaen-ში აკრეფილი ტექსტი რეალური ქართული უნიკოდია და ყველა თანამედროვე მოწყობილობაზე იკითხება ფონტის დაყენების გარეშე.
-          </p>
-        </div>
-        <div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.35rem;">2. ასომთავრული (მრგვლოვანი) vs დიდი ასოები</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted);">
-            <strong>ასომთავრული</strong> (<code>ႠႡႢႣ...</code>, უნიკოდის ბლოკი <code>U+10A0–U+10C5</code>) არის ქართული დამწერლობის უძველესი ისტორიული სახეობა და არა უბრალოდ თანამედროვე მხედრულის „დიდი ასოები“ (მთავრული <code>ᲐᲑᲒ...</code>). კონვერტერი თანამედროვე მხედრულის 33-ვე ასოს გარდაქმნის შესაბამის ასომთავრულ სიმბოლოდ და საჭიროებისას უკან აბრუნებს მხედრულში.
-          </p>
-        </div>
-      </div>
-
-      <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">3. ყოფილი პარლამენტის სტანდარტის (GEO_PS / AcadNusx) 33-ასოიანი დადასტურებული ცხრილი</h3>
-      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-        განსხვავებით თანამედროვე QWERTY განლაგებისგან, ყოფილი პარლამენტის სტანდარტში <code>q</code> შეესაბამება <strong>ქ</strong>-ს, ხოლო <code>y</code> - <strong>ყ</strong>-ს. დაუდასტურებელ სიმბოლოებს ხელსაწყო არ იცნობს ბრმად და გაფრთხილებთ.
+      <h2 class="panel-title">ყოფილი პარლამენტის სტანდარტის (Geo_Parliament) 33-ასოიანი შესაბამისობის ცხრილი</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+        ყოფილი პარლამენტის 8-ბიტიან სტანდარტში ქართული ასოები განთავსებულია <code>U+00E0-U+00FF</code> (<code>à-ÿ</code>) და <code>U+00B8</code> (<code>¸</code> = ჰ) დიაპაზონში, რაც საშუალებას იძლეოდა ერთსა და იმავე ფონტში შენარჩუნებულიყო ინგლისური ანბანიც:
       </p>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>პარლამენტის სტანდარტი</th>
-              <th>უნიკოდი (მხედრული)</th>
+              <th>პარლამენტის (მხედრ. / მთავრ.)</th>
+              <th>უნიკოდი</th>
               <th>ასომთავრული</th>
-              <th>პარლამენტის სტანდარტი</th>
-              <th>უნიკოდი (მხედრული)</th>
+              <th>პარლამენტის (მხედრ. / მთავრ.)</th>
+              <th>უნიკოდი</th>
               <th>ასომთავრული</th>
-              <th>პარლამენტის სტანდარტი</th>
-              <th>უნიკოდი (მხედრული)</th>
+              <th>პარლამენტის (მხედრ. / მთავრ.)</th>
+              <th>უნიკოდი</th>
               <th>ასომთავრული</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>a</code></td><td>ა</td><td>Ⴀ</td><td><code>m</code></td><td>მ</td><td>Ⴋ</td><td><code>S</code></td><td>შ</td><td>Ⴘ</td></tr>
-            <tr><td><code>b</code></td><td>ბ</td><td>Ⴁ</td><td><code>n</code></td><td>ნ</td><td>Ⴌ</td><td><code>C</code></td><td>ჩ</td><td>Ⴙ</td></tr>
-            <tr><td><code>g</code></td><td>გ</td><td>Ⴂ</td><td><code>o</code></td><td>ო</td><td>Ⴍ</td><td><code>c</code></td><td>ც</td><td>Ⴚ</td></tr>
-            <tr><td><code>d</code></td><td>დ</td><td>Ⴃ</td><td><code>p</code></td><td>პ</td><td>Ⴎ</td><td><code>Z</code></td><td>ძ</td><td>Ⴛ</td></tr>
-            <tr><td><code>e</code></td><td>ე</td><td>Ⴄ</td><td><code>J</code></td><td>ჟ</td><td>Ⴏ</td><td><code>w</code></td><td>წ</td><td>Ⴜ</td></tr>
-            <tr><td><code>v</code></td><td>ვ</td><td>Ⴅ</td><td><code>r</code></td><td>რ</td><td>Ⴐ</td><td><code>W</code></td><td>ჭ</td><td>Ⴝ</td></tr>
-            <tr><td><code>z</code></td><td>ზ</td><td>Ⴆ</td><td><code>s</code></td><td>ს</td><td>Ⴑ</td><td><code>x</code></td><td>ხ</td><td>Ⴞ</td></tr>
-            <tr><td><code>T</code></td><td>თ</td><td>Ⴇ</td><td><code>t</code></td><td>ტ</td><td>Ⴒ</td><td><code>j</code></td><td>ჯ</td><td>Ⴟ</td></tr>
-            <tr><td><code>i</code></td><td>ი</td><td>Ⴈ</td><td><code>u</code></td><td>უ</td><td>Ⴓ</td><td><code>h</code></td><td>ჰ</td><td>Ⴠ</td></tr>
-            <tr><td><code>k</code></td><td>კ</td><td>Ⴉ</td><td><code>f</code></td><td>ფ</td><td>Ⴔ</td><td>-</td><td>-</td><td>-</td></tr>
-            <tr><td><code>l</code></td><td>ლ</td><td>Ⴊ</td><td><code>q</code> / <code>R</code> / <code>y</code></td><td>ქ / ღ / ყ</td><td>Ⴕ / Ⴖ / Ⴗ</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td><code>à / À</code></td><td>ა</td><td>Ⴀ</td><td><code>ë / Ë</code></td><td>მ</td><td>Ⴋ</td><td><code>ø / Ø</code></td><td>შ</td><td>Ⴘ</td></tr>
+            <tr><td><code>á / Á</code></td><td>ბ</td><td>Ⴁ</td><td><code>ì / Ì</code></td><td>ნ</td><td>Ⴌ</td><td><code>ù / Ù</code></td><td>ჩ</td><td>Ⴙ</td></tr>
+            <tr><td><code>â / Â</code></td><td>გ</td><td>Ⴂ</td><td><code>í / Í</code></td><td>ო</td><td>Ⴍ</td><td><code>ú / Ú</code></td><td>ც</td><td>Ⴚ</td></tr>
+            <tr><td><code>ã / Ã</code></td><td>დ</td><td>Ⴃ</td><td><code>î / Î</code></td><td>პ</td><td>Ⴎ</td><td><code>û / Û</code></td><td>ძ</td><td>Ⴛ</td></tr>
+            <tr><td><code>ä / Ä</code></td><td>ე</td><td>Ⴄ</td><td><code>ï / Ï</code></td><td>ჟ</td><td>Ⴏ</td><td><code>ü / Ü</code></td><td>წ</td><td>Ⴜ</td></tr>
+            <tr><td><code>å / Å</code></td><td>ვ</td><td>Ⴅ</td><td><code>ð / Ð</code></td><td>რ</td><td>Ⴐ</td><td><code>ý / Ý</code></td><td>ჭ</td><td>Ⴝ</td></tr>
+            <tr><td><code>æ / Æ</code></td><td>ზ</td><td>Ⴆ</td><td><code>ñ / Ñ</code></td><td>ს</td><td>Ⴑ</td><td><code>þ / Þ</code></td><td>ხ</td><td>Ⴞ</td></tr>
+            <tr><td><code>ç / Ç</code></td><td>თ</td><td>Ⴇ</td><td><code>ò / Ò</code></td><td>ტ</td><td>Ⴒ</td><td><code>ÿ / ß</code></td><td>ჯ</td><td>Ⴟ</td></tr>
+            <tr><td><code>è / È</code></td><td>ი</td><td>Ⴈ</td><td><code>ó / Ó</code></td><td>უ</td><td>Ⴓ</td><td><code>¸ / ¨</code></td><td>ჰ</td><td>Ⴠ</td></tr>
+            <tr><td><code>é / É</code></td><td>კ</td><td>Ⴉ</td><td><code>ô / Ô</code></td><td>ფ</td><td>Ⴔ</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td><code>ê / Ê</code></td><td>ლ</td><td>Ⴊ</td><td><code>õ / ö / ÷</code></td><td>ქ / ღ / ყ</td><td>Ⴕ / Ⴖ / Ⴗ</td><td>-</td><td>-</td><td>-</td></tr>
           </tbody>
         </table>
       </div>
@@ -193,17 +174,22 @@
         parliament: {
           source: 'parliament',
           target: 'unicode',
-          text: 'saqarTvelos parlamentis yofili standarti (2026 weli).\nqarTuli enis სიწმინდე da sando kodireba: Tbilisis saxelmwifo universiteti, WavaWavadzis gamziri #1.'
+          text: 'ñàõàðçåäêíñ îàðêàëäìòèñ ÷íôèêè ñòàìãàðòè (2026 üäêè).\nçáèêèñè, ¸àäðè ãà õàðçóêè óìèéíãè.'
+        },
+        acadnusx: {
+          source: 'acadnusx',
+          target: 'unicode',
+          text: 'saqarTvelos Zveli fonti AcadNusx (2026 weli).\nTbilisis saxelmwifo universiteti.'
         },
         latin: {
           source: 'latin',
           target: 'unicode',
-          text: 'gamarjoba! tbilisi saqartvelos dedaqalaqia.\n2026 wels chven vqmniT axal cifrul xelsawyoebs: kari, tavi da tsigni.'
+          text: 'gamarjoba! tbilisi saqartvelos dedaqalaqia.\n2026 wels chven vqmniT axal cifrul xelsawyoebs.'
         },
         unicode: {
           source: 'unicode',
-          target: 'asomtavruli',
-          text: 'საქართველოს დამოუკიდებლობის დღე - 26 მაისი.\nშოთა რუსთაველი: „ვეფხისტყაოსანი“.'
+          target: 'parliament',
+          text: 'საქართველოს პარლამენტის ყოფილი სტანდარტი - 26 მაისი, ჰაერი.'
         },
         asomtavruli: {
           source: 'asomtavruli',
@@ -258,7 +244,6 @@
         ambiguitiesBox.classList.remove('hidden');
         ambiguitiesList.innerHTML = ambiguities.map(function (item) {
           const buttons = item.alternatives.map(function (alt) {
-            // თუ სამიზნე ფორმატი ასომთავრული ან პარლამენტია, ალტერნატივაც იმავე ფორმატში გადავიყვანოთ
             const formattedCurrent = convertGeorgianText(item.current, 'unicode', targetFormat.value).output;
             const formattedAlt = convertGeorgianText(alt, 'unicode', targetFormat.value).output;
             return '<button type="button" class="btn btn-secondary btn-sm conv-alt-btn" data-from="' +

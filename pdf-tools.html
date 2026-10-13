@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF ხელსაწყოების ნაკრები (გაერთიანება, დაყოფა, შემობრუნება, სურათი PDF-ში) | Mokled - მოკლედ</title>
+  <meta name="description" content="უფასო ქართული PDF ხელსაწყოები პირდაპირ ბრაუზერში: PDF ფაილების გაერთიანება, გვერდების ამოღება და დაყოფა, გვერდების შემობრუნება და სურათების PDF-ად გადაქცევა სერვერზე ატვირთვის გარეშე." />
+  <link rel="canonical" href="https://geotools.pages.dev/pdf-tools.html" />
+  <meta property="og:title" content="PDF ხელსაწყოების ნაკრები | Mokled - მოკლედ" />
+  <meta property="og:description" content="PDF ფაილების გაერთიანება, დაყოფა, შემობრუნება და ფოტოების PDF-ად შეკვრა უსაფრთხოდ, პირდაპირ ბრაუზერში." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/pdf-tools.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / მედია</div>
+      <h1>PDF ხელსაწყოების ნაკრები</h1>
+      <p>
+        გააერთიანეთ რამდენიმე PDF ფაილი, ამოიღეთ სასურველი გვერდები, შემოაბრუნეთ არასწორად დასკანერებული გვერდები ან გადააქციეთ ფოტოები ერთ PDF დოკუმენტად.
+        ყველა მოქმედება სრულდება პირდაპირ თქვენს ბრაუზერში - კონფიდენციალური დოკუმენტები სერვერზე არ იტვირთება.
+      </p>
+    </div>
+
+    <div id="pdf-error" class="alert alert-error hidden" role="alert"></div>
+    <div id="pdf-success" class="alert alert-success hidden" role="status"></div>
+
+    <section class="panel">
+      <div class="tabs-bar" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="merge">1. PDF-ების გაერთიანება</button>
+        <button type="button" class="tab-btn" data-tab="split">2. გვერდების ამოღება / დაყოფა</button>
+        <button type="button" class="tab-btn" data-tab="rotate">3. გვერდების შემობრუნება</button>
+        <button type="button" class="tab-btn" data-tab="img2pdf">4. სურათები → PDF</button>
+      </div>
+
+      <!-- TAB 1: MERGE PDF -->
+      <div id="tab-merge" class="pdf-tab-pane">
+        <h2 class="panel-title">PDF ფაილების გაერთიანება (Merge PDF)</h2>
+        <div class="form-group">
+          <label class="form-label" for="merge-input">აირჩიეთ 2 ან მეტი PDF ფაილი:</label>
+          <input type="file" id="merge-input" accept="application/pdf" multiple class="input" />
+        </div>
+        <ul id="merge-file-list" class="file-list"></ul>
+        <div class="btn-row">
+          <button type="button" id="btn-run-merge" class="btn btn-primary">გაერთიანება და ჩამოტვირთვა</button>
+          <button type="button" id="btn-clear-merge" class="btn btn-danger btn-sm">სიის გასუფთავება</button>
+        </div>
+      </div>
+
+      <!-- TAB 2: SPLIT / EXTRACT PDF -->
+      <div id="tab-split" class="pdf-tab-pane hidden">
+        <h2 class="panel-title">PDF-იდან გვერდების ამოღება (Extract Pages)</h2>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="split-input">აირჩიეთ PDF ფაილი:</label>
+            <input type="file" id="split-input" accept="application/pdf" class="input" />
+            <small id="split-page-info" style="display: block; margin-top: 0.35rem; color: var(--text-muted);"></small>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="split-range">მიუთითეთ გვერდები (მაგ.: 1-3, 5, 8-10):</label>
+            <input type="text" id="split-range" class="input" placeholder="მაგ.: 1-2, 4" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btn-run-split" class="btn btn-primary">არჩეული გვერდების ჩამოტვირთვა</button>
+        </div>
+      </div>
+
+      <!-- TAB 3: ROTATE PDF -->
+      <div id="tab-rotate" class="pdf-tab-pane hidden">
+        <h2 class="panel-title">PDF გვერდების შემობრუნება (Rotate PDF)</h2>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="rotate-input">აირჩიეთ PDF ფაილი:</label>
+            <input type="file" id="rotate-input" accept="application/pdf" class="input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="rotate-angle">შემობრუნების კუთხე:</label>
+            <select id="rotate-angle" class="input">
+              <option value="90" selected>90° საათის ისრის მიმართულებით (მარჯვნივ)</option>
+              <option value="180">180° (თავდაყირა)</option>
+              <option value="270">270° (90° მარცხნივ)</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btn-run-rotate" class="btn btn-primary">შემობრუნება და ჩამოტვირთვა</button>
+        </div>
+      </div>
+
+      <!-- TAB 4: IMAGES TO PDF -->
+      <div id="tab-img2pdf" class="pdf-tab-pane hidden">
+        <h2 class="panel-title">სურათების (JPG / PNG) ერთ PDF ფაილად შეკვრა</h2>
+        <div class="form-group">
+          <label class="form-label" for="img2pdf-input">აირჩიეთ ერთი ან რამდენიმე სურათი (JPEG / PNG):</label>
+          <input type="file" id="img2pdf-input" accept="image/jpeg,image/png" multiple class="input" />
+        </div>
+        <ul id="img2pdf-list" class="file-list"></ul>
+        <div class="btn-row">
+          <button type="button" id="btn-run-img2pdf" class="btn btn-primary">PDF-ის შექმნა და ჩამოტვირთვა</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { formatBytes } = window.GeoCore;
+      const { initLayout, escapeHtml, showToast } = window.GeoCommon;
+
+      initLayout('pdf-tools');
+
+      const errorBox = document.getElementById('pdf-error');
+      const successBox = document.getElementById('pdf-success');
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('hidden');
+        successBox.classList.add('hidden');
+      }
+
+      function showSuccess(msg) {
+        successBox.textContent = msg;
+        successBox.classList.remove('hidden');
+        errorBox.classList.add('hidden');
+      }
+
+      function clearAlerts() {
+        errorBox.classList.add('hidden');
+        successBox.classList.add('hidden');
+      }
+
+      function downloadPdfBytes(bytes, filename) {
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1200);
+      }
+
+      // ტაბების გადართვა
+      document.querySelectorAll('.tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          clearAlerts();
+          document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+          document.querySelectorAll('.pdf-tab-pane').forEach(function (p) { p.classList.add('hidden'); });
+          btn.classList.add('active');
+          const targetId = 'tab-' + btn.getAttribute('data-tab');
+          document.getElementById(targetId).classList.remove('hidden');
+        });
+      });
+
+      // 1. MERGE PDF
+      let mergeFiles = [];
+      const mergeInput = document.getElementById('merge-input');
+      const mergeListEl = document.getElementById('merge-file-list');
+
+      function renderMergeList() {
+        mergeListEl.innerHTML = mergeFiles.map(function (f, idx) {
+          return (
+            '<li class="file-list-item">' +
+              '<span>' + (idx + 1) + '. <strong>' + escapeHtml(f.name) + '</strong> (' + formatBytes(f.size) + ')</span>' +
+              '<button type="button" class="btn btn-danger btn-sm rm-merge-file" data-idx="' + idx + '">წაშლა</button>' +
+            '</li>'
+          );
+        }).join('');
+
+        mergeListEl.querySelectorAll('.rm-merge-file').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const idx = Number(btn.getAttribute('data-idx'));
+            mergeFiles.splice(idx, 1);
+            renderMergeList();
+          });
+        });
+      }
+
+      mergeInput.addEventListener('change', function (e) {
+        clearAlerts();
+        const added = Array.from(e.target.files || []);
+        mergeFiles = mergeFiles.concat(added);
+        renderMergeList();
+      });
+
+      document.getElementById('btn-clear-merge').addEventListener('click', function () {
+        mergeFiles = [];
+        mergeInput.value = '';
+        renderMergeList();
+        clearAlerts();
+      });
+
+      document.getElementById('btn-run-merge').addEventListener('click', async function () {
+        clearAlerts();
+        if (!window.PDFLib) {
+          showError('PDF ბიბლიოთეკა ვერ ჩაიტვირთა. გთხოვთ შეამოწმოთ ინტერნეტ კავშირი და გადატვირთოთ გვერდი.');
+          return;
+        }
+        if (mergeFiles.length < 2) {
+          showError('გასაერთიანებლად გთხოვთ აირჩიოთ მინიმუმ 2 PDF ფაილი.');
+          return;
+        }
+        try {
+          const { PDFDocument } = window.PDFLib;
+          const mergedPdf = await PDFDocument.create();
+          for (let i = 0; i < mergeFiles.length; i++) {
+            const buf = await mergeFiles[i].arrayBuffer();
+            const srcDoc = await PDFDocument.load(buf);
+            const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+            copiedPages.forEach(function (page) { mergedPdf.addPage(page); });
+          }
+          const pdfBytes = await mergedPdf.save();
+          downloadPdfBytes(pdfBytes, 'mokled-merged.pdf');
+          showSuccess('წარმატებით გაერთიანდა ' + mergeFiles.length + ' PDF ფაილი!');
+        } catch (err) {
+          showError('PDF ფაილების გაერთიანების შეცდომა: ' + err.message);
+        }
+      });
+
+      // 2. SPLIT / EXTRACT PDF
+      const splitInput = document.getElementById('split-input');
+      const splitRange = document.getElementById('split-range');
+      const splitPageInfo = document.getElementById('split-page-info');
+      let loadedSplitBytes = null;
+      let loadedSplitPageCount = 0;
+
+      splitInput.addEventListener('change', async function (e) {
+        clearAlerts();
+        const file = e.target.files && e.target.files[0];
+        if (!file || !window.PDFLib) return;
+        try {
+          loadedSplitBytes = await file.arrayBuffer();
+          const doc = await window.PDFLib.PDFDocument.load(loadedSplitBytes);
+          loadedSplitPageCount = doc.getPageCount();
+          splitPageInfo.textContent = 'დოკუმენტში სულ არის ' + loadedSplitPageCount + ' გვერდი.';
+          splitRange.value = '1-' + Math.min(loadedSplitPageCount, 2);
+        } catch (err) {
+          showError('PDF ფაილის წაკითხვა ვერ მოხერხდა: ' + err.message);
+        }
+      });
+
+      function parsePageRanges(rangeStr, maxPages) {
+        const indices = [];
+        const seen = new Set();
+        const parts = rangeStr.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        if (parts.length === 0) {
+          throw new Error('გთხოვთ მიუთითოთ გვერდების ნომრები (მაგ.: 1-3, 5).');
+        }
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          if (/^\d+$/.test(part)) {
+            const p = Number(part);
+            if (p < 1 || p > maxPages) throw new Error('გვერდი ' + p + ' სცდება დოკუმენტის ზღვარს (1-' + maxPages + ').');
+            if (!seen.has(p - 1)) { seen.add(p - 1); indices.push(p - 1); }
+          } else if (/^\d+\s*-\s*\d+$/.test(part)) {
+            const bounds = part.split('-').map(function (x) { return Number(x.trim()); });
+            const start = bounds[0];
+            const end = bounds[1];
+            if (start < 1 || end > maxPages || start > end) {
+              throw new Error('არასწორი დიაპაზონი: "' + part + '" (დოკუმენტშია 1-' + maxPages + ' გვერდი).');
+            }
+            for (let p = start; p <= end; p++) {
+              if (!seen.has(p - 1)) { seen.add(p - 1); indices.push(p - 1); }
+            }
+          } else {
+            throw new Error('არასწორი ჩანაწერი: "' + part + '". გამოიყენეთ მაგ.: 1-3, 5');
+          }
+        }
+        return indices;
+      }
+
+      document.getElementById('btn-run-split').addEventListener('click', async function () {
+        clearAlerts();
+        if (!loadedSplitBytes) {
+          showError('ჯერ აირჩიეთ PDF ფაილი.');
+          return;
+        }
+        try {
+          const { PDFDocument } = window.PDFLib;
+          const srcDoc = await PDFDocument.load(loadedSplitBytes);
+          const pageIndices = parsePageRanges(splitRange.value, srcDoc.getPageCount());
+          const newDoc = await PDFDocument.create();
+          const copied = await newDoc.copyPages(srcDoc, pageIndices);
+          copied.forEach(function (p) { newDoc.addPage(p); });
+          const bytes = await newDoc.save();
+          downloadPdfBytes(bytes, 'mokled-extracted.pdf');
+          showSuccess('წარმატებით ამოიღო ' + pageIndices.length + ' გვერდი!');
+        } catch (err) {
+          showError(err.message);
+        }
+      });
+
+      // 3. ROTATE PDF
+      const rotateInput = document.getElementById('rotate-input');
+      const rotateAngle = document.getElementById('rotate-angle');
+
+      document.getElementById('btn-run-rotate').addEventListener('click', async function () {
+        clearAlerts();
+        const file = rotateInput.files && rotateInput.files[0];
+        if (!file) {
+          showError('ჯერ აირჩიეთ PDF ფაილი.');
+          return;
+        }
+        try {
+          const { PDFDocument, degrees } = window.PDFLib;
+          const buf = await file.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(buf);
+          const angle = Number(rotateAngle.value) || 90;
+          const pages = pdfDoc.getPages();
+          pages.forEach(function (page) {
+            const cur = page.getRotation().angle || 0;
+            page.setRotation(degrees((cur + angle) % 360));
+          });
+          const bytes = await pdfDoc.save();
+          downloadPdfBytes(bytes, 'mokled-rotated.pdf');
+          showSuccess('დოკუმენტის ყველა გვერდი შემობრუნდა ' + angle + '°-ით!');
+        } catch (err) {
+          showError('PDF შემობრუნების შეცდომა: ' + err.message);
+        }
+      });
+
+      // 4. IMAGES TO PDF
+      const img2pdfInput = document.getElementById('img2pdf-input');
+      const img2pdfList = document.getElementById('img2pdf-list');
+      let imgFiles = [];
+
+      img2pdfInput.addEventListener('change', function (e) {
+        clearAlerts();
+        imgFiles = Array.from(e.target.files || []);
+        img2pdfList.innerHTML = imgFiles.map(function (f, i) {
+          return '<li class="file-list-item"><span>' + (i + 1) + '. <strong>' + escapeHtml(f.name) + '</strong> (' + formatBytes(f.size) + ')</span></li>';
+        }).join('');
+      });
+
+      document.getElementById('btn-run-img2pdf').addEventListener('click', async function () {
+        clearAlerts();
+        if (imgFiles.length === 0) {
+          showError('გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი (JPEG ან PNG).');
+          return;
+        }
+        try {
+          const { PDFDocument } = window.PDFLib;
+          const pdfDoc = await PDFDocument.create();
+          for (let i = 0; i < imgFiles.length; i++) {
+            const f = imgFiles[i];
+            const buf = await f.arrayBuffer();
+            const embedded = f.type === 'image/png'
+              ? await pdfDoc.embedPng(buf)
+              : await pdfDoc.embedJpg(buf);
+            const page = pdfDoc.addPage([embedded.width, embedded.height]);
+            page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
+          }
+          const bytes = await pdfDoc.save();
+          downloadPdfBytes(bytes, 'mokled-images.pdf');
+          showSuccess(imgFiles.length + ' სურათი წარმატებით შეიკრა ერთ PDF ფაილად!');
+        } catch (err) {
+          showError('სურათების PDF-ად გარდაქმნის შეცდომა: ' + err.message);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

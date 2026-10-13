@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</title>
-  <meta name="description" content="Mokled (მოკლედ) - 11 უფასო ქართული ციფრული ხელსაწყო: ტექსტის კონვერტერი, თანხა სიტყვიერად, ხელფასისა და დღგ-ის კალკულატორი, IBAN შემმოწმებელი, QR კოდი, CSV/JSON და სურათის შეკუმშვა." />
+  <meta name="description" content="Mokled (მოკლედ) - 13 უფასო ქართული ციფრული ხელსაწყო: ტექსტის კონვერტერი, სესხის და იპოთეკის კალკულატორი, PDF ხელსაწყოები, თანხა სიტყვიერად, ხელფასისა და დღგ-ის კალკულატორი, IBAN, QR კოდი და სურათის შეკუმშვა." />
   <link rel="canonical" href="https://geotools.pages.dev/" />
   <meta property="og:title" content="Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი" />
   <meta property="og:description" content="სწრაფი, უსაფრთხო და უფასო ქართული ონლაინ ხელსაწყოები რეალური ამოცანების მოკლედ და მარტივად გადასაჭრელად." />
@@ -21,7 +21,7 @@
     <section class="hero">
       <h1>Mokled - მოკლედ</h1>
       <p>
-        ქართული ციფრული ხელსაწყოების პორტალი ყოველდღიური ტექსტური, ფინანსური, საოფისე და ტექნიკური ამოცანების სწრაფად გადასაჭრელად.
+        ქართული ციფრული ხელსაწყოების პორტალი ყოველდღიური ტექსტური, ფინანსური, საოფისე და PDF/მედია ამოცანების სწრაფად გადასაჭრელად.
         რეგისტრაციის გარეშე - მუშაობს პირდაპირ თქვენს ბრაუზერში.
       </p>
 
@@ -31,7 +31,7 @@
             type="search"
             id="tool-search"
             class="input"
-            placeholder="მოძებნეთ ხელსაწყო (მაგ.: ხელფასი, თანხა სიტყვიერად, IBAN, QR, ასომთავრული, დღგ)..."
+            placeholder="მოძებნეთ ხელსაწყო (მაგ.: სესხი, PDF, ხელფასი, პარლამენტის, IBAN, QR, დღგ)..."
             aria-label="ხელსაწყოების ძიება"
           />
         </div>
@@ -39,6 +39,15 @@
       </div>
     </section>
 
+    <!-- რჩეული ხელსაწყოები (⭐ ვარსკვლავით მონიშნული) -->
+    <section id="favorites-section" class="hidden">
+      <div class="section-header">
+        <h2 class="section-title">⭐ რჩეული ხელსაწყოები</h2>
+      </div>
+      <div class="cards-grid" id="favorites-grid"></div>
+    </section>
+
+    <!-- ხშირად გამოყენებული ხელსაწყოები -->
     <section id="frequent-section" class="hidden">
       <div class="section-header">
         <h2 class="section-title">თქვენ მიერ ხშირად გამოყენებული</h2>
@@ -47,10 +56,11 @@
       <div class="cards-grid" id="frequent-grid"></div>
     </section>
 
+    <!-- ყველა ხელსაწყო -->
     <section>
       <div class="section-header">
         <h2 class="section-title">ყველა ხელსაწყო</h2>
-        <span id="tools-count" class="badge">11 ხელსაწყო</span>
+        <span id="tools-count" class="badge">13 ხელსაწყო</span>
       </div>
       <div class="cards-grid" id="catalog-grid"></div>
       <div id="empty-search-msg" class="alert alert-info hidden">
@@ -65,7 +75,17 @@
   <script src="js/common.js"></script>
   <script>
     (function () {
-      const { TOOLS_CATALOG, initLayout, getUsageCounts, resetUsageCounts, escapeHtml, showToast } = window.GeoCommon;
+      const {
+        TOOLS_CATALOG,
+        initLayout,
+        getUsageCounts,
+        resetUsageCounts,
+        getFavorites,
+        toggleFavorite,
+        escapeHtml,
+        showToast
+      } = window.GeoCommon;
+
       initLayout('home');
 
       const searchInput = document.getElementById('tool-search');
@@ -73,6 +93,8 @@
       const catalogGrid = document.getElementById('catalog-grid');
       const toolsCount = document.getElementById('tools-count');
       const emptyMsg = document.getElementById('empty-search-msg');
+      const favoritesSection = document.getElementById('favorites-section');
+      const favoritesGrid = document.getElementById('favorites-grid');
       const frequentSection = document.getElementById('frequent-section');
       const frequentGrid = document.getElementById('frequent-grid');
       const resetFrequentBtn = document.getElementById('reset-frequent-btn');
@@ -89,13 +111,14 @@
           btn.addEventListener('click', function () {
             activeCategory = btn.getAttribute('data-cat');
             renderCategories();
-            renderCatalog();
+            renderAllSections();
           });
         });
       }
 
-      function createCardHtml(tool, usageCount) {
+      function createCardHtml(tool, usageCount, favList) {
         const count = usageCount || 0;
+        const isFav = favList.indexOf(tool.id) >= 0;
         const usageBadge = count > 0
           ? '<span class="badge">გახსნილია ' + count + '-ჯერ</span>'
           : '<span class="badge">' + escapeHtml(tool.category) + '</span>';
@@ -105,7 +128,12 @@
             '<div>' +
               '<div class="card-top">' +
                 '<span class="tool-icon" aria-hidden="true">' + escapeHtml(tool.icon) + '</span>' +
-                usageBadge +
+                '<div class="card-badges">' +
+                  usageBadge +
+                  '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-id="' + escapeHtml(tool.id) + '" title="რჩეულებში დამატება / მოხსნა" aria-label="რჩეულებში დამატება">' +
+                    (isFav ? '★' : '☆') +
+                  '</button>' +
+                '</div>' +
               '</div>' +
               '<h3>' + escapeHtml(tool.title) + '</h3>' +
               '<p>' + escapeHtml(tool.description) + '</p>' +
@@ -115,8 +143,49 @@
         );
       }
 
-      function renderCatalog() {
+      function bindFavButtons(container) {
+        container.querySelectorAll('.fav-btn').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = btn.getAttribute('data-fav-id');
+            const added = toggleFavorite(id);
+            showToast(added ? 'დაემატა რჩეულ ხელსაწყოებში ⭐' : 'მოიხსნა რჩეულებიდან');
+            renderAllSections();
+          });
+        });
+      }
+
+      function renderAllSections() {
+        const favList = getFavorites();
+        const counts = getUsageCounts();
         const q = searchInput.value.trim().toLowerCase();
+
+        // 1. რჩეულები
+        const favTools = TOOLS_CATALOG.filter(function (t) { return favList.indexOf(t.id) >= 0; });
+        if (favTools.length === 0) {
+          favoritesSection.classList.add('hidden');
+        } else {
+          favoritesSection.classList.remove('hidden');
+          favoritesGrid.innerHTML = favTools.map(function (t) { return createCardHtml(t, counts[t.id], favList); }).join('');
+          bindFavButtons(favoritesGrid);
+        }
+
+        // 2. ხშირად გამოყენებული
+        const usedTools = TOOLS_CATALOG
+          .filter(function (t) { return (counts[t.id] || 0) > 0; })
+          .sort(function (a, b) { return (counts[b.id] || 0) - (counts[a.id] || 0); })
+          .slice(0, 3);
+
+        if (usedTools.length === 0) {
+          frequentSection.classList.add('hidden');
+        } else {
+          frequentSection.classList.remove('hidden');
+          frequentGrid.innerHTML = usedTools.map(function (t) { return createCardHtml(t, counts[t.id], favList); }).join('');
+          bindFavButtons(frequentGrid);
+        }
+
+        // 3. მთავარი კატალოგი
         const filtered = TOOLS_CATALOG.filter(function (tool) {
           const matchesCat = activeCategory === 'ყველა' || tool.category === activeCategory;
           const matchesQuery =
@@ -133,40 +202,21 @@
           emptyMsg.classList.remove('hidden');
         } else {
           emptyMsg.classList.add('hidden');
-          catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0); }).join('');
+          catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0, favList); }).join('');
+          bindFavButtons(catalogGrid);
         }
       }
 
-      function renderFrequentTools() {
-        const counts = getUsageCounts();
-        const usedTools = TOOLS_CATALOG
-          .filter(function (t) { return (counts[t.id] || 0) > 0; })
-          .sort(function (a, b) { return (counts[b.id] || 0) - (counts[a.id] || 0); })
-          .slice(0, 3);
-
-        if (usedTools.length === 0) {
-          frequentSection.classList.add('hidden');
-        } else {
-          frequentSection.classList.remove('hidden');
-          frequentGrid.innerHTML = usedTools.map(function (t) { return createCardHtml(t, counts[t.id]); }).join('');
-        }
-      }
-
-      searchInput.addEventListener('input', renderCatalog);
+      searchInput.addEventListener('input', renderAllSections);
 
       resetFrequentBtn.addEventListener('click', function () {
         resetUsageCounts();
-        renderFrequentTools();
+        renderAllSections();
         showToast('ხშირად გამოყენებული ხელსაწყოების ისტორია გასუფთავდა.');
       });
 
-      if (window.location.hash === '#search') {
-        searchInput.focus();
-      }
-
       renderCategories();
-      renderCatalog();
-      renderFrequentTools();
+      renderAllSections();
     })();
   </script>
 </body>

@@ -9,7 +9,25 @@
       url: 'georgian-converter.html',
       category: 'ტექსტი',
       icon: 'Ⴀა',
-      description: 'უნივერსალური კონვერტაცია ლათინურს, ქართულ უნიკოდს (UTF-8 / Sylfaen), ყოფილი პარლამენტის სტანდარტსა და ასომთავრულ დამწერლობას შორის.'
+      description: 'უნივერსალური კონვერტაცია ლათინურს, ქართულ უნიკოდს (UTF-8 / Sylfaen), ყოფილი პარლამენტის სტანდარტსა (àáâã...), AcadNusx-სა და ასომთავრულს შორის.'
+    },
+    {
+      id: 'loan-calculator',
+      title: 'სესხის და იპოთეკის კალკულატორი',
+      shortTitle: 'სესხი / იპოთეკა',
+      url: 'loan-calculator.html',
+      category: 'ფინანსები',
+      icon: '🏠',
+      description: 'სესხისა და იპოთეკის ყოველთვიური შენატანის, სრული გრაფიკისა და წინსწრებით დაფარვის (დაზოგილი პროცენტისა და ვადის) ზუსტი კალკულატორი.'
+    },
+    {
+      id: 'pdf-tools',
+      title: 'PDF ხელსაწყოების ნაკრები',
+      shortTitle: 'PDF ხელსაწყოები',
+      url: 'pdf-tools.html',
+      category: 'მედია',
+      icon: '📄',
+      description: 'PDF ფაილების გაერთიანება, გვერდების ამოღება/დაყოფა, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.'
     },
     {
       id: 'number-to-words',
@@ -99,11 +117,12 @@
       url: 'image-tools.html',
       category: 'მედია',
       icon: '🖼️',
-      description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, PNG, WebP) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.'
+      description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, WebP, PNG) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.'
     }
   ];
 
   const USAGE_STORAGE_KEY = 'geotools_usage_counts_v1';
+  const FAV_STORAGE_KEY = 'mokled_favorites_v1';
   const THEME_STORAGE_KEY = 'mokled_theme_v1';
 
   function getSavedTheme() {
@@ -161,6 +180,32 @@
     try {
       localStorage.removeItem(USAGE_STORAGE_KEY);
     } catch (_) {}
+  }
+
+  function getFavorites() {
+    try {
+      const raw = localStorage.getItem(FAV_STORAGE_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function toggleFavorite(toolId) {
+    const current = getFavorites();
+    const idx = current.indexOf(toolId);
+    let added = false;
+    if (idx >= 0) {
+      current.splice(idx, 1);
+    } else {
+      current.push(toolId);
+      added = true;
+    }
+    try {
+      localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(current));
+    } catch (_) {}
+    return added;
   }
 
   function initLayout(activeToolId) {
@@ -222,7 +267,7 @@
         '<div class="container footer-inner">' +
           '<div>' +
             '<strong>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
-            '<p>ყველა ლოკალური გამოთვლა სრულდება თქვენს ბრაუზერში.</p>' +
+            '<p>ყველა გამოთვლა და ფაილის დამუშავება სრულდება ადგილობრივად, თქვენს ბრაუზერში.</p>' +
           '</div>' +
           '<div class="footer-links">' +
             relatedLinks +
@@ -233,6 +278,27 @@
     if (currentId && currentId !== 'home') {
       recordToolUsage(currentId);
     }
+
+    // ზემოთ დაბრუნების ღილაკი (Back to Top)
+    const topBtn = document.createElement('button');
+    topBtn.type = 'button';
+    topBtn.className = 'back-to-top hidden';
+    topBtn.title = 'ზემოთ ასვლა';
+    topBtn.setAttribute('aria-label', 'ზემოთ ასვლა');
+    topBtn.textContent = '↑';
+    document.body.appendChild(topBtn);
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 360) {
+        topBtn.classList.remove('hidden');
+      } else {
+        topBtn.classList.add('hidden');
+      }
+    });
+
+    topBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
   function showToast(message) {
@@ -300,16 +366,30 @@
     }, 1000);
   }
 
+  function copyShareUrl(paramsObj) {
+    const url = new URL(window.location.href);
+    url.search = '';
+    Object.keys(paramsObj).forEach(function (k) {
+      if (paramsObj[k] !== undefined && paramsObj[k] !== null && String(paramsObj[k]) !== '') {
+        url.searchParams.set(k, String(paramsObj[k]));
+      }
+    });
+    copyToClipboard(url.toString(), 'გამოთვლის ბმული დაკოპირდა!');
+  }
+
   root.GeoCommon = {
     TOOLS_CATALOG: TOOLS_CATALOG,
     escapeHtml: escapeHtml,
     recordToolUsage: recordToolUsage,
     getUsageCounts: getUsageCounts,
     resetUsageCounts: resetUsageCounts,
+    getFavorites: getFavorites,
+    toggleFavorite: toggleFavorite,
     initLayout: initLayout,
     showToast: showToast,
     copyToClipboard: copyToClipboard,
     downloadTextFile: downloadTextFile,
+    copyShareUrl: copyShareUrl,
     applyTheme: applyTheme
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

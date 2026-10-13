@@ -7,6 +7,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
+  /* 1. ლათინურ-ქართული ტრანსლიტერაცია */
   const QWERTY_MAP = {
     a: 'ა', b: 'ბ', g: 'გ', d: 'დ', e: 'ე', v: 'ვ', z: 'ზ', Z: 'ძ',
     t: 'ტ', T: 'თ', i: 'ი', k: 'კ', K: 'ქ', l: 'ლ', m: 'მ', n: 'ნ',
@@ -152,6 +153,7 @@
     return { output: output, ambiguities: ambiguities };
   }
 
+  /* 2. ტექსტის დამმუშავებელი */
   function analyzeText(text) {
     const raw = typeof text === 'string' ? text : '';
     const charsWithSpaces = Array.from(raw).length;
@@ -247,6 +249,7 @@
     return text;
   }
 
+  /* 3. დღგ-ის კალკულატორი */
   function calculateVAT(amount, mode, ratePercent) {
     const activeMode = mode || 'add';
     const rate = ratePercent !== undefined ? Number(ratePercent) : 18;
@@ -299,6 +302,7 @@
     };
   }
 
+  /* 4. CSV / JSON გარდამქმნელი */
   function parseCSV(csvText, delimiter) {
     const delim = delimiter || ',';
     if (typeof csvText !== 'string') {
@@ -500,6 +504,7 @@
     throw new Error('JSON მასივი უნდა შეიცავდეს ობიექტებს ან ქვე-მასივებს.');
   }
 
+  /* 5. თარიღების კალკულატორი */
   const GEORGIAN_PUBLIC_HOLIDAYS_MMDD = [
     { mmdd: '01-01', name: 'ახალი წელი' },
     { mmdd: '01-02', name: 'ბედობა' },
@@ -667,6 +672,7 @@
     };
   }
 
+  /* 6. სურათის ზომები */
   function calculateAspectDimensions(origWidth, origHeight, targetWidth, targetHeight, changedField) {
     if (origWidth <= 0 || origHeight <= 0) {
       throw new Error('სურათის საწყისი ზომები არასწორია.');
@@ -691,7 +697,45 @@
     return (b / (1024 * 1024)).toFixed(2) + ' MB';
   }
 
-  const PARLIAMENT_UNICODE_TO_ASCII = {
+  /* ==========================================================================
+     7. ქართული ტექსტის კონვერტერი:
+        - ყოფილი პარლამენტის სტანდარტი (8-ბიტიანი Geo_Parliament: àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ¸)
+        - AcadNusx / LitNusx (abgdevzTiklmnopJrstufqRySCcZwWxjh)
+        - უნიკოდი (UTF-8 / Sylfaen)
+        - ასომთავრული (ႠႡႢ...)
+        - ლათინური
+     ========================================================================== */
+
+  const MKHEDRULI_33 = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ';
+  // ნამდვილი 8-ბიტიანი პარლამენტის სტანდარტის (Geo_Parliament / GEOSTD8) სიმბოლოები:
+  // ა..ჯ = U+00E0..U+00FF (à..ÿ), ჰ = U+00B8 (¸)
+  const PARLIAMENT_8BIT_LOWER = 'àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ¸';
+  // მთავრული/ასომთავრული წყვილები პარლამენტის სტანდარტში:
+  // Ⴀ..Ⴟ = U+00C0..U+00DF (À..ß), Ⴠ = U+00A8 (¨)
+  const PARLIAMENT_8BIT_UPPER = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß¨';
+
+  const PARLIAMENT_UNICODE_TO_8BIT = {};
+  const PARLIAMENT_8BIT_TO_UNICODE = {};
+
+  for (let idx = 0; idx < 33; idx++) {
+    const geoChar = MKHEDRULI_33[idx];
+    const pLower = PARLIAMENT_8BIT_LOWER[idx];
+    const pUpper = PARLIAMENT_8BIT_UPPER[idx];
+    const asomChar = String.fromCodePoint(0x10a0 + idx);
+
+    PARLIAMENT_UNICODE_TO_8BIT[geoChar] = pLower;
+    PARLIAMENT_UNICODE_TO_8BIT[asomChar] = pUpper;
+    PARLIAMENT_8BIT_TO_UNICODE[pLower] = geoChar;
+    PARLIAMENT_8BIT_TO_UNICODE[pUpper] = geoChar;
+  }
+  // არქაული ასოები პარლამენტის ფონტში
+  PARLIAMENT_8BIT_TO_UNICODE['š'] = 'ჴ';
+  PARLIAMENT_8BIT_TO_UNICODE['œ'] = 'ჵ';
+  PARLIAMENT_UNICODE_TO_8BIT['ჴ'] = 'š';
+  PARLIAMENT_UNICODE_TO_8BIT['ჵ'] = 'œ';
+
+  // AcadNusx / LitNusx ცხრილი
+  const ACADNUSX_UNICODE_TO_ASCII = {
     'ა': 'a', 'ბ': 'b', 'გ': 'g', 'დ': 'd', 'ე': 'e', 'ვ': 'v', 'ზ': 'z', 'თ': 'T',
     'ი': 'i', 'კ': 'k', 'ლ': 'l', 'მ': 'm', 'ნ': 'n', 'ო': 'o', 'პ': 'p', 'ჟ': 'J',
     'რ': 'r', 'ს': 's', 'ტ': 't', 'უ': 'u', 'ფ': 'f', 'ქ': 'q', 'ღ': 'R', 'ყ': 'y',
@@ -699,10 +743,9 @@
     'ჰ': 'h'
   };
 
-  const PARLIAMENT_ASCII_TO_UNICODE = {};
-  Object.keys(PARLIAMENT_UNICODE_TO_ASCII).forEach(function (geo) {
-    const ascii = PARLIAMENT_UNICODE_TO_ASCII[geo];
-    PARLIAMENT_ASCII_TO_UNICODE[ascii] = geo;
+  const ACADNUSX_ASCII_TO_UNICODE = {};
+  Object.keys(ACADNUSX_UNICODE_TO_ASCII).forEach(function (geo) {
+    ACADNUSX_ASCII_TO_UNICODE[ACADNUSX_UNICODE_TO_ASCII[geo]] = geo;
   });
 
   const UNICODE_TO_LATIN_MAP = {
@@ -763,60 +806,72 @@
 
   function fromParliamentStandard(text) {
     if (typeof text !== 'string') {
-      return { output: '', unverifiedChars: [], hasHighBitWarning: false };
+      return { output: '', unverifiedChars: [] };
     }
     let out = '';
-    const unverified = new Set();
-    let hasHighBitWarning = false;
     const chars = Array.from(text);
-
     for (let i = 0; i < chars.length; i++) {
       const ch = chars[i];
-      const code = ch.codePointAt(0);
-
-      if (Object.prototype.hasOwnProperty.call(PARLIAMENT_ASCII_TO_UNICODE, ch)) {
-        out += PARLIAMENT_ASCII_TO_UNICODE[ch];
-      } else if (/[A-Z]/.test(ch)) {
-        unverified.add(ch);
-        out += ch;
-      } else if (code >= 0x00c0 && code <= 0x00ff) {
-        hasHighBitWarning = true;
-        unverified.add(ch);
-        out += ch;
+      if (Object.prototype.hasOwnProperty.call(PARLIAMENT_8BIT_TO_UNICODE, ch)) {
+        out += PARLIAMENT_8BIT_TO_UNICODE[ch];
       } else {
         out += ch;
       }
     }
-
-    return {
-      output: out,
-      unverifiedChars: Array.from(unverified),
-      hasHighBitWarning: hasHighBitWarning
-    };
+    return { output: out, unverifiedChars: [] };
   }
 
   function toParliamentStandard(text) {
     if (typeof text !== 'string') {
-      return { output: '', hadExistingLatin: false };
+      return { output: '' };
     }
-    const mkhedruli = normalizeToMkhedruli(text);
-    const hadExistingLatin = /[A-Za-z]/.test(mkhedruli);
     let out = '';
-    const chars = Array.from(mkhedruli);
-
+    const chars = Array.from(text);
     for (let i = 0; i < chars.length; i++) {
       const ch = chars[i];
-      if (Object.prototype.hasOwnProperty.call(PARLIAMENT_UNICODE_TO_ASCII, ch)) {
-        out += PARLIAMENT_UNICODE_TO_ASCII[ch];
+      const code = ch.codePointAt(0);
+      // თუ მთავრულია (U+1C90..U+1CBA), გადავიყვანოთ პარლამენტის დიდ ასოებში (À..ß, ¨)
+      if (code >= 0x1c90 && code <= 0x1cb0) {
+        const idx = code - 0x1c90;
+        out += PARLIAMENT_8BIT_UPPER[idx] || ch;
+      } else if (Object.prototype.hasOwnProperty.call(PARLIAMENT_UNICODE_TO_8BIT, ch)) {
+        out += PARLIAMENT_UNICODE_TO_8BIT[ch];
       } else {
         out += ch;
       }
     }
+    return { output: out };
+  }
 
-    return {
-      output: out,
-      hadExistingLatin: hadExistingLatin
-    };
+  function fromAcadNusx(text) {
+    if (typeof text !== 'string') return { output: '', unverifiedChars: [] };
+    let out = '';
+    const unverified = new Set();
+    const chars = Array.from(text);
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      if (Object.prototype.hasOwnProperty.call(ACADNUSX_ASCII_TO_UNICODE, ch)) {
+        out += ACADNUSX_ASCII_TO_UNICODE[ch];
+      } else if (/[A-Z]/.test(ch)) {
+        unverified.add(ch);
+        out += ch;
+      } else {
+        out += ch;
+      }
+    }
+    return { output: out, unverifiedChars: Array.from(unverified) };
+  }
+
+  function toAcadNusx(text) {
+    if (typeof text !== 'string') return { output: '' };
+    const mkhedruli = normalizeToMkhedruli(text);
+    let out = '';
+    const chars = Array.from(mkhedruli);
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      out += ACADNUSX_UNICODE_TO_ASCII[ch] || ch;
+    }
+    return { output: out };
   }
 
   function unicodeToLatin(text) {
@@ -837,7 +892,7 @@
 
   function convertGeorgianText(inputText, sourceFormat, targetFormat, options) {
     const opts = options || {};
-    const validFormats = ['latin', 'unicode', 'parliament', 'asomtavruli'];
+    const validFormats = ['latin', 'unicode', 'parliament', 'acadnusx', 'asomtavruli'];
     if (!validFormats.includes(sourceFormat)) {
       throw new Error('უცნობი საწყისი ფორმატი: ' + sourceFormat);
     }
@@ -861,17 +916,14 @@
     } else if (sourceFormat === 'parliament') {
       const parlRes = fromParliamentStandard(inputText);
       canonicalUnicode = parlRes.output;
-      if (parlRes.hasHighBitWarning) {
-        warnings.push(
-          'ტექსტში აღმოჩენილია 8-ბიტიანი გაურკვეველი კოდირების სიმბოლოები (' +
-          parlRes.unverifiedChars.slice(0, 8).join(', ') +
-          '). დაუდასტურებელი სიმბოლოები უცვლელად დარჩა.'
-        );
-      } else if (parlRes.unverifiedChars.length > 0) {
+    } else if (sourceFormat === 'acadnusx') {
+      const acadRes = fromAcadNusx(inputText);
+      canonicalUnicode = acadRes.output;
+      if (acadRes.unverifiedChars.length > 0) {
         warnings.push(
           'საწყის ტექსტში შეგხვდა დიდი ლათინური ასოები (' +
-          parlRes.unverifiedChars.join(', ') +
-          '), რომლებიც არ შედის ყოფილი პარლამენტის სტანდარტის დადასტურებულ 33-ასოიან ცხრილში (T, J, R, S, C, Z, W). ისინი უცვლელად შენარჩუნდა.'
+          acadRes.unverifiedChars.join(', ') +
+          '), რომლებიც არ შედის AcadNusx-ის 33-ასოიან ცხრილში (T, J, R, S, C, Z, W). ისინი უცვლელად შენარჩუნდა.'
         );
       }
     } else if (sourceFormat === 'asomtavruli') {
@@ -886,13 +938,9 @@
       finalOutput = unicodeToLatin(canonicalUnicode);
       ambiguities = [];
     } else if (targetFormat === 'parliament') {
-      const toParl = toParliamentStandard(canonicalUnicode);
-      finalOutput = toParl.output;
-      if (toParl.hadExistingLatin && sourceFormat !== 'parliament') {
-        warnings.push(
-          'საწყისი ტექსტი შეიცავდა ლათინურ სიმბოლოებსაც. გაითვალისწინეთ, რომ პარლამენტის 8-ბიტიან სტანდარტში ლათინური კოდები გამოიყენება ქართული ასოების გამოსახატავად.'
-        );
-      }
+      finalOutput = toParliamentStandard(canonicalUnicode).output;
+    } else if (targetFormat === 'acadnusx') {
+      finalOutput = toAcadNusx(canonicalUnicode).output;
     } else if (targetFormat === 'asomtavruli') {
       const asomRes = toAsomtavruli(canonicalUnicode);
       finalOutput = asomRes.output;
@@ -900,7 +948,7 @@
         warnings.push(
           'ზოგიერთ სპეციფიკურ სიმბოლოს (' +
           asomRes.unsupportedChars.join(', ') +
-          ') ისტორიულ ასომთავრულში (U+10A0–U+10C5) შესატყვისი არ გააჩნია და უცვლელად დარჩა.'
+          ') ისტორიულ ასომთავრულში (U+10A0-U+10C5) შესატყვისი არ გააჩნია და უცვლელად დარჩა.'
         );
       }
     }
@@ -912,182 +960,7 @@
     };
   }
 
-  const STYLE_PRESETS = [
-    {
-      id: 'mokled',
-      title: 'მოკლედ - ტექსტის შეჯამება (მთავარი პუნქტები)',
-      description: 'გრძელი ტექსტიდან მხოლოდ მთავარი აზრისა და საკვანძო ფაქტების მოკლე პუნქტებად გამოყოფა.',
-      instruction: 'შეაჯამე ტექსტი „მოკლედ“ ფორმატში: გამოყავი მხოლოდ მთავარი სათქმელი და საკვანძო ფაქტები მოკლე, მკაფიო პუნქტებად, ყველა მნიშვნელოვანი თარიღის, თანხისა და სახელის ზუსტი შენარჩუნებით.'
-    },
-    {
-      id: 'official',
-      title: 'ოფიციალური',
-      description: 'სახელმწიფო უწყებებთან, ორგანიზაციებთან და ოფიციალურ პირებთან მიმოწერის სტილი.',
-      instruction: 'გადაამუშავე ტექსტი მკაცრად ოფიციალურ, საქმისწარმოების სტანდარტების შესაბამის სტილში.'
-    },
-    {
-      id: 'friendly',
-      title: 'მეგობრული',
-      description: 'თბილი, უშუალო და კეთილგანწყობილი ტონი.',
-      instruction: 'გადაამუშავე ტექსტი მეგობრულ, თბილ და ბუნებრივ სასაუბრო სტილში.'
-    },
-    {
-      id: 'email',
-      title: 'ელფოსტისთვის',
-      description: 'გამართული ელფოსტის სტრუქტურა (სათაურის შეთავაზებით, მისალმებითა და დამშვიდობებით).',
-      instruction: 'ჩამოაყალიბე ტექსტი გამართული ელფოსტის სახით. დასაწყისში შესთავაზე შესაფერისი სათაური („თემა: ...“), დაურთე სათანადო მისალმება, ძირითადი ტექსტი და დასკვნითი ფორმულა.'
-    },
-    {
-      id: 'business',
-      title: 'საქმიანი / პროფესიული',
-      description: 'კორპორაციული, პარტნიორული და საქმიანი კომუნიკაციისთვის.',
-      instruction: 'გადაამუშავე ტექსტი საქმიან, პროფესიულ და კორპორაციულ სტილში.'
-    },
-    {
-      id: 'academic',
-      title: 'აკადემიური',
-      description: 'სამეცნიერო ნაშრომების, კვლევებისა და ანალიტიკური დოკუმენტებისთვის.',
-      instruction: 'გადაამუშავე ტექსტი აკადემიურ, ობიექტურ და ანალიტიკურ სტილში.'
-    },
-    {
-      id: 'concise',
-      title: 'მოკლე და გასაგები',
-      description: 'ზედმეტი სიტყვების მოცილება და მთავარი სათქმელის ლაკონიურად გადმოცემა.',
-      instruction: 'გადაწერე ტექსტი მაქსიმალურად მოკლედ, მკაფიოდ და გასაგებად, ყველა ფაქტობრივი მონაცემის შენარჩუნებით.'
-    },
-    {
-      id: 'polite',
-      title: 'უფრო თავაზიანი',
-      description: 'დელიკატური, პატივისცემით სავსე და რბილი ფორმულირება.',
-      instruction: 'გადაამუშავე ტექსტი განსაკუთრებით თავაზიან, ტაქტიან და პატივისცემის გამომხატველ სტილში.'
-    },
-    {
-      id: 'persuasive',
-      title: 'დამაჯერებელი',
-      description: 'არგუმენტირებული და მოქმედებისკენ მიმართული ტონი ფაქტების გაყალბების გარეშე.',
-      instruction: 'გადაამუშავე ტექსტი დამაჯერებელ და ეფექტურ სტილში ისე, რომ არ დაამატო არარსებული ფაქტები ან დაპირებები.'
-    },
-    {
-      id: 'social',
-      title: 'სოციალური ქსელისთვის',
-      description: 'ადვილად წასაკითხი, დინამიკური პოსტის სტრუქტურა აბზაცებით.',
-      instruction: 'მოარგე ტექსტი სოციალური ქსელის პოსტის ფორმატს - გახადე ადვილად წასაკითხი და მიმზიდველი.'
-    },
-    {
-      id: 'grammar',
-      title: 'ტექსტის გრამატიკული და სტილისტური გამართვა',
-      description: 'მხოლოდ მართლწერის, პუნქტუაციისა და სტილისტური ხარვეზების გასწორება.',
-      instruction: 'გაასწორე მხოლოდ გრამატიკული, ორთოგრაფიული, პუნქტუაციური და სტილისტური ხარვეზები. თუ ტექსტი უკვე გამართულია, ზედმეტად ნუ გადააკეთებ.'
-    },
-    {
-      id: 'custom',
-      title: 'მომხმარებლის მიერ მითითებული ინდივიდუალური სტილი',
-      description: 'თქვენ მიერ ჩაწერილი სპეციფიკური ტონი და მოთხოვნა.',
-      instruction: 'გადაამუშავე ტექსტი მომხმარებლის მიერ მითითებული ინდივიდუალური სტილის მიხედვით.'
-    }
-  ];
-
-  function buildStylePrompt(sourceText, styleId, customStyleName, extraInstruction) {
-    if (typeof sourceText !== 'string' || sourceText.trim() === '') {
-      throw new Error('გთხოვთ შეიყვანოთ საწყისი ტექსტი.');
-    }
-    const preset = STYLE_PRESETS.find(function (s) { return s.id === styleId; });
-    if (!preset) {
-      throw new Error('გთხოვთ აირჩიოთ ვალიდური სტილი.');
-    }
-    if (styleId === 'custom' && (!customStyleName || customStyleName.trim() === '')) {
-      throw new Error('ინდივიდუალური სტილის არჩევისას გთხოვთ მიუთითოთ სასურველი სტილის დასახელება ან აღწერა.');
-    }
-
-    const systemDirective = [
-      'შენ ხარ ქართული და მრავალენოვანი ტექსტების პროფესიონალი რედაქტორი და სტილისტი.',
-      'მკაცრად დაიცავი შემდეგი წესები:',
-      '1. უცვლელად შეინარჩუნე თავდაპირველი აზრი, ფაქტები, ადამიანებისა და კომპანიების სახელები, თარიღები, თანხები, ციფრები და სხვა მნიშვნელოვანი მონაცემები.',
-      '2. არ მოიგონო ფაქტები და არ დაამატო ისეთი დაპირებები, ვადები ან ინფორმაცია, რომელიც საწყის ტექსტში არ ყოფილა.',
-      '3. ნაგულისხმევად შეინარჩუნე საწყისი ტექსტის ენა (თუ მომხმარებელი დამატებით მითითებაში სხვა რამეს არ ითხოვს).',
-      '4. ქართულ ენაზე შედეგი უნდა იყოს გრამატიკულად გამართული, ბუნებრივი და ლიტერატურული.',
-      '5. თუ არჩეულია "ელფოსტისთვის", შექმენი ელფოსტის სათანადო სტრუქტურა და დასაწყისში შესთავაზე სათაური (თემა: ...).',
-      '6. თუ საწყისი ტექსტი უკვე გამართულია და შეესაბამება მოთხოვნილ სტილს, ზედმეტად ნუ გადააკეთებ.',
-      '7. დააბრუნე მხოლოდ გადამუშავებული ტექსტი ზედმეტი შესავალი კომენტარების გარეშე.'
-    ].join('\n');
-
-    const styleLine = styleId === 'custom'
-      ? 'სამიზნე სტილი (ინდივიდუალური): ' + customStyleName.trim()
-      : 'სამიზნე სტილი: ' + preset.title + ' - ' + preset.instruction;
-
-    const extraLine = extraInstruction && extraInstruction.trim() !== ''
-      ? '\nდამატებითი მითითება მომხმარებლისგან: ' + extraInstruction.trim()
-      : '';
-
-    const userPrompt = styleLine + extraLine + '\n\nსაწყისი ტექსტი:\n"""\n' + sourceText.trim() + '\n"""';
-
-    return {
-      systemInstruction: systemDirective,
-      userPrompt: userPrompt,
-      presetTitle: styleId === 'custom' ? customStyleName.trim() : preset.title
-    };
-  }
-
-  function computeWordDiff(originalText, modifiedText) {
-    const orig = typeof originalText === 'string' ? originalText.trim() : '';
-    const mod = typeof modifiedText === 'string' ? modifiedText.trim() : '';
-
-    if (orig === '' && mod === '') {
-      return [];
-    }
-    const origTokens = orig === '' ? [] : orig.split(/(\s+)/);
-    const modTokens = mod === '' ? [] : mod.split(/(\s+)/);
-
-    if (origTokens.length * modTokens.length > 250000) {
-      return [
-        { type: 'del', value: orig },
-        { type: 'same', value: '\n\n' },
-        { type: 'ins', value: mod }
-      ];
-    }
-
-    const n = origTokens.length;
-    const m = modTokens.length;
-    const dp = Array.from({ length: n + 1 }, function () {
-      return new Int32Array(m + 1);
-    });
-
-    for (let i = n - 1; i >= 0; i--) {
-      for (let j = m - 1; j >= 0; j--) {
-        if (origTokens[i] === modTokens[j]) {
-          dp[i][j] = 1 + dp[i + 1][j + 1];
-        } else {
-          dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
-        }
-      }
-    }
-
-    const diff = [];
-    let i = 0;
-    let j = 0;
-    while (i < n && j < m) {
-      if (origTokens[i] === modTokens[j]) {
-        diff.push({ type: 'same', value: origTokens[i] });
-        i++;
-        j++;
-      } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-        diff.push({ type: 'del', value: origTokens[i] });
-        i++;
-      } else {
-        diff.push({ type: 'ins', value: modTokens[j] });
-        j++;
-      }
-    }
-    while (i < n) {
-      diff.push({ type: 'del', value: origTokens[i++] });
-    }
-    while (j < m) {
-      diff.push({ type: 'ins', value: modTokens[j++] });
-    }
-
-    return diff;
-  }
-
+  /* 8. თანხის და რიცხვის სიტყვიერად ჩაწერა */
   const GEO_UNITS_1_TO_19 = [
     '', 'ერთი', 'ორი', 'სამი', 'ოთხი', 'ხუთი', 'ექვსი', 'შვიდი', 'რვა', 'ცხრა',
     'ათი', 'თერთმეტი', 'თორმეტი', 'ცამეტი', 'თოთხმეტი', 'თხუთმეტი', 'თექვსმეტი', 'ჩვიდმეტი', 'თვრამეტი', 'ცხრამეტი'
@@ -1246,6 +1119,7 @@
     };
   }
 
+  /* 9. ხელფასის კალკულატორი */
   function calculateSalary(amountInput, options) {
     const opts = options || {};
     const direction = opts.direction || 'gross_to_net';
@@ -1314,6 +1188,7 @@
     };
   }
 
+  /* 10. ქართული IBAN შემმოწმებელი */
   const GEORGIAN_BANKS_BY_CODE = {
     BG: { name: 'სს „საქართველოს ბანკი“ (Bank of Georgia)', swift: 'BAGAGE22' },
     TB: { name: 'სს „თიბისი ბანკი“ (TBC Bank)', swift: 'TBCBGE22' },
@@ -1433,6 +1308,7 @@
     };
   }
 
+  /* 11. QR კოდის გენერატორი */
   const QR_VERSION_SPECS_L = [
     null,
     [26, 7, 1, 19, 0, 0, []],
@@ -1524,7 +1400,7 @@
     }
 
     if (version === 0) {
-      throw new Error('ტექსტი ზედმეტად გრძელია სტანდარტული QR კოდისთვის (მაქსიმუმ 270 UTF-8 ბაიტი). გთხოვთ შეამოკლოთ ტექსტი.');
+      throw new Error('ტექსტი ზედმეტად გრძელია სტანდარტული QR კოდისთვის (მაქსიმუმ 270 UTF-8 ბაიტი).');
     }
 
     const spec = QR_VERSION_SPECS_L[version];
@@ -1741,6 +1617,151 @@
     );
   }
 
+  /* ==========================================================================
+     12. სესხის და იპოთეკის კალკულატორი (გრაფიკით და წინსწრებით)
+     ========================================================================== */
+
+  function roundMoney(n) {
+    return Math.round((n + Number.EPSILON) * 100) / 100;
+  }
+
+  function simulateLoanSchedule(principal, annualRatePercent, termMonths, scheduleType, extraMonthly, extraOneTime, extraOneTimeMonth, extraMode) {
+    const monthlyRate = (annualRatePercent / 100) / 12;
+    let balance = principal;
+    let remainingMonths = termMonths;
+    const schedule = [];
+    let totalInterest = 0;
+    let totalPaid = 0;
+
+    let currentAnnuityPayment = 0;
+    if (scheduleType === 'annuity') {
+      if (monthlyRate === 0) {
+        currentAnnuityPayment = principal / termMonths;
+      } else {
+        currentAnnuityPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+      }
+    }
+
+    const basePrincipalStep = principal / termMonths;
+    let currentDecliningPrincipalStep = basePrincipalStep;
+
+    for (let month = 1; month <= termMonths * 2 && balance > 0.005; month++) {
+      const interestPayment = balance * monthlyRate;
+      let principalPayment = 0;
+      let scheduledPayment = 0;
+
+      if (scheduleType === 'annuity') {
+        scheduledPayment = currentAnnuityPayment;
+        principalPayment = scheduledPayment - interestPayment;
+        if (principalPayment < 0) {
+          principalPayment = 0;
+        }
+      } else {
+        principalPayment = currentDecliningPrincipalStep;
+        scheduledPayment = principalPayment + interestPayment;
+      }
+
+      if (principalPayment > balance) {
+        principalPayment = balance;
+        scheduledPayment = principalPayment + interestPayment;
+      }
+
+      let extraThisMonth = extraMonthly > 0 ? extraMonthly : 0;
+      if (extraOneTime > 0 && month === extraOneTimeMonth) {
+        extraThisMonth += extraOneTime;
+      }
+
+      if (principalPayment + extraThisMonth > balance) {
+        extraThisMonth = Math.max(0, balance - principalPayment);
+      }
+
+      const actualPrincipalPaid = principalPayment + extraThisMonth;
+      const actualTotalPayment = actualPrincipalPaid + interestPayment;
+      balance = Math.max(0, balance - actualPrincipalPaid);
+
+      totalInterest += interestPayment;
+      totalPaid += actualTotalPayment;
+
+      schedule.push({
+        month: month,
+        payment: roundMoney(actualTotalPayment),
+        principal: roundMoney(principalPayment),
+        interest: roundMoney(interestPayment),
+        extraPayment: roundMoney(extraThisMonth),
+        balance: roundMoney(balance)
+      });
+
+      remainingMonths = Math.max(1, termMonths - month);
+
+      // თუ მომხმარებელმა აირჩია "ყოველთვიური შენატანის შემცირება" და მოხდა წინსწრება
+      if (extraThisMonth > 0 && extraMode === 'reduce_payment' && balance > 0.005 && remainingMonths > 0) {
+        if (scheduleType === 'annuity') {
+          if (monthlyRate === 0) {
+            currentAnnuityPayment = balance / remainingMonths;
+          } else {
+            currentAnnuityPayment = balance * (monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) / (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+          }
+        } else {
+          currentDecliningPrincipalStep = balance / remainingMonths;
+        }
+      }
+    }
+
+    const firstPayment = schedule.length > 0 ? schedule[0].payment : 0;
+    const lastPayment = schedule.length > 0 ? schedule[schedule.length - 1].payment : 0;
+
+    return {
+      firstPayment: firstPayment,
+      lastPayment: lastPayment,
+      totalPaid: roundMoney(totalPaid),
+      totalInterest: roundMoney(totalInterest),
+      actualMonths: schedule.length,
+      schedule: schedule
+    };
+  }
+
+  function calculateLoan(principalInput, annualRateInput, termMonthsInput, options) {
+    const opts = options || {};
+    const principal = Number(String(principalInput).trim().replace(',', '.'));
+    const annualRate = Number(String(annualRateInput).trim().replace(',', '.'));
+    const termMonths = Math.round(Number(termMonthsInput));
+    const scheduleType = opts.scheduleType || 'annuity'; // 'annuity' | 'declining'
+    const extraMonthly = Math.max(0, Number(String(opts.extraMonthly || 0).replace(',', '.')) || 0);
+    const extraOneTime = Math.max(0, Number(String(opts.extraOneTime || 0).replace(',', '.')) || 0);
+    const extraOneTimeMonth = Math.max(1, Math.round(Number(opts.extraOneTimeMonth || 1)));
+    const extraMode = opts.extraMode || 'reduce_term'; // 'reduce_term' | 'reduce_payment'
+
+    if (!Number.isFinite(principal) || principal <= 0) {
+      throw new Error('გთხოვთ შეიყვანოთ სესხის დადებითი თანხა.');
+    }
+    if (!Number.isFinite(annualRate) || annualRate < 0 || annualRate > 200) {
+      throw new Error('წლიური საპროცენტო განაკვეთი უნდა იყოს 0-დან 200%-მდე.');
+    }
+    if (!Number.isInteger(termMonths) || termMonths < 1 || termMonths > 600) {
+      throw new Error('სესხის ვადა უნდა იყოს 1-დან 600 თვემდე.');
+    }
+
+    const baseline = simulateLoanSchedule(principal, annualRate, termMonths, scheduleType, 0, 0, 1, 'reduce_term');
+    const actual = simulateLoanSchedule(principal, annualRate, termMonths, scheduleType, extraMonthly, extraOneTime, extraOneTimeMonth, extraMode);
+
+    return {
+      principal: roundMoney(principal),
+      annualRate: annualRate,
+      termMonths: termMonths,
+      scheduleType: scheduleType,
+      firstPayment: actual.firstPayment,
+      lastPayment: actual.lastPayment,
+      baselineFirstPayment: baseline.firstPayment,
+      totalPaid: actual.totalPaid,
+      totalInterest: actual.totalInterest,
+      baselineTotalInterest: baseline.totalInterest,
+      savedInterest: roundMoney(Math.max(0, baseline.totalInterest - actual.totalInterest)),
+      actualMonths: actual.actualMonths,
+      savedMonths: Math.max(0, termMonths - actual.actualMonths),
+      schedule: actual.schedule
+    };
+  }
+
   return {
     transliterateGeorgian: transliterateGeorgian,
     analyzeText: analyzeText,
@@ -1759,24 +1780,26 @@
     getGeorgianDayName: getGeorgianDayName,
     calculateAspectDimensions: calculateAspectDimensions,
     formatBytes: formatBytes,
-    PARLIAMENT_UNICODE_TO_ASCII: PARLIAMENT_UNICODE_TO_ASCII,
-    PARLIAMENT_ASCII_TO_UNICODE: PARLIAMENT_ASCII_TO_UNICODE,
+    PARLIAMENT_UNICODE_TO_8BIT: PARLIAMENT_UNICODE_TO_8BIT,
+    PARLIAMENT_8BIT_TO_UNICODE: PARLIAMENT_8BIT_TO_UNICODE,
+    ACADNUSX_UNICODE_TO_ASCII: ACADNUSX_UNICODE_TO_ASCII,
+    ACADNUSX_ASCII_TO_UNICODE: ACADNUSX_ASCII_TO_UNICODE,
     normalizeToMkhedruli: normalizeToMkhedruli,
     toAsomtavruli: toAsomtavruli,
     fromAsomtavruli: fromAsomtavruli,
     toParliamentStandard: toParliamentStandard,
     fromParliamentStandard: fromParliamentStandard,
+    toAcadNusx: toAcadNusx,
+    fromAcadNusx: fromAcadNusx,
     unicodeToLatin: unicodeToLatin,
     convertGeorgianText: convertGeorgianText,
-    STYLE_PRESETS: STYLE_PRESETS,
-    buildStylePrompt: buildStylePrompt,
-    computeWordDiff: computeWordDiff,
     numberToGeorgianWords: numberToGeorgianWords,
     amountToGeorgianWords: amountToGeorgianWords,
     calculateSalary: calculateSalary,
     GEORGIAN_BANKS_BY_CODE: GEORGIAN_BANKS_BY_CODE,
     validateIBAN: validateIBAN,
     generateQrMatrix: generateQrMatrix,
-    generateQrSvg: generateQrSvg
+    generateQrSvg: generateQrSvg,
+    calculateLoan: calculateLoan
   };
 });

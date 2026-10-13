@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>სესხის და იპოთეკის კალკულატორი (გრაფიკით და წინსწრებით) | Mokled - მოკლედ</title>
+  <meta name="description" content="გამოთვალეთ სესხისა და იპოთეკის ყოველთვიური შენატანი, სრული დაფარვის გრაფიკი (ანუიტეტური და კლებადი) და წინსწრებით დაფარვისას დაზოგილი პროცენტი და ვადა." />
+  <link rel="canonical" href="https://geotools.pages.dev/loan-calculator.html" />
+  <meta property="og:title" content="სესხის და იპოთეკის კალკულატორი (გრაფიკით და წინსწრებით) | Mokled - მოკლედ" />
+  <meta property="og:description" content="სესხისა და იპოთეკის ზუსტი კალკულატორი ამორტიზაციის გრაფიკით, წინსწრებით დაფარვის ეფექტითა და Excel/CSV ექსპორტით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geotools.pages.dev/loan-calculator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='36'%3Eმ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>სესხის და იპოთეკის კალკულატორი (გრაფიკით და წინსწრებით)</h1>
+      <p>
+        გამოთვალეთ ყოველთვიური შენატანი, ჯამური საპროცენტო ხარჯი და ნახეთ, რამდენ ლარსა და თვეს დაზოგავთ წინსწრებით დაფარვის შემთხვევაში.
+      </p>
+    </div>
+
+    <div id="loan-error" class="alert alert-error hidden" role="alert"></div>
+
+    <section class="panel">
+      <h2 class="panel-title">1. სესხის ძირითადი პარამეტრები</h2>
+      <div class="grid-4">
+        <div class="form-group">
+          <label class="form-label" for="loan-principal">სესხის თანხა (₾):</label>
+          <input type="number" id="loan-principal" class="input" value="50000" min="100" step="500" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loan-rate">წლიური პროცენტი (%):</label>
+          <input type="number" id="loan-rate" class="input" value="11.5" min="0" max="150" step="0.1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loan-months">ვადა (თვეებში):</label>
+          <input type="number" id="loan-months" class="input" value="60" min="1" max="480" step="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loan-type">გრაფიკის ტიპი:</label>
+          <select id="loan-type" class="input">
+            <option value="annuity" selected>ანუიტეტური (თანაბარი შენატანი)</option>
+            <option value="declining">კლებადი (თანაბარი ძირი)</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="panel-title" style="margin-top: 0.75rem;">2. წინსწრებით დაფარვა (არასავალდებულო)</h2>
+      <div class="grid-4">
+        <div class="form-group">
+          <label class="form-label" for="extra-monthly">ყოველთვიური დამატება (₾):</label>
+          <input type="number" id="extra-monthly" class="input" value="0" min="0" step="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="extra-onetime">ერთჯერადი წინსწრება (₾):</label>
+          <input type="number" id="extra-onetime" class="input" value="0" min="0" step="500" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="extra-month">ერთჯერადი შეტანის თვე:</label>
+          <input type="number" id="extra-month" class="input" value="12" min="1" max="480" step="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="extra-mode">წინსწრების მიზანი:</label>
+          <select id="extra-mode" class="input">
+            <option value="reduce_term" selected>ვადის შემცირება (შენატანი უცვლელია)</option>
+            <option value="reduce_payment">ყოველთვიური შენატანის შემცირება</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">ყოველთვიური შენატანი</span>
+          <span class="stat-value" id="res-loan-monthly">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">სულ გადასახდელი თანხა</span>
+          <span class="stat-value" id="res-loan-total">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">სულ პროცენტი (ზედმეტობა)</span>
+          <span class="stat-value" id="res-loan-interest">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დაზოგილი პროცენტი</span>
+          <span class="stat-value" id="res-loan-saved-int" style="color: var(--success);">0.00 ₾</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">რეალური ვადა</span>
+          <span class="stat-value" id="res-loan-term">0 თვე</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-dl-schedule-csv" class="btn btn-primary">გრაფიკის ჩამოტვირთვა (Excel / CSV)</button>
+        <button type="button" id="btn-share-loan" class="btn btn-secondary">🔗 გამოთვლის ბმულის კოპირება</button>
+        <button type="button" id="btn-copy-loan-summary" class="btn btn-secondary">შედეგის ტექსტად კოპირება</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="panel-title" style="margin-bottom: 0;">სესხის დაფარვის სრული გრაფიკი</h2>
+        <span id="schedule-badge" class="badge">0 თვე</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>თვე</th>
+              <th>სრული შენატანი (₾)</th>
+              <th>ძირითადი თანხა (₾)</th>
+              <th>პროცენტი (₾)</th>
+              <th>წინსწრება (₾)</th>
+              <th>ნარჩენი ძირი (₾)</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateLoan } = window.GeoCore;
+      const { initLayout, copyToClipboard, downloadTextFile, copyShareUrl } = window.GeoCommon;
+
+      initLayout('loan-calculator');
+
+      const principalInput = document.getElementById('loan-principal');
+      const rateInput = document.getElementById('loan-rate');
+      const monthsInput = document.getElementById('loan-months');
+      const typeSelect = document.getElementById('loan-type');
+      const extraMonthlyInput = document.getElementById('extra-monthly');
+      const extraOnetimeInput = document.getElementById('extra-onetime');
+      const extraMonthInput = document.getElementById('extra-month');
+      const extraModeSelect = document.getElementById('extra-mode');
+
+      const errorBox = document.getElementById('loan-error');
+      const resMonthly = document.getElementById('res-loan-monthly');
+      const resTotal = document.getElementById('res-loan-total');
+      const resInterest = document.getElementById('res-loan-interest');
+      const resSavedInt = document.getElementById('res-loan-saved-int');
+      const resTerm = document.getElementById('res-loan-term');
+      const scheduleBadge = document.getElementById('schedule-badge');
+      const scheduleTbody = document.getElementById('schedule-tbody');
+
+      let lastLoanResult = null;
+
+      // URL პარამეტრების წაკითხვა გაზიარებული ბმულიდან
+      (function loadFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('p')) principalInput.value = params.get('p');
+        if (params.has('r')) rateInput.value = params.get('r');
+        if (params.has('m')) monthsInput.value = params.get('m');
+        if (params.has('t')) typeSelect.value = params.get('t');
+        if (params.has('em')) extraMonthlyInput.value = params.get('em');
+        if (params.has('eo')) extraOnetimeInput.value = params.get('eo');
+        if (params.has('eom')) extraMonthInput.value = params.get('eom');
+        if (params.has('mode')) extraModeSelect.value = params.get('mode');
+      })();
+
+      function runLoanCalculation() {
+        errorBox.classList.add('hidden');
+        try {
+          const res = calculateLoan(principalInput.value, rateInput.value, monthsInput.value, {
+            scheduleType: typeSelect.value,
+            extraMonthly: extraMonthlyInput.value,
+            extraOneTime: extraOnetimeInput.value,
+            extraOneTimeMonth: extraMonthInput.value,
+            extraMode: extraModeSelect.value
+          });
+          lastLoanResult = res;
+
+          if (res.scheduleType === 'declining' || Math.abs(res.firstPayment - res.lastPayment) > 1) {
+            resMonthly.textContent = res.firstPayment.toFixed(2) + ' → ' + res.lastPayment.toFixed(2) + ' ₾';
+          } else {
+            resMonthly.textContent = res.firstPayment.toFixed(2) + ' ₾';
+          }
+
+          resTotal.textContent = res.totalPaid.toFixed(2) + ' ₾';
+          resInterest.textContent = res.totalInterest.toFixed(2) + ' ₾';
+          resSavedInt.textContent = res.savedInterest.toFixed(2) + ' ₾';
+          resTerm.textContent = res.actualMonths + ' თვე' + (res.savedMonths > 0 ? ' (-' + res.savedMonths + ' თვე)' : '');
+          scheduleBadge.textContent = res.actualMonths + ' თვე';
+
+          scheduleTbody.innerHTML = res.schedule.map(function (row) {
+            return (
+              '<tr>' +
+                '<td>' + row.month + '</td>' +
+                '<td><strong>' + row.payment.toFixed(2) + '</strong></td>' +
+                '<td>' + row.principal.toFixed(2) + '</td>' +
+                '<td>' + row.interest.toFixed(2) + '</td>' +
+                '<td style="color: var(--success);">' + (row.extraPayment > 0 ? '+' + row.extraPayment.toFixed(2) : '-') + '</td>' +
+                '<td>' + row.balance.toFixed(2) + '</td>' +
+              '</tr>'
+            );
+          }).join('');
+        } catch (err) {
+          lastLoanResult = null;
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      [principalInput, rateInput, monthsInput, typeSelect, extraMonthlyInput, extraOnetimeInput, extraMonthInput, extraModeSelect].forEach(function (el) {
+        el.addEventListener('input', runLoanCalculation);
+        el.addEventListener('change', runLoanCalculation);
+      });
+
+      document.getElementById('btn-dl-schedule-csv').addEventListener('click', function () {
+        if (!lastLoanResult) return;
+        const lines = ['თვე,სრული_შენატანი,ძირი,პროცენტი,წინსწრება,ნარჩენი_ძირი'];
+        lastLoanResult.schedule.forEach(function (r) {
+          lines.push([r.month, r.payment.toFixed(2), r.principal.toFixed(2), r.interest.toFixed(2), r.extraPayment.toFixed(2), r.balance.toFixed(2)].join(','));
+        });
+        downloadTextFile('loan-schedule.csv', lines.join('\r\n'), 'text/csv;charset=utf-8', true);
+      });
+
+      document.getElementById('btn-share-loan').addEventListener('click', function () {
+        copyShareUrl({
+          p: principalInput.value,
+          r: rateInput.value,
+          m: monthsInput.value,
+          t: typeSelect.value,
+          em: extraMonthlyInput.value,
+          eo: extraOnetimeInput.value,
+          eom: extraMonthInput.value,
+          mode: extraModeSelect.value
+        });
+      });
+
+      document.getElementById('btn-copy-loan-summary').addEventListener('click', function () {
+        if (!lastLoanResult) return;
+        const summary =
+          'სესხის თანხა: ' + lastLoanResult.principal.toFixed(2) + ' ₾\n' +
+          'წლიური განაკვეთი: ' + lastLoanResult.annualRate + '%\n' +
+          'ყოველთვიური შენატანი: ' + lastLoanResult.firstPayment.toFixed(2) + ' ₾\n' +
+          'სულ გადასახდელი: ' + lastLoanResult.totalPaid.toFixed(2) + ' ₾\n' +
+          'სულ პროცენტი: ' + lastLoanResult.totalInterest.toFixed(2) + ' ₾\n' +
+          'წინსწრებით დაზოგილი პროცენტი: ' + lastLoanResult.savedInterest.toFixed(2) + ' ₾\n' +
+          'რეალური ვადა: ' + lastLoanResult.actualMonths + ' თვე';
+        copyToClipboard(summary, 'სესხის შეჯამება დაკოპირდა!');
+      });
+
+      runLoanCalculation();
+    })();
+  </script>
+</body>
+</html>
