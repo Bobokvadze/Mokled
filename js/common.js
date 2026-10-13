@@ -121,17 +121,12 @@
     }
 
     if (footerEl) {
-      const relatedLinks = TOOLS_CATALOG.map(function (t) {
-        return '<a href="' + t.url + '">' + escapeHtml(t.title) + '</a>';
-      }).join('');
-
       footerEl.innerHTML =
         '<div class="container footer-inner">' +
           '<div>' +
             '<strong>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
             '<p>ყველა გამოთვლა და ფაილის დამუშავება სრულდება ადგილობრივად, თქვენს ბრაუზერში.</p>' +
           '</div>' +
-          '<div class="footer-links">' + relatedLinks + '</div>' +
         '</div>';
     }
 
