@@ -63,13 +63,8 @@
 
       <div class="section-header" style="margin-top: 0.35rem;">
         <span style="font-size: 0.9rem; color: var(--text-muted);">ნაპოვნი ქუჩები და დასახლებები: <strong id="postal-count">0</strong></span>
-        <div class="btn-row" style="margin-top: 0;">
-          <button type="button" id="btn-osm-lookup" class="btn btn-secondary btn-sm">🌐 ონლაინ მოძიება რუკის ბაზაში</button>
-          <span class="badge" style="align-self: center;">თბილისის ზოგადი კოდი: 0100</span>
-        </div>
+        <span class="badge">თბილისის ზოგადი კოდი: 0100</span>
       </div>
-
-      <div id="osm-results-box" class="alert alert-info hidden" style="margin-bottom: 1rem;"></div>
 
       <div class="table-wrap" style="max-height: 560px;">
         <table>
@@ -94,7 +89,7 @@
   <script src="js/postal-data.js"></script>
   <script>
     (function () {
-      const { initLayout, copyToClipboard, escapeHtml, showToast } = window.GeoCommon;
+      const { initLayout, copyToClipboard, escapeHtml } = window.GeoCommon;
       const POSTAL_DATA = window.GeoPostalData || [];
       initLayout('postal-codes');
 
@@ -103,8 +98,6 @@
       const districtSelect = document.getElementById('postal-district');
       const countEl = document.getElementById('postal-count');
       const tbody = document.getElementById('postal-tbody');
-      const osmBtn = document.getElementById('btn-osm-lookup');
-      const osmBox = document.getElementById('osm-results-box');
 
       function populateDistricts() {
         const reg = regionSelect.value;
@@ -115,17 +108,7 @@
         }).join('');
       }
 
-      function bindCopyButtons(container) {
-        container.querySelectorAll('.copy-zip-btn').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            const code = btn.getAttribute('data-code');
-            copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
-          });
-        });
-      }
-
       function renderTable() {
-        osmBox.classList.add('hidden');
         const q = searchInput.value.trim().toLowerCase();
         const reg = regionSelect.value;
         const dist = districtSelect.value;
@@ -153,41 +136,13 @@
           );
         }).join('');
 
-        bindCopyButtons(tbody);
+        tbody.querySelectorAll('.copy-zip-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const code = btn.getAttribute('data-code');
+            copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
+          });
+        });
       }
-
-      // ონლაინ მოძიება OpenStreetMap-ის ბაზაში ნებისმიერი პატარა ქუჩისთვის
-      osmBtn.addEventListener('click', async function () {
-        const q = searchInput.value.trim();
-        if (!q) {
-          showToast('ჯერ ჩაწერეთ ქუჩის ან დასახლების სახელი საძიებო ველში.');
-          searchInput.focus();
-          return;
-        }
-        osmBox.innerHTML = 'მიმდინარეობს მისამართის ძიება საქართველოს რუკის ბაზაში...';
-        osmBox.classList.remove('hidden');
-        try {
-          const url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=ge&limit=8&accept-language=ka&q=' + encodeURIComponent(q);
-          const resp = await fetch(url);
-          const data = await resp.json();
-          const withPostcodes = (data || []).filter(function (d) { return d.address && d.address.postcode; });
-          if (withPostcodes.length === 0) {
-            osmBox.innerHTML = 'რუკის ონლაინ ბაზაში ამ დასახელებით დამატებითი ინდექსი ვერ მოიძებნა. იხილეთ ქვემოთ მოცემული ძირითადი ცხრილი.';
-            return;
-          }
-          osmBox.innerHTML = '<strong>🌐 რუკის ბაზაში ნაპოვნი მისამართები:</strong><div style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.4rem;">' +
-            withPostcodes.map(function (item) {
-              const pc = item.address.postcode;
-              return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;background:var(--bg-surface);padding:0.45rem 0.75rem;border-radius:6px;border:1px solid var(--border);">' +
-                '<span><code style="font-weight:700;color:var(--primary);">' + escapeHtml(pc) + '</code> - ' + escapeHtml(item.display_name) + '</span>' +
-                '<button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(pc) + '">კოპირება</button>' +
-              '</div>';
-            }).join('') + '</div>';
-          bindCopyButtons(osmBox);
-        } catch (_) {
-          osmBox.innerHTML = 'ონლაინ ბაზასთან დაკავშირება ვერ მოხერხდა.';
-        }
-      });
 
       regionSelect.addEventListener('change', function () {
         populateDistricts();
