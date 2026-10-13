@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v16';
+const CACHE_NAME = 'mokled-cache-v17';
 const CORE_ASSETS = [
   '/',
   '/index.html',
