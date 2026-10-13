@@ -36,7 +36,7 @@
         <div class="form-group">
           <label class="form-label" for="source-format">საწყისი ფორმატი:</label>
           <select id="source-format" class="input">
-            <option value="parliament" selected>ყოფილი პარლამენტის სტანდარტი (SPParliamentMedium: ÀÁÂÃ...à)</option>
+            <option value="parliament" selected>ყოფილი პარლამენტის სტანდარტი (პარლამენტის სტანდარტი: ÀÁÂÃ...ä)</option>
             <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
             <option value="latin">ლათინური (ინგლისური ანბანით აკრეფილი)</option>
             <option value="unicode">უნიკოდი (UTF-8 / Sylfaen)</option>
@@ -54,7 +54,7 @@
           <label class="form-label" for="target-format">სასურველი (საბოლოო) ფორმატი:</label>
           <select id="target-format" class="input">
             <option value="unicode" selected>უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (SPParliamentMedium: ÀÁÂÃ...à)</option>
+            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (პარლამენტის სტანდარტი: ÀÁÂÃ...ä)</option>
             <option value="acadnusx">ძველი ქართული ფონტი (AcadNusx / LitNusx: abgdevzT...)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
             <option value="latin">ლათინური (ინგლისური)</option>
@@ -112,7 +112,7 @@
     <section class="panel">
       <h2 class="panel-title">ყოფილი პარლამენტის სტანდარტის (SPParliamentMedium) 33+5 ასოიანი შესაბამისობის ცხრილი</h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.85rem;">
-        <code>SPParliamentMedium</code> (1997, "Soma Press" Ltd.) ფონტის სტანდარტში ქართული ანბანის 33 ასო (`ა`-`ჰ`) განთავსებულია ზუსტად <code>U+00C0-U+00E0</code> (<code>À-à</code>, კოდები 192-224) დიაპაზონში, ხოლო 5 არქაული ასო (`ჱ`-`ჵ`) - <code>U+00E1-U+00E5</code> (<code>á-å</code>) დიაპაზონში:
+        <code>SPParliamentMedium</code> (1997, "Soma Press" Ltd.) ფონტის სტანდარტში ქართული ანბანის 33 ასო (`ა`-`ჰ`) განთავსებულია ზუსტად <code>U+00C0-U+00E0</code> (<code>À-ä</code>, კოდები 192-224) დიაპაზონში, ხოლო 5 არქაული ასო (`ჱ`-`ჵ`) - <code>U+00E1-U+00E5</code> (<code>á-å</code>) დიაპაზონში:
       </p>
       <div class="table-wrap">
         <table>
@@ -129,18 +129,18 @@
               <th>ასომთავრული</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td><code>À</code> (0xC0)</td><td>ა</td><td>Ⴀ</td><td><code>Ë</code> (0xCB)</td><td>მ</td><td>Ⴋ</td><td><code>Ø</code> (0xD8)</td><td>შ</td><td>Ⴘ</td></tr>
-            <tr><td><code>Á</code> (0xC1)</td><td>ბ</td><td>Ⴁ</td><td><code>Ì</code> (0xCC)</td><td>ნ</td><td>Ⴌ</td><td><code>Ù</code> (0xD9)</td><td>ჩ</td><td>Ⴙ</td></tr>
-            <tr><td><code>Â</code> (0xC2)</td><td>გ</td><td>Ⴂ</td><td><code>Í</code> (0xCD)</td><td>ო</td><td>Ⴍ</td><td><code>Ú</code> (0xDA)</td><td>ც</td><td>Ⴚ</td></tr>
-            <tr><td><code>Ã</code> (0xC3)</td><td>დ</td><td>Ⴃ</td><td><code>Î</code> (0xCE)</td><td>პ</td><td>Ⴎ</td><td><code>Û</code> (0xDB)</td><td>ძ</td><td>Ⴛ</td></tr>
-            <tr><td><code>Ä</code> (0xC4)</td><td>ე</td><td>Ⴄ</td><td><code>Ï</code> (0xCF)</td><td>ჟ</td><td>Ⴏ</td><td><code>Ü</code> (0xDC)</td><td>წ</td><td>Ⴜ</td></tr>
-            <tr><td><code>Å</code> (0xC5)</td><td>ვ</td><td>Ⴅ</td><td><code>Ð</code> (0xD0)</td><td>რ</td><td>Ⴐ</td><td><code>Ý</code> (0xDD)</td><td>ჭ</td><td>Ⴝ</td></tr>
-            <tr><td><code>Æ</code> (0xC6)</td><td>ზ</td><td>Ⴆ</td><td><code>Ñ</code> (0xD1)</td><td>ს</td><td>Ⴑ</td><td><code>Þ</code> (0xDE)</td><td>ხ</td><td>Ⴞ</td></tr>
-            <tr><td><code>Ç</code> (0xC7)</td><td>თ</td><td>Ⴇ</td><td><code>Ò</code> (0xD2)</td><td>ტ</td><td>Ⴒ</td><td><code>ß</code> (0xDF)</td><td>ჯ</td><td>Ⴟ</td></tr>
-            <tr><td><code>È</code> (0xC8)</td><td>ი</td><td>Ⴈ</td><td><code>Ó</code> (0xD3)</td><td>უ</td><td>Ⴓ</td><td><code>à</code> (0xE0)</td><td>ჰ</td><td>Ⴠ</td></tr>
-            <tr><td><code>É</code> (0xC9)</td><td>კ</td><td>Ⴉ</td><td><code>Ô</code> (0xD4)</td><td>ფ</td><td>Ⴔ</td><td><code>á / â / ã</code></td><td>ჱ / ჲ / ჳ</td><td>Ⴡ / Ⴢ / Ⴣ</td></tr>
-            <tr><td><code>Ê</code> (0xCA)</td><td>ლ</td><td>Ⴊ</td><td><code>Õ / Ö / ×</code></td><td>ქ / ღ / ყ</td><td>Ⴕ / Ⴖ / Ⴗ</td><td><code>ä / å</code></td><td>ჴ / ჵ</td><td>Ⴤ / Ⴥ</td></tr>
+                    <tbody>
+            <tr><td><code>À</code></td><td>ა</td><td>Ⴀ</td><td><code>Ì</code></td><td>მ</td><td>Ⴋ</td><td><code>Û</code></td><td>შ</td><td>Ⴘ</td></tr>
+            <tr><td><code>Á</code></td><td>ბ</td><td>Ⴁ</td><td><code>Í</code></td><td>ნ</td><td>Ⴌ</td><td><code>Ü</code></td><td>ჩ</td><td>Ⴙ</td></tr>
+            <tr><td><code>Â</code></td><td>გ</td><td>Ⴂ</td><td><code>Ï</code></td><td>ო</td><td>Ⴍ</td><td><code>Ý</code></td><td>ც</td><td>Ⴚ</td></tr>
+            <tr><td><code>Ã</code></td><td>დ</td><td>Ⴃ</td><td><code>Ð</code></td><td>პ</td><td>Ⴎ</td><td><code>Þ</code></td><td>ძ</td><td>Ⴛ</td></tr>
+            <tr><td><code>Ä</code></td><td>ე</td><td>Ⴄ</td><td><code>Ñ</code></td><td>ჟ</td><td>Ⴏ</td><td><code>ß</code></td><td>წ</td><td>Ⴜ</td></tr>
+            <tr><td><code>Å</code></td><td>ვ</td><td>Ⴅ</td><td><code>Ò</code></td><td>რ</td><td>Ⴐ</td><td><code>à</code></td><td>ჭ</td><td>Ⴝ</td></tr>
+            <tr><td><code>Æ</code></td><td>ზ</td><td>Ⴆ</td><td><code>Ó</code></td><td>ს</td><td>Ⴑ</td><td><code>á</code></td><td>ხ</td><td>Ⴞ</td></tr>
+            <tr><td><code>È</code></td><td>თ</td><td>Ⴇ</td><td><code>Ô</code></td><td>ტ</td><td>Ⴒ</td><td><code>ã</code></td><td>ჯ</td><td>Ⴟ</td></tr>
+            <tr><td><code>É</code></td><td>ი</td><td>Ⴈ</td><td><code>Ö</code></td><td>უ</td><td>Ⴓ</td><td><code>ä</code></td><td>ჰ</td><td>Ⴠ</td></tr>
+            <tr><td><code>Ê</code></td><td>კ</td><td>Ⴉ</td><td><code>×</code></td><td>ფ</td><td>Ⴔ</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td><code>Ë</code></td><td>ლ</td><td>Ⴊ</td><td><code>Ø / Ù / Ú</code></td><td>ქ / ღ / ყ</td><td>Ⴕ / Ⴖ / Ⴗ</td><td>—</td><td>—</td><td>—</td></tr>
           </tbody>
         </table>
       </div>
@@ -175,7 +175,7 @@
         parliament: {
           source: 'parliament',
           target: 'unicode',
-          text: 'ÑÀÕÀÐÇÅÄÊÍÑ ÎÀÐÊÀËÄÌÒÈÑ ×ÍÔÈÊÈ ÑÒÀÌÃÀÐÒÈ (2026 ÜÄÊÈ).\nÇÁÈÊÈÑÈ, àÀÄÐÈ ÃÀ ÕÀÐÇÓÊÈ ÓÌÈÉÍÃÈ.'
+          text: 'ÓÀØÀÒÈÅÄËÏÓ ÐÀÒËÀÌÄÍÔÉÓ ÚÏ×ÉËÉ ÓÔÀÍÃÀÒÔÉ (2026 ßÄËÉ).\nÈÁÉËÉÓÉ, äÀÄÒÉ ÃÀ ØÀÒÈÖËÉ ÖÍÉÊÏÃÉ.'
         },
         acadnusx: {
           source: 'acadnusx',

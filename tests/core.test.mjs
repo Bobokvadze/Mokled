@@ -2,18 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import GeoCore from '../js/core.js';
 
-test('1. SPParliamentMedium (1997 Soma Press) 33+5 ასოიანი სტანდარტი (À..à <-> ა..ჰ)', () => {
-  const sampleUnicode = 'საქართველო, ჰაერი';
-  const toParl = GeoCore.convertGeorgianText(sampleUnicode, 'unicode', 'parliament');
-  assert.equal(toParl.output, 'ÑÀÕÀÐÇÅÄÊÍ, àÀÄÐÈ');
-
-  const backToUni = GeoCore.convertGeorgianText('ÑÀÕÀÐÇÅÄÊÍ, àÀÄÐÈ', 'parliament', 'unicode');
-  assert.equal(backToUni.output, sampleUnicode);
-
+test('1. ყოფილი პარლამენტის 33-ასოიანი სტანდარტი (ÀÁÂÃÄÅÆÈÉÊËÌÍÏÐÑÒÓÔÖ×ØÙÚÛÜÝÞßàáãä <-> ა..ჰ)', () => {
   const all33Unicode = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ';
-  const all33SpParl = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßà';
-  assert.equal(GeoCore.convertGeorgianText(all33Unicode, 'unicode', 'parliament').output, all33SpParl);
-  assert.equal(GeoCore.convertGeorgianText(all33SpParl, 'parliament', 'unicode').output, all33Unicode);
+  const all33Parliament = 'ÀÁÂÃÄÅÆÈÉÊËÌÍÏÐÑÒÓÔÖ×ØÙÚÛÜÝÞßàáãä';
+
+  assert.equal(GeoCore.convertGeorgianText(all33Unicode, 'unicode', 'parliament').output, all33Parliament);
+  assert.equal(GeoCore.convertGeorgianText(all33Parliament, 'parliament', 'unicode').output, all33Unicode);
+
+  const sampleUnicode = 'საქართველო, ჰაერი';
+  assert.equal(GeoCore.convertGeorgianText(sampleUnicode, 'unicode', 'parliament').output, 'ÓÀØÀÒÈÅÄËÏ, äÀÄÒÉ');
+  assert.equal(GeoCore.convertGeorgianText('ÓÀØÀÒÈÅÄËÏ, äÀÄÒÉ', 'parliament', 'unicode').output, sampleUnicode);
 });
 
 test('2. რიცხვებისა და თანხების მძიმეებით გამოყოფა (formatMoney / formatNumber)', () => {

@@ -732,23 +732,23 @@
         - ასევე Windows-1251 (კირილიცა А..Я, а..е) დეკოდირების მხარდაჭერით.
      ========================================================================== */
 
-  const MKHEDRULI_38 = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰჱჲჳჴჵ';
-  // SPParliamentMedium: 0xC0 (À = 192) .. 0xE5 (å = 229) -> 38 ქართული ასო (ა..ჰ + ჱ..ჵ)
-  const SP_PARLIAMENT_38 = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäå';
-  // Windows-1251 შესატყვისი იმავე 0xC0..0xE5 ბაიტებისთვის (А..Я = 0xC0..0xDF, а..е = 0xE0..0xE5)
-  const WIN1251_CYRILLIC_38 = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгде';
+  const MKHEDRULI_33 = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ';
+  const PARLIAMENT_33 = 'ÀÁÂÃÄÅÆÈÉÊËÌÍÏÐÑÒÓÔÖ×ØÙÚÛÜÝÞßàáãä';
+  const ARCHAIC_GEO = 'ჱჲჳჴჵ';
+  const ARCHAIC_PARL = 'ÇÎÕâå';
 
   const PARLIAMENT_UNICODE_TO_8BIT = {};
   const PARLIAMENT_8BIT_TO_UNICODE = {};
 
-  for (let idx = 0; idx < 38; idx++) {
-    const geoChar = MKHEDRULI_38[idx];
-    const spChar = SP_PARLIAMENT_38[idx];
-    const cyrChar = WIN1251_CYRILLIC_38[idx];
-
+  for (let idx = 0; idx < 33; idx++) {
+    const geoChar = MKHEDRULI_33[idx];
+    const spChar = PARLIAMENT_33[idx];
     PARLIAMENT_UNICODE_TO_8BIT[geoChar] = spChar;
     PARLIAMENT_8BIT_TO_UNICODE[spChar] = geoChar;
-    PARLIAMENT_8BIT_TO_UNICODE[cyrChar] = geoChar;
+  }
+  for (let idx = 0; idx < 5; idx++) {
+    PARLIAMENT_UNICODE_TO_8BIT[ARCHAIC_GEO[idx]] = ARCHAIC_PARL[idx];
+    PARLIAMENT_8BIT_TO_UNICODE[ARCHAIC_PARL[idx]] = ARCHAIC_GEO[idx];
   }
 
   // AcadNusx / LitNusx ცხრილი
