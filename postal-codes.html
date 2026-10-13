@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>საქართველოს საფოსტო ინდექსები (თბილისის უბნები და რეგიონები) | Mokled - მოკლედ</title>
-  <meta name="description" content="საქართველოს საფოსტო ინდექსების (Postal / ZIP Code) სწრაფი საძიებო: თბილისის ყველა უბანი, გამზირი და საქართველოს ყველა ქალაქი, მუნიციპალიტეტი და კურორტი." />
+  <title>საქართველოს საფოსტო ინდექსები (ყველა ქუჩა, უბანი და ქალაქი) | Mokled - მოკლედ</title>
+  <meta name="description" content="საქართველოს საფოსტო ინდექსების (Postal / ZIP Code) სრული საძიებო ბაზა: თბილისის ყველა ქუჩა, გამზირი, მიკრორაიონი და საქართველოს ყველა ქალაქი და სოფელი." />
   <link rel="canonical" href="https://mokled.pages.dev/postal-codes.html" />
-  <meta property="og:title" content="საქართველოს საფოსტო ინდექსების საძიებო | Mokled - მოკლედ" />
-  <meta property="og:description" content="მოძებნეთ თბილისის უბნებისა და საქართველოს ქალაქების საფოსტო კოდები (0100-6500) ერთი დაწკაპუნებით კოპირებით." />
+  <meta property="og:title" content="საქართველოს საფოსტო ინდექსების სრული საძიებო | Mokled - მოკლედ" />
+  <meta property="og:description" content="მოძებნეთ თბილისის ნებისმიერი ქუჩისა და საქართველოს ქალაქების საფოსტო კოდები (0100-6500) ერთი დაწკაპუნებით კოპირებით." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/postal-codes.html" />
   <meta property="og:locale" content="ka_GE" />
-  <link rel="manifest" href="manifest.json" />
+  <meta property="og:image" content="https://mokled.pages.dev/assets/logo.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
   <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -25,16 +26,15 @@
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / მონაცემები</div>
       <h1>საქართველოს საფოსტო ინდექსების საძიებო</h1>
       <p>
-        მოძებნეთ თბილისის უბნების, გამზირებისა და საქართველოს ქალაქების/მუნიციპალიტეტების 4-ნიშნა საფოსტო კოდი (Postal / ZIP Code).
-        დააწკაპუნეთ ინდექსზე მის მყისიერად დასაკოპირებლად.
+        მოძებნეთ თბილისის ნებისმიერი ქუჩის, გამზირის, მიკრორაიონისა და საქართველოს ქალაქების/სოფლების 4-ნიშნა საფოსტო კოდი (Postal / ZIP Code).
       </p>
     </div>
 
     <section class="panel">
-      <div class="grid-2" style="align-items: end;">
+      <div class="grid-3" style="align-items: end;">
         <div class="form-group">
-          <label class="form-label" for="postal-search">ძიება უბნის, ქუჩის, ქალაქის ან ინდექსის მიხედვით:</label>
-          <input type="search" id="postal-search" class="input" placeholder="მაგ.: საბურთალო, ვაკე, გლდანი, ბათუმი, 0179, პატარძეული..." />
+          <label class="form-label" for="postal-search">ქუჩა, გამზირი, უბანი, ქალაქი ან კოდი:</label>
+          <input type="search" id="postal-search" class="input" placeholder="მაგ.: პეკინის, ჭავჭავაძის, ქავთარაძის, გლდანი, ბათუმი, 0186..." />
         </div>
         <div class="form-group">
           <label class="form-label" for="postal-region">რეგიონი:</label>
@@ -53,21 +53,32 @@
             <option value="რაჭა-ლეჩხუმი და ქვემო სვანეთი">რაჭა-ლეჩხუმი და ქვემო სვანეთი</option>
           </select>
         </div>
+        <div class="form-group">
+          <label class="form-label" for="postal-district">უბანი / მუნიციპალიტეტი:</label>
+          <select id="postal-district" class="input">
+            <option value="ყველა" selected>ყველა უბანი / ქალაქი</option>
+          </select>
+        </div>
       </div>
 
-      <div class="section-header" style="margin-top: 0.5rem;">
-        <span style="font-size: 0.9rem; color: var(--text-muted);">ნაპოვნი ჩანაწერები: <strong id="postal-count">0</strong></span>
-        <span class="badge">თბილისის უნივერსალური კოდი: 0100</span>
+      <div class="section-header" style="margin-top: 0.35rem;">
+        <span style="font-size: 0.9rem; color: var(--text-muted);">ნაპოვნი ქუჩები და დასახლებები: <strong id="postal-count">0</strong></span>
+        <div class="btn-row" style="margin-top: 0;">
+          <button type="button" id="btn-osm-lookup" class="btn btn-secondary btn-sm">🌐 ონლაინ მოძიება რუკის ბაზაში</button>
+          <span class="badge" style="align-self: center;">თბილისის ზოგადი კოდი: 0100</span>
+        </div>
       </div>
 
-      <div class="table-wrap" style="max-height: 540px;">
+      <div id="osm-results-box" class="alert alert-info hidden" style="margin-bottom: 1rem;"></div>
+
+      <div class="table-wrap" style="max-height: 560px;">
         <table>
           <thead>
             <tr>
-              <th style="width: 120px;">ინდექსი</th>
-              <th style="width: 210px;">ქალაქი / უბანი</th>
-              <th>ქუჩები, გამზირები და მიკრორაიონები</th>
-              <th style="width: 130px;">მოქმედება</th>
+              <th style="width: 110px;">ინდექსი</th>
+              <th>ქუჩა / გამზირი / მიკრორაიონი / დასახლება</th>
+              <th style="width: 240px;">უბანი / მუნიციპალიტეტი</th>
+              <th style="width: 125px;">მოქმედება</th>
             </tr>
           </thead>
           <tbody id="postal-tbody"></tbody>
@@ -80,157 +91,32 @@
 
   <script src="js/core.js"></script>
   <script src="js/common.js"></script>
+  <script src="js/postal-data.js"></script>
   <script>
     (function () {
-      const { initLayout, copyToClipboard, escapeHtml } = window.GeoCommon;
+      const { initLayout, copyToClipboard, escapeHtml, showToast } = window.GeoCommon;
+      const POSTAL_DATA = window.GeoPostalData || [];
       initLayout('postal-codes');
-
-      const POSTAL_DATA = [
-        { code: '0100', region: 'თბილისი', area: 'თბილისი (ცენტრალური)', details: 'თბილისის ზოგადი / მთავარი საფოსტო ინდექსი' },
-        { code: '0101', region: 'თბილისი', area: 'მთაწმინდა / თავისუფლების მოედანი', details: 'თავისუფლების მოედანი, პუშკინის ქ., კოტე აფხაზის (ლესელიძის) ქ., დადიანის ქ.' },
-        { code: '0102', region: 'თბილისი', area: 'ჩუღურეთი / მარჯანიშვილი', details: 'დავით აღმაშენებლის გამზ., მარჯანიშვილის ქ., წინამძღვრიშვილის ქ., ჩიქობავას ქ.' },
-        { code: '0103', region: 'თბილისი', area: 'ავლაბარი / ისანი', details: 'ქეთევან დედოფლის გამზ., მეტრო ავლაბარი, წურწუმიას ქ., ელია' },
-        { code: '0104', region: 'თბილისი', area: 'ძველი თბილისი / აბანოთუბანი', details: 'გორგასლის მოედანი, აბანოთუბანი, ბოტანიკურის ქ., რიყე' },
-        { code: '0105', region: 'თბილისი', area: 'სოლოლაკი / კრწანისი', details: 'ლადო ასათიანის ქ., ამაღლების ქ., ქიქოძის ქ., მაჩაბლის ქ., ტაბიძის ქ.' },
-        { code: '0108', region: 'თბილისი', area: 'მთაწმინდა / რუსთაველი', details: 'რუსთაველის გამზ., ჭონქაძის ქ., გრიბოედოვის ქ., ზუბალაშვილების ქ., ინგოროყვას ქ.' },
-        { code: '0112', region: 'თბილისი', area: 'სადგურის მოედანი / დიდუბე', details: 'თამარ მეფის გამზ., ვაგზლის მოედანი, აბასთუმნის ქ., თევდორე მღვდლის ქ.' },
-        { code: '0114', region: 'თბილისი', area: 'ორთაჭალა / კრწანისი', details: 'ვახტანგ გორგასლის ქ., კრწანისის ქ., გულიას მოედანი, ორთაჭალის ტურფა' },
-        { code: '0119', region: 'თბილისი', area: 'დიდუბე / წერეთელი', details: 'აკაკი წერეთლის გამზ., სამტრედიის ქ., აგლაძის ქ., ელიავას ბაზრობა, ხოშარაულის ქ.' },
-        { code: '0120', region: 'თბილისი', area: 'ისანი / ნავთლუღი', details: 'ბერი გაბრიელ სალოსის გამზ., რიჩარდ ჰოლბრუკის ქ., ჩოლოყაშვილის ქ.' },
-        { code: '0131', region: 'თბილისი', area: 'დიღმის მასივი', details: 'დიღმის მასივი (I-VI კვარტალი), ლუბლიანას ქ., ბელიაშვილის ქ., აღმაშენებლის ხეივანი' },
-        { code: '0137', region: 'თბილისი', area: 'სამგორი / მოსკოვის გამზირი', details: 'მოსკოვის გამზ., ქინძმარაულის ქ., ბოგდან ხმელნიცკის ქ.' },
-        { code: '0141', region: 'თბილისი', area: 'ნაძალადევი / სანზონა / თემქა', details: 'გურამიშვილის გამზ., სანზონა, თემქა (ზღვისუბანი), ჩარგლის ქ.' },
-        { code: '0144', region: 'თბილისი', area: 'ვაზისუბანი / მეტრომშენი', details: 'ვაზისუბნის დასახლება (I, II, III, IV მ/რ), შანდორ პეტეფის ქ., წულუკიძის ქ.' },
-        { code: '0154', region: 'თბილისი', area: 'დიდუბე (ზემო)', details: 'წერეთლის გამზ. (დიდუბის პანთეონი), კედიას ქ., სტანისლავსკის ქ.' },
-        { code: '0158', region: 'თბილისი', area: 'აეროპორტის დასახლება', details: 'თბილისის საერთაშორისო აეროპორტი, აეროპორტის დასახლება' },
-        { code: '0159', region: 'თბილისი', area: 'დიდი დიღომი', details: 'დიდი დიღომი (I, II, III, IV მ/რ), იოანე პეტრიწის ქ., მირიან მეფის ქ., ფარნავაზ მეფის გამზ.' },
-        { code: '0160', region: 'თბილისი', area: 'საბურთალო / პეკინი / გაგარინი', details: 'პეკინის გამზ., შარტავას ქ., კანდელაკის ქ., მიცკევიჩის ქ., საირმის ქ., გაგარინის მოედანი' },
-        { code: '0162', region: 'თბილისი', area: 'ვაკე / ბაგები', details: 'ჭავჭავაძის გამზ. (კუს ტბის ასახვევიდან), ბაგები, წყნეთის გზატკეცილი' },
-        { code: '0163', region: 'თბილისი', area: 'ვარკეთილი', details: 'ვარკეთილი-3 (I, II, III, IV მ/რ), ჯავახეთის ქ., სუხიშვილის ქ., კალოუბნის ქ.' },
-        { code: '0164', region: 'თბილისი', area: 'ჩუღურეთი / უზნაძე', details: 'დიმიტრი უზნაძის ქ., კარგარეთელის ქ., წინამძღვრიშვილის ქ.' },
-        { code: '0165', region: 'თბილისი', area: 'ფონიჭალა', details: 'ქვემო და ზემო ფონიჭალა, რუსთავის გზატკეცილი' },
-        { code: '0167', region: 'თბილისი', area: 'გლდანი', details: 'გლდანის მასივი (I-VIII მ/რ), ხიზანიშვილის ქ., ვეკუას ქ., მეტრო ახმეტელის თეატრი' },
-        { code: '0171', region: 'თბილისი', area: 'საბურთალო / კოსტავა / დოლიძე', details: 'მერაბ კოსტავას ქ., გმირთა მოედანი, ტექნიკური უნივერსიტეტი, დოლიძის ქ., ბახტრიონის ქ., იოსებიძის ქ.' },
-        { code: '0175', region: 'თბილისი', area: 'მუხიანი', details: 'მუხიანი (I, II, III, IV მ/რ), ნოდარ დუმბაძის გამზ., გობრონიძის ქ.' },
-        { code: '0177', region: 'თბილისი', area: 'საბურთალო / ყაზბეგი / დელისი', details: 'ალექსანდრე ყაზბეგის გამზ., ვაჟა-ფშაველას გამზ. (დასაწყისი), თამარაშვილის ქ., ასათიანის ქ.' },
-        { code: '0178', region: 'თბილისი', area: 'ავჭალა / ზაჰესი', details: 'ავჭალა, სარაჯიშვილის გამზ., ლიბანის ქ., ზაჰესი' },
-        { code: '0179', region: 'თბილისი', area: 'ვაკე', details: 'ილია ჭავჭავაძის გამზ., ირ. აბაშიძის ქ., ფალიაშვილის ქ., ბარნოვის ქ., მცხეთის ქ., მრგვალი ბაღი, ვერა' },
-        { code: '0180', region: 'თბილისი', area: 'ნაძალადევი / დადიანი', details: 'ცოტნე დადიანის ქ., ჭყონდიდელის ქ., ერისთავის ქ., კიკვიძის პარკი' },
-        { code: '0181', region: 'თბილისი', area: 'წყნეთი', details: 'დაბა წყნეთი, ბეთანია, ახალდაბა' },
-        { code: '0182', region: 'თბილისი', area: 'სამგორი / ორხევი', details: 'კახეთის გზატკეცილი, ორხევი, ალექსეევკა' },
-        { code: '0186', region: 'თბილისი', area: 'საბურთალო / ვაჟა-ფშაველა / ქავთარაძე', details: 'ვაჟა-ფშაველას გამზ. (კვარტლები), პეტრე ქავთარაძის ქ., ნუცუბიძის ქ., ანა პოლიტკოვსკაიას (ჯიქიას) ქ., უნივერსიტეტის ქ.' },
-        { code: '0187', region: 'თბილისი', area: 'კოჯორი / ტაბახმელა / შინდისი', details: 'კოჯორი, ტაბახმელა, შინდისი, წავკისი, კიკეთი' },
-        { code: '0190', region: 'თბილისი', area: 'სამგორი / ნავთლუღი', details: 'მეტრო სამგორი, წულაძის ქ., კახეთის გზატკეცილი' },
-        { code: '0192', region: 'თბილისი', area: 'ლოტკინი / კუკია', details: 'ხუდადოვის ქ., ლოტკინის დასახლება, თბილისის ზღვის მიმდებარე' },
-        { code: '0194', region: 'თბილისი', area: 'ნუცუბიძის პლატო / ლისი', details: 'ნუცუბიძის პლატო (I, II, III, IV, V მ/რ), ბესარიონ ჟღენტის ქ., ლისის ტბის მიმდებარე' },
-        { code: '0198', region: 'თბილისი', area: 'ლილო', details: 'ლილოს დასახლება, ლილო მოლი, ჭირნახულის ქ., იუმაშევის ქ.' },
-
-        { code: '2200', region: 'კახეთი', area: 'თელავი', details: 'ქ. თელავი და მუნიციპალიტეტის ცენტრი (წინანდალი - 2217)' },
-        { code: '1500', region: 'კახეთი', area: 'გურჯაანი', details: 'ქ. გურჯაანი და მუნიციპალიტეტი' },
-        { code: '4000', region: 'კახეთი', area: 'საგარეჯო', details: 'ქ. საგარეჯო (სოფ. პატარძეული - 4014, ნინოწმინდა - 4012, მანავი - 4010)' },
-        { code: '4200', region: 'კახეთი', area: 'სიღნაღი / წნორი', details: 'ქ. სიღნაღი (4200), ქ. წნორი (4201), ბოდბე' },
-        { code: '4800', region: 'კახეთი', area: 'ყვარელი', details: 'ქ. ყვარელი და მუნიციპალიტეტი' },
-        { code: '2700', region: 'კახეთი', area: 'ლაგოდეხი', details: 'ქ. ლაგოდეხი და მუნიციპალიტეტი' },
-        { code: '0900', region: 'კახეთი', area: 'ახმეტა', details: 'ქ. ახმეტა და მუნიციპალიტეტი' },
-        { code: '1600', region: 'კახეთი', area: 'დედოფლისწყარო', details: 'ქ. დედოფლისწყარო და მუნიციპალიტეტი' },
-
-        { code: '3700', region: 'ქვემო ქართლი', area: 'რუსთავი', details: 'ქ. რუსთავი (ძველი და ახალი რუსთავი: 3700-3704)' },
-        { code: '3000', region: 'ქვემო ქართლი', area: 'მარნეული', details: 'ქ. მარნეული და მუნიციპალიტეტი' },
-        { code: '1300', region: 'ქვემო ქართლი', area: 'გარდაბანი', details: 'ქ. გარდაბანი (მარტყოფი - 1316, სართიჭალა - 1320)' },
-        { code: '1100', region: 'ქვემო ქართლი', area: 'ბოლნისი', details: 'ქ. ბოლნისი და მუნიციპალიტეტი' },
-        { code: '1700', region: 'ქვემო ქართლი', area: 'დმანისი', details: 'ქ. დმანისი და მუნიციპალიტეტი' },
-        { code: '2100', region: 'ქვემო ქართლი', area: 'თეთრიწყარო', details: 'ქ. თეთრიწყარო (მანგლისი - 2109)' },
-        { code: '5200', region: 'ქვემო ქართლი', area: 'წალკა', details: 'ქ. წალკა და მუნიციპალიტეტი' },
-
-        { code: '3300', region: 'მცხეთა-მთიანეთი', area: 'მცხეთა', details: 'ქ. მცხეთა (საგურამო - 3308, წეროვანი - 3314, ნატახტარი - 3307)' },
-        { code: '1800', region: 'მცხეთა-მთიანეთი', area: 'დუშეთი', details: 'ქ. დუშეთი (ბაზალეთი - 1802, ჟინვალი - 1816, ფასანაური - 1817)' },
-        { code: '4700', region: 'მცხეთა-მთიანეთი', area: 'სტეფანწმინდა (ყაზბეგი)', details: 'დაბა სტეფანწმინდა (კურორტი გუდაური - 4702)' },
-        { code: '2300', region: 'მცხეთა-მთიანეთი', area: 'თიანეთი', details: 'დაბა თიანეთი (დაბა სიონი - 2306)' },
-
-        { code: '1400', region: 'შიდა ქართლი', area: 'გორი', details: 'ქ. გორი და მუნიციპალიტეტი' },
-        { code: '5700', region: 'შიდა ქართლი', area: 'ხაშური', details: 'ქ. ხაშური (დაბა სურამი - 5701)' },
-        { code: '2600', region: 'შიდა ქართლი', area: 'კასპი', details: 'ქ. კასპი და მუნიციპალიტეტი' },
-        { code: '4500', region: 'შიდა ქართლი', area: 'ქარელი', details: 'ქ. ქარელი და მუნიციპალიტეტი' },
-
-        { code: '4600', region: 'იმერეთი', area: 'ქუთაისი', details: 'ქ. ქუთაისი (ცენტრი და უბნები: 4600-4610)' },
-        { code: '2000', region: 'იმერეთი', area: 'ზესტაფონი', details: 'ქ. ზესტაფონი და მუნიციპალიტეტი' },
-        { code: '3900', region: 'იმერეთი', area: 'სამტრედია', details: 'ქ. სამტრედია (კოპიტნარის აეროპორტი)' },
-        { code: '5400', region: 'იმერეთი', area: 'წყალტუბო', details: 'ქ. წყალტუბო და მუნიციპალიტეტი' },
-        { code: '5500', region: 'იმერეთი', area: 'ჭიათურა', details: 'ქ. ჭიათურა და მუნიციპალიტეტი' },
-        { code: '4100', region: 'იმერეთი', area: 'საჩხერე', details: 'ქ. საჩხერე და მუნიციპალიტეტი' },
-        { code: '4300', region: 'იმერეთი', area: 'ტყიბული', details: 'ქ. ტყიბული და მუნიციპალიტეტი' },
-        { code: '1000', region: 'იმერეთი', area: 'ბაღდათი', details: 'ქ. ბაღდათი (კურორტი საირმე)' },
-        { code: '1900', region: 'იმერეთი', area: 'ვანი', details: 'ქ. ვანი და მუნიციპალიტეტი' },
-        { code: '2400', region: 'იმერეთი', area: 'თერჯოლა', details: 'ქ. თერჯოლა და მუნიციპალიტეტი' },
-        { code: '5600', region: 'იმერეთი', area: 'ხარაგაული', details: 'დაბა ხარაგაული და მუნიციპალიტეტი' },
-        { code: '5900', region: 'იმერეთი', area: 'ხონი', details: 'ქ. ხონი და მუნიციპალიტეტი' },
-
-        { code: '6000', region: 'აჭარა', area: 'ბათუმი', details: 'ქ. ბათუმი (ცენტრი და უბნები: 6000-6010)' },
-        { code: '6200', region: 'აჭარა', area: 'ქობულეთი', details: 'ქ. ქობულეთი (ჩაქვი - 6202, ციხისძირი)' },
-        { code: '6400', region: 'აჭარა', area: 'ხელვაჩაური / გონიო / სარფი', details: 'ხელვაჩაური (6400), გონიო (6414), კვარიათი, სარფი' },
-        { code: '6100', region: 'აჭარა', area: 'ქედა', details: 'დაბა ქედა და მუნიციპალიტეტი' },
-        { code: '6300', region: 'აჭარა', area: 'შუახევი', details: 'დაბა შუახევი და მუნიციპალიტეტი' },
-        { code: '6500', region: 'აჭარა', area: 'ხულო', details: 'დაბა ხულო (კურორტი ბეშუმი, გოდერძი)' },
-
-        { code: '2100', region: 'სამეგრელო-ზემო სვანეთი', area: 'ზუგდიდი', details: 'ქ. ზუგდიდი (ანაკლია - 2103, განმუხური)' },
-        { code: '4400', region: 'სამეგრელო-ზემო სვანეთი', area: 'ფოთი', details: 'ქ. ფოთი (4400-4402, მალთაყვა)' },
-        { code: '4100', region: 'სამეგრელო-ზემო სვანეთი', area: 'სენაკი', details: 'ქ. სენაკი და მუნიციპალიტეტი' },
-        { code: '0200', region: 'სამეგრელო-ზემო სვანეთი', area: 'აბაშა', details: 'ქ. აბაშა და მუნიციპალიტეტი' },
-        { code: '3100', region: 'სამეგრელო-ზემო სვანეთი', area: 'მარტვილი', details: 'ქ. მარტვილი და მუნიციპალიტეტი' },
-        { code: '5800', region: 'სამეგრელო-ზემო სვანეთი', area: 'ხობი', details: 'ქ. ხობი და მუნიციპალიტეტი' },
-        { code: '5300', region: 'სამეგრელო-ზემო სვანეთი', area: 'წალენჯიხა', details: 'ქ. წალენჯიხა და ჯვარი' },
-        { code: '5100', region: 'სამეგრელო-ზემო სვანეთი', area: 'ჩხოროწყუ', details: 'დაბა ჩხოროწყუ და მუნიციპალიტეტი' },
-        { code: '3200', region: 'სამეგრელო-ზემო სვანეთი', area: 'მესტია', details: 'დაბა მესტია, უშგული, ჰაწვალი, თეთნულდი' },
-
-        { code: '3500', region: 'გურია', area: 'ოზურგეთი / ურეკი / შეკვეთილი', details: 'ქ. ოზურგეთი (3500), დაბა ურეკი და შეკვეთილი (3521)' },
-        { code: '2800', region: 'გურია', area: 'ლანჩხუთი / გრიგოლეთი', details: 'ქ. ლანჩხუთი (2800), გრიგოლეთი (2808)' },
-        { code: '4900', region: 'გურია', area: 'ჩოხატაური / ბახმარო', details: 'დაბა ჩოხატაური (4900), კურორტი ბახმარო (4902)' },
-
-        { code: '0800', region: 'სამცხე-ჯავახეთი', area: 'ახალციხე', details: 'ქ. ახალციხე (რაბათი, ვალე - 0801)' },
-        { code: '1200', region: 'სამცხე-ჯავახეთი', area: 'ბორჯომი / ბაკურიანი', details: 'ქ. ბორჯომი (1200), დაბა ბაკურიანი (1204), წაღვერი' },
-        { code: '0700', region: 'სამცხე-ჯავახეთი', area: 'ახალქალაქი', details: 'ქ. ახალქალაქი და მუნიციპალიტეტი' },
-        { code: '3400', region: 'სამცხე-ჯავახეთი', area: 'ნინოწმინდა', details: 'ქ. ნინოწმინდა და მუნიციპალიტეტი' },
-        { code: '0300', region: 'სამცხე-ჯავახეთი', area: 'ადიგენი / აბასთუმანი', details: 'დაბა ადიგენი (0300), კურორტი აბასთუმანი (0301)' },
-        { code: '0500', region: 'სამცხე-ჯავახეთი', area: 'ასპინძა', details: 'დაბა ასპინძა, ვარძია' },
-
-        { code: '0400', region: 'რაჭა-ლეჩხუმი და ქვემო სვანეთი', area: 'ამბროლაური', details: 'ქ. ამბროლაური, ნიკორწმინდა, შაორი' },
-        { code: '3600', region: 'რაჭა-ლეჩხუმი და ქვემო სვანეთი', area: 'ონი', details: 'ქ. ონი, კურორტი შოვი, უწერა' },
-        { code: '5000', region: 'რაჭა-ლეჩხუმი და ქვემო სვანეთი', area: 'ცაგერი', details: 'ქ. ცაგერი და მუნიციპალიტეტი' },
-        { code: '2900', region: 'რაჭა-ლეჩხუმი და ქვემო სვანეთი', area: 'ლენტეხი', details: 'დაბა ლენტეხი და მუნიციპალიტეტი' }
-      ];
 
       const searchInput = document.getElementById('postal-search');
       const regionSelect = document.getElementById('postal-region');
+      const districtSelect = document.getElementById('postal-district');
       const countEl = document.getElementById('postal-count');
       const tbody = document.getElementById('postal-tbody');
+      const osmBtn = document.getElementById('btn-osm-lookup');
+      const osmBox = document.getElementById('osm-results-box');
 
-      function renderTable() {
-        const q = searchInput.value.trim().toLowerCase();
+      function populateDistricts() {
         const reg = regionSelect.value;
-
-        const filtered = POSTAL_DATA.filter(function (item) {
-          const matchesReg = reg === 'ყველა' || item.region === reg;
-          const matchesQuery = q === '' ||
-            item.code.toLowerCase().includes(q) ||
-            item.area.toLowerCase().includes(q) ||
-            item.details.toLowerCase().includes(q) ||
-            item.region.toLowerCase().includes(q);
-          return matchesReg && matchesQuery;
-        });
-
-        countEl.textContent = String(filtered.length);
-        tbody.innerHTML = filtered.map(function (item) {
-          return (
-            '<tr>' +
-              '<td><code style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">' + escapeHtml(item.code) + '</code></td>' +
-              '<td><strong>' + escapeHtml(item.area) + '</strong><br/><small style="color: var(--text-muted);">' + escapeHtml(item.region) + '</small></td>' +
-              '<td>' + escapeHtml(item.details) + '</td>' +
-              '<td><button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(item.code) + '">კოპირება</button></td>' +
-            '</tr>'
-          );
+        const subset = reg === 'ყველა' ? POSTAL_DATA : POSTAL_DATA.filter(function (x) { return x.region === reg; });
+        const districts = ['ყველა'].concat(Array.from(new Set(subset.map(function (x) { return x.district; }))));
+        districtSelect.innerHTML = districts.map(function (d) {
+          return '<option value="' + escapeHtml(d) + '">' + (d === 'ყველა' ? 'ყველა უბანი / ქალაქი' : escapeHtml(d)) + '</option>';
         }).join('');
+      }
 
-        tbody.querySelectorAll('.copy-zip-btn').forEach(function (btn) {
+      function bindCopyButtons(container) {
+        container.querySelectorAll('.copy-zip-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             const code = btn.getAttribute('data-code');
             copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
@@ -238,8 +124,79 @@
         });
       }
 
+      function renderTable() {
+        osmBox.classList.add('hidden');
+        const q = searchInput.value.trim().toLowerCase();
+        const reg = regionSelect.value;
+        const dist = districtSelect.value;
+
+        const filtered = POSTAL_DATA.filter(function (item) {
+          const matchesReg = reg === 'ყველა' || item.region === reg;
+          const matchesDist = dist === 'ყველა' || item.district === dist;
+          const matchesQuery = q === '' ||
+            item.street.toLowerCase().includes(q) ||
+            item.code.toLowerCase().includes(q) ||
+            item.district.toLowerCase().includes(q) ||
+            item.region.toLowerCase().includes(q);
+          return matchesReg && matchesDist && matchesQuery;
+        });
+
+        countEl.textContent = String(filtered.length);
+        tbody.innerHTML = filtered.map(function (item) {
+          return (
+            '<tr>' +
+              '<td><code style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">' + escapeHtml(item.code) + '</code></td>' +
+              '<td><strong>' + escapeHtml(item.street) + '</strong></td>' +
+              '<td>' + escapeHtml(item.district) + ' <small style="color: var(--text-muted);">(' + escapeHtml(item.region) + ')</small></td>' +
+              '<td><button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(item.code) + '">კოპირება</button></td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        bindCopyButtons(tbody);
+      }
+
+      // ონლაინ მოძიება OpenStreetMap-ის ბაზაში ნებისმიერი პატარა ქუჩისთვის
+      osmBtn.addEventListener('click', async function () {
+        const q = searchInput.value.trim();
+        if (!q) {
+          showToast('ჯერ ჩაწერეთ ქუჩის ან დასახლების სახელი საძიებო ველში.');
+          searchInput.focus();
+          return;
+        }
+        osmBox.innerHTML = 'მიმდინარეობს მისამართის ძიება საქართველოს რუკის ბაზაში...';
+        osmBox.classList.remove('hidden');
+        try {
+          const url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=ge&limit=8&accept-language=ka&q=' + encodeURIComponent(q);
+          const resp = await fetch(url);
+          const data = await resp.json();
+          const withPostcodes = (data || []).filter(function (d) { return d.address && d.address.postcode; });
+          if (withPostcodes.length === 0) {
+            osmBox.innerHTML = 'რუკის ონლაინ ბაზაში ამ დასახელებით დამატებითი ინდექსი ვერ მოიძებნა. იხილეთ ქვემოთ მოცემული ძირითადი ცხრილი.';
+            return;
+          }
+          osmBox.innerHTML = '<strong>🌐 რუკის ბაზაში ნაპოვნი მისამართები:</strong><div style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.4rem;">' +
+            withPostcodes.map(function (item) {
+              const pc = item.address.postcode;
+              return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;background:var(--bg-surface);padding:0.45rem 0.75rem;border-radius:6px;border:1px solid var(--border);">' +
+                '<span><code style="font-weight:700;color:var(--primary);">' + escapeHtml(pc) + '</code> - ' + escapeHtml(item.display_name) + '</span>' +
+                '<button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(pc) + '">კოპირება</button>' +
+              '</div>';
+            }).join('') + '</div>';
+          bindCopyButtons(osmBox);
+        } catch (_) {
+          osmBox.innerHTML = 'ონლაინ ბაზასთან დაკავშირება ვერ მოხერხდა.';
+        }
+      });
+
+      regionSelect.addEventListener('change', function () {
+        populateDistricts();
+        renderTable();
+      });
+      districtSelect.addEventListener('change', renderTable);
       searchInput.addEventListener('input', renderTable);
-      regionSelect.addEventListener('change', renderTable);
+
+      populateDistricts();
       renderTable();
     })();
   </script>
