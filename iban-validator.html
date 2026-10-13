@@ -45,15 +45,15 @@
       <div class="stats-grid" aria-live="polite">
         <div class="stat-box">
           <span class="stat-label">ბანკი / ორგანიზაცია</span>
-          <span class="stat-value" id="res-iban-bank" style="font-size: 1rem;">—</span>
+          <span class="stat-value" id="res-iban-bank" style="font-size: 1rem;">-</span>
         </div>
         <div class="stat-box">
           <span class="stat-label">ბანკის კოდი და SWIFT</span>
-          <span class="stat-value" id="res-iban-swift" style="font-size: 1.05rem;">—</span>
+          <span class="stat-value" id="res-iban-swift" style="font-size: 1.05rem;">-</span>
         </div>
         <div class="stat-box">
           <span class="stat-label">ბეჭდური ფორმატი (4-ნიშნა ჯგუფებით)</span>
-          <span class="stat-value" id="res-iban-formatted" style="font-size: 0.98rem; font-family: monospace;">—</span>
+          <span class="stat-value" id="res-iban-formatted" style="font-size: 0.98rem; font-family: monospace;">-</span>
         </div>
       </div>
 
@@ -120,9 +120,9 @@
         if (!val.trim()) {
           statusBanner.className = 'alert alert-info';
           statusBanner.textContent = 'შეიყვანეთ IBAN ანგარიშის ნომერი შესამოწმებლად.';
-          resBank.textContent = '—';
-          resSwift.textContent = '—';
-          resFormatted.textContent = '—';
+          resBank.textContent = '-';
+          resSwift.textContent = '-';
+          resFormatted.textContent = '-';
           lastResult = null;
           return;
         }
@@ -134,9 +134,9 @@
           statusBanner.className = res.isValid ? 'alert alert-success' : 'alert alert-error';
           statusBanner.textContent = (res.isValid ? '✓ ' : '✗ ') + res.reason;
 
-          resBank.textContent = res.bankName || '—';
-          resSwift.textContent = res.bankCode ? (res.bankCode + ' / ' + res.swift) : '—';
-          resFormatted.textContent = res.formatted || '—';
+          resBank.textContent = res.bankName || '-';
+          resSwift.textContent = res.bankCode ? (res.bankCode + ' / ' + res.swift) : '-';
+          resFormatted.textContent = res.formatted || '-';
         } catch (err) {
           statusBanner.className = 'alert alert-error';
           statusBanner.textContent = err.message;

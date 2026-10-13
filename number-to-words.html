@@ -56,7 +56,7 @@
 
       <div class="result-card">
         <span class="result-card-label">სიტყვიერი ჩანაწერი:</span>
-        <div class="result-card-value" id="res-words-only">—</div>
+        <div class="result-card-value" id="res-words-only">-</div>
         <div class="btn-row">
           <button type="button" id="btn-copy-words" class="btn btn-primary btn-sm">სიტყვიერი ჩანაწერის კოპირება</button>
         </div>
@@ -64,7 +64,7 @@
 
       <div class="result-card">
         <span class="result-card-label">ხელშეკრულების / ინვოისის სტანდარტული ფორმატი (ციფრებით + ფრჩხილებში სიტყვიერად):</span>
-        <div class="result-card-value" id="res-contract-format">—</div>
+        <div class="result-card-value" id="res-contract-format">-</div>
         <div class="btn-row">
           <button type="button" id="btn-copy-contract" class="btn btn-secondary btn-sm">ხელშეკრულების ფორმატის კოპირება</button>
         </div>
@@ -82,7 +82,7 @@
       <h2 class="panel-title">ქართული რიცხვითი სახელების მართლწერის წესები</h2>
       <p style="font-size: 0.92rem; color: var(--text-muted);">
         • <strong>ფუძის კვეცა რთულ რიცხვებში:</strong> როდესაც <em>ასი, ათასი, მილიონი, მილიარდი</em> მოსდევს მომდევნო არანულოვანი თანრიგი, მათ ეკვეცებათ ბოლო ხმოვანი <strong>-ი</strong>: იწერება <code>ორი ათას ხუთას ოცდაათი</code> (და არა <code>ორი ათასი ხუთასი ოცდაათი</code>).<br />
-        • <strong>1000-ის ჩაწერა:</strong> ქართულ სალიტერატურო ენაში 1000 იწერება როგორც <code>ათასი</code> (და არა <code>ერთი ათასი</code>), ხოლო 1,000,000 — <code>ერთი მილიონი</code>.
+        • <strong>1000-ის ჩაწერა:</strong> ქართულ სალიტერატურო ენაში 1000 იწერება როგორც <code>ათასი</code> (და არა <code>ერთი ათასი</code>), ხოლო 1,000,000 - <code>ერთი მილიონი</code>.
       </p>
     </section>
   </main>
@@ -117,8 +117,8 @@
         } catch (err) {
           errorBox.textContent = err.message;
           errorBox.classList.remove('hidden');
-          resWordsOnly.textContent = '—';
-          resContractFormat.textContent = '—';
+          resWordsOnly.textContent = '-';
+          resContractFormat.textContent = '-';
         }
       }
 
@@ -127,13 +127,13 @@
       subAsWords.addEventListener('change', updateWords);
 
       document.getElementById('btn-copy-words').addEventListener('click', function () {
-        if (resWordsOnly.textContent !== '—') {
+        if (resWordsOnly.textContent !== '-') {
           copyToClipboard(resWordsOnly.textContent, 'სიტყვიერი ჩანაწერი დაკოპირდა!');
         }
       });
 
       document.getElementById('btn-copy-contract').addEventListener('click', function () {
-        if (resContractFormat.textContent !== '—') {
+        if (resContractFormat.textContent !== '-') {
           copyToClipboard(resContractFormat.textContent, 'ხელშეკრულების ფორმატი დაკოპირდა!');
         }
       });

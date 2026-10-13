@@ -54,7 +54,7 @@
       url: 'qr-generator.html',
       category: 'მედია',
       icon: '▣',
-      description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში — PNG და SVG ჩამოტვირთვით.'
+      description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში - PNG და SVG ჩამოტვირთვით.'
     },
     {
       id: 'translit',
@@ -184,7 +184,7 @@
         '<div class="container header-inner">' +
           '<a href="index.html" class="brand" aria-label="Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი">' +
             '<span class="brand-logo">მ</span>' +
-            '<span>Mokled — მოკლედ</span>' +
+            '<span>Mokled - მოკლედ</span>' +
           '</a>' +
           '<div class="header-controls">' +
             '<button type="button" class="theme-toggle-btn" id="theme-toggle-btn">' + themeLabel + '</button>' +
@@ -221,7 +221,7 @@
       footerEl.innerHTML =
         '<div class="container footer-inner">' +
           '<div>' +
-            '<strong>Mokled — მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
+            '<strong>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
             '<p>ყველა ლოკალური გამოთვლა სრულდება თქვენს ბრაუზერში. სწრაფი ძიება: <code>Ctrl + K</code></p>' +
           '</div>' +
           '<div class="footer-links">' +
