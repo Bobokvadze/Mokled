@@ -1,4 +1,0 @@
-# ლოკალური ტესტირებისთვის გადაარქვით ამ ფაილს სახელი ".dev.vars"-ზე
-# და ჩაწერეთ თქვენი რეალური Gemini API გასაღები (ეს ფაილი GitHub-ზე არ იტვირთება):
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash
