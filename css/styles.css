@@ -1128,25 +1128,33 @@ main.container, main {
   align-items: center !important;
   justify-content: center !important;
   height: auto !important;
-  padding: 4px 8px !important;
+  padding: 0 !important;
   margin: 0 !important;
-  border: 1px solid transparent !important;
-  border-radius: 10px !important;
-  box-sizing: border-box !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   transform: none !important;
-}
-[data-theme="dark"] .brand-logo {
-  background: rgba(255, 255, 255, 0.93) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 .brand-logo img,
 [data-theme="dark"] .brand-logo img {
   height: 48px !important;
   width: auto !important;
-  display: block !important;
   margin: 0 !important;
   padding: 0 !important;
   transform: none !important;
+}
+.brand-logo .logo-light {
+  display: block !important;
+}
+.brand-logo .logo-dark {
+  display: none !important;
+}
+[data-theme="dark"] .brand-logo .logo-light {
+  display: none !important;
+}
+[data-theme="dark"] .brand-logo .logo-dark {
+  display: block !important;
 }
 .theme-toggle-btn {
   min-width: 110px !important;
@@ -1156,11 +1164,6 @@ main.container, main {
   box-sizing: border-box !important;
 }
 @media (max-width: 860px) {
-  .brand-logo,
-  [data-theme="dark"] .brand-logo {
-    height: auto !important;
-    padding: 4px 7px !important;
-  }
   .brand-logo img,
   [data-theme="dark"] .brand-logo img {
     height: 42px !important;

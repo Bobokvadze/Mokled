@@ -121,7 +121,7 @@
 
       headerEl.innerHTML =
         '<div class="container header-inner">' +
-          '<a href="index.html" class="brand" aria-label="Mokled - მთავარი გვერდი"><span class="brand-logo"><img src="assets/logo.png" alt="Mokled" /></span></a>' +
+          '<a href="index.html" class="brand" aria-label="Mokled - მთავარი გვერდი"><span class="brand-logo"><img src="assets/logo.png" alt="Mokled" class="logo-light" /><img src="assets/logo-dark.png" alt="Mokled" class="logo-dark" /></span></a>' +
           '<nav class="desktop-nav" aria-label="მთავარი ნავიგაცია">' +
             '<a href="index.html" class="nav-link ' + (currentId === 'home' ? 'active' : '') + '">მთავარი</a>' +
             desktopDropdowns +
