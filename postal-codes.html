@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>საქართველოს საფოსტო ინდექსები (ყველა ქუჩა, უბანი და ქალაქი) | Mokled - მოკლედ</title>
-  <meta name="description" content="საქართველოს საფოსტო ინდექსების (Postal / ZIP Code) სრული საძიებო ბაზა: თბილისის ყველა ქუჩა, გამზირი, მიკრორაიონი და საქართველოს ყველა ქალაქი და სოფელი." />
+  <meta name="description" content="საქართველოს საფოსტო ინდექსების (Postal / ZIP Code) სრული საძიებო ბაზა (7000+ მისამართი): თბილისის ყველა ქუჩა, ჩიხი, შესახვევი და საქართველოს ყველა ქალაქი და სოფელი." />
   <link rel="canonical" href="https://mokled.pages.dev/postal-codes.html" />
   <meta property="og:title" content="საქართველოს საფოსტო ინდექსების სრული საძიებო | Mokled - მოკლედ" />
-  <meta property="og:description" content="მოძებნეთ თბილისის ნებისმიერი ქუჩისა და საქართველოს ქალაქების საფოსტო კოდები (0100-6500) ერთი დაწკაპუნებით კოპირებით." />
+  <meta property="og:description" content="მოძებნეთ თბილისის ნებისმიერი ქუჩისა და საქართველოს ქალაქების/სოფლების საფოსტო კოდები (7000+ მისამართი) ერთი დაწკაპუნებით კოპირებით." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/postal-codes.html" />
   <meta property="og:locale" content="ka_GE" />
@@ -26,58 +26,53 @@
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / მონაცემები</div>
       <h1>საქართველოს საფოსტო ინდექსების საძიებო</h1>
       <p>
-        მოძებნეთ თბილისის ნებისმიერი ქუჩის, გამზირის, მიკრორაიონისა და საქართველოს ქალაქების/სოფლების 4-ნიშნა საფოსტო კოდი (Postal / ZIP Code).
+        მოძებნეთ თბილისის ნებისმიერი ქუჩის, ჩიხის, შესახვევისა და საქართველოს ყველა ქალაქისა და სოფლის 4-ნიშნა საფოსტო ინდექსი (7,060+ მისამართი).
       </p>
     </div>
 
     <section class="panel">
       <div class="grid-3" style="align-items: end;">
         <div class="form-group">
-          <label class="form-label" for="postal-search">ქუჩა, გამზირი, უბანი, ქალაქი ან კოდი:</label>
-          <input type="search" id="postal-search" class="input" placeholder="მაგ.: პეკინის, ჭავჭავაძის, ქავთარაძის, გლდანი, ბათუმი, 0186..." />
+          <label class="form-label" for="postal-search">მისამართი, ქუჩა, სოფელი ან ინდექსი:</label>
+          <input type="search" id="postal-search" class="input" placeholder="მაგ.: პეკინის, ჭავჭავაძის, ქავთარაძის, 0186, პატარძეული..." />
         </div>
         <div class="form-group">
-          <label class="form-label" for="postal-region">რეგიონი:</label>
-          <select id="postal-region" class="input">
-            <option value="ყველა" selected>ყველა რეგიონი</option>
-            <option value="თბილისი">თბილისი</option>
-            <option value="კახეთი">კახეთი</option>
-            <option value="ქვემო ქართლი">ქვემო ქართლი</option>
-            <option value="მცხეთა-მთიანეთი">მცხეთა-მთიანეთი</option>
-            <option value="შიდა ქართლი">შიდა ქართლი</option>
-            <option value="იმერეთი">იმერეთი</option>
-            <option value="აჭარა">აჭარა</option>
-            <option value="სამეგრელო-ზემო სვანეთი">სამეგრელო-ზემო სვანეთი</option>
-            <option value="გურია">გურია</option>
-            <option value="სამცხე-ჯავახეთი">სამცხე-ჯავახეთი</option>
-            <option value="რაჭა-ლეჩხუმი და ქვემო სვანეთი">რაჭა-ლეჩხუმი და ქვემო სვანეთი</option>
+          <label class="form-label" for="postal-city">ქალაქი / მუნიციპალიტეტი:</label>
+          <select id="postal-city" class="input">
+            <option value="ყველა" selected>ყველა ქალაქი / მუნიციპალიტეტი</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="postal-district">უბანი / მუნიციპალიტეტი:</label>
+          <label class="form-label" for="postal-district">უბანი (თბილისი):</label>
           <select id="postal-district" class="input">
-            <option value="ყველა" selected>ყველა უბანი / ქალაქი</option>
+            <option value="ყველა" selected>ყველა უბანი</option>
           </select>
         </div>
       </div>
 
       <div class="section-header" style="margin-top: 0.35rem;">
-        <span style="font-size: 0.9rem; color: var(--text-muted);">სულ ბაზაში ნაპოვნია: <strong id="postal-count">0</strong></span>
+        <span style="font-size: 0.9rem; color: var(--text-muted);">ნაპოვნი მისამართები: <strong id="postal-count">0</strong></span>
         <span class="badge">თბილისის ზოგადი კოდი: 0100</span>
       </div>
 
-      <div class="table-wrap" style="max-height: 560px;">
+      <div class="table-wrap" style="max-height: 580px;">
         <table>
           <thead>
             <tr>
-              <th style="width: 110px;">ინდექსი</th>
-              <th>ქუჩა / გამზირი / მიკრორაიონი / დასახლება</th>
-              <th style="width: 240px;">უბანი / მუნიციპალიტეტი</th>
-              <th style="width: 125px;">მოქმედება</th>
+              <th style="width: 115px;">ინდექსი</th>
+              <th>მისამართი (ქუჩა / ჩიხი / დასახლება)</th>
+              <th style="width: 170px;">ქალაქი / მუნიციპალიტეტი</th>
+              <th style="width: 180px;">უბანი</th>
+              <th style="width: 120px;">მოქმედება</th>
             </tr>
           </thead>
           <tbody id="postal-tbody"></tbody>
         </table>
+      </div>
+
+      <div id="load-more-wrap" class="btn-row hidden" style="justify-content: center; margin-top: 1rem;">
+        <button type="button" id="btn-load-more" class="btn btn-secondary">მეტის ჩვენება (+300)</button>
+        <button type="button" id="btn-load-all" class="btn btn-secondary">ყველას ჩვენება</button>
       </div>
     </section>
   </main>
@@ -90,69 +85,137 @@
   <script>
     (function () {
       const { initLayout, copyToClipboard, escapeHtml } = window.GeoCommon;
-      const POSTAL_DATA = window.GeoPostalData || [];
+      const RAW_DATA = window.GeoPostalData || [];
       initLayout('postal-codes');
 
       const searchInput = document.getElementById('postal-search');
-      const regionSelect = document.getElementById('postal-region');
+      const citySelect = document.getElementById('postal-city');
       const districtSelect = document.getElementById('postal-district');
       const countEl = document.getElementById('postal-count');
       const tbody = document.getElementById('postal-tbody');
+      const loadMoreWrap = document.getElementById('load-more-wrap');
+      const loadMoreBtn = document.getElementById('btn-load-more');
+      const loadAllBtn = document.getElementById('btn-load-all');
 
-      function populateDistricts() {
-        const reg = regionSelect.value;
-        const subset = reg === 'ყველა' ? POSTAL_DATA : POSTAL_DATA.filter(function (x) { return x.region === reg; });
-        const districts = ['ყველა'].concat(Array.from(new Set(subset.map(function (x) { return x.district; }))));
-        districtSelect.innerHTML = districts.map(function (d) {
-          return '<option value="' + escapeHtml(d) + '">' + (d === 'ყველა' ? 'ყველა უბანი / ქალაქი' : escapeHtml(d)) + '</option>';
+      const PAGE_STEP = 300;
+      let visibleLimit = PAGE_STEP;
+      let currentFiltered = [];
+
+      // მოვამზადოთ მონაცემები სწრაფი ძიებისთვის
+      const POSTAL_ITEMS = RAW_DATA.map(function (row) {
+        const city = row[0] || '';
+        const address = row[1] || '';
+        const code = row[2] || '';
+        const district = row[3] || '';
+        return {
+          city: city,
+          address: address,
+          code: code,
+          district: district,
+          searchKey: (code + ' ' + address + ' ' + city + ' ' + district).toLowerCase()
+        };
+      });
+
+      function populateCities() {
+        const cities = ['ყველა'].concat(Array.from(new Set(POSTAL_ITEMS.map(function (x) { return x.city; }).filter(Boolean))));
+        citySelect.innerHTML = cities.map(function (c) {
+          return '<option value="' + escapeHtml(c) + '">' + (c === 'ყველა' ? 'ყველა ქალაქი / მუნიციპალიტეტი' : escapeHtml(c)) + '</option>';
         }).join('');
       }
 
-      function renderTable() {
-        const q = searchInput.value.trim().toLowerCase();
-        const reg = regionSelect.value;
-        const dist = districtSelect.value;
+      function populateDistricts() {
+        const selectedCity = citySelect.value;
+        const subset = selectedCity === 'ყველა'
+          ? POSTAL_ITEMS
+          : POSTAL_ITEMS.filter(function (x) { return x.city === selectedCity; });
 
-        const filtered = POSTAL_DATA.filter(function (item) {
-          const matchesReg = reg === 'ყველა' || item.region === reg;
-          const matchesDist = dist === 'ყველა' || item.district === dist;
-          const matchesQuery = q === '' ||
-            item.street.toLowerCase().includes(q) ||
-            item.code.toLowerCase().includes(q) ||
-            item.district.toLowerCase().includes(q) ||
-            item.region.toLowerCase().includes(q);
-          return matchesReg && matchesDist && matchesQuery;
-        });
+        const uniqueDistricts = Array.from(new Set(subset.map(function (x) { return x.district; }).filter(Boolean))).sort();
+        if (uniqueDistricts.length === 0) {
+          districtSelect.innerHTML = '<option value="ყველა">-</option>';
+          districtSelect.disabled = true;
+        } else {
+          districtSelect.disabled = false;
+          const list = ['ყველა'].concat(uniqueDistricts);
+          districtSelect.innerHTML = list.map(function (d) {
+            return '<option value="' + escapeHtml(d) + '">' + (d === 'ყველა' ? 'ყველა უბანი' : escapeHtml(d)) + '</option>';
+          }).join('');
+        }
+      }
 
-        countEl.textContent = String(filtered.length);
-        tbody.innerHTML = filtered.map(function (item) {
+      function renderRows() {
+        const total = currentFiltered.length;
+        countEl.textContent = total.toLocaleString('ka-GE');
+        const slice = currentFiltered.slice(0, visibleLimit);
+
+        tbody.innerHTML = slice.map(function (item) {
           return (
             '<tr>' +
               '<td><code style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">' + escapeHtml(item.code) + '</code></td>' +
-              '<td><strong>' + escapeHtml(item.street) + '</strong></td>' +
-              '<td>' + escapeHtml(item.district) + ' <small style="color: var(--text-muted);">(' + escapeHtml(item.region) + ')</small></td>' +
+              '<td><strong>' + escapeHtml(item.address) + '</strong></td>' +
+              '<td>' + escapeHtml(item.city) + '</td>' +
+              '<td>' + (item.district ? escapeHtml(item.district) : '<span style="color:var(--text-muted);">-</span>') + '</td>' +
               '<td><button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(item.code) + '">კოპირება</button></td>' +
             '</tr>'
           );
         }).join('');
 
-        tbody.querySelectorAll('.copy-zip-btn').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            const code = btn.getAttribute('data-code');
-            copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
-          });
-        });
+        if (total > visibleLimit) {
+          loadMoreWrap.classList.remove('hidden');
+          const remaining = total - visibleLimit;
+          loadAllBtn.textContent = 'ყველას ჩვენება (' + total + ')';
+          loadMoreBtn.textContent = 'მეტის ჩვენება (+' + Math.min(PAGE_STEP, remaining) + ')';
+        } else {
+          loadMoreWrap.classList.add('hidden');
+        }
       }
 
-      regionSelect.addEventListener('change', function () {
-        populateDistricts();
-        renderTable();
-      });
-      districtSelect.addEventListener('change', renderTable);
-      searchInput.addEventListener('input', renderTable);
+      function applyFilters() {
+        visibleLimit = PAGE_STEP;
+        const q = searchInput.value.trim().toLowerCase();
+        const tokens = q ? q.split(/\s+/) : [];
+        const c = citySelect.value;
+        const d = districtSelect.value;
 
+        currentFiltered = POSTAL_ITEMS.filter(function (item) {
+          if (c !== 'ყველა' && item.city !== c) return false;
+          if (d !== 'ყველა' && item.district !== d) return false;
+          for (let i = 0; i < tokens.length; i++) {
+            if (!item.searchKey.includes(tokens[i])) return false;
+          }
+          return true;
+        });
+
+        renderRows();
+      }
+
+      // Event Delegation კოპირების ღილაკებისთვის
+      tbody.addEventListener('click', function (e) {
+        const btn = e.target.closest('.copy-zip-btn');
+        if (!btn) return;
+        const code = btn.getAttribute('data-code');
+        copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
+      });
+
+      loadMoreBtn.addEventListener('click', function () {
+        visibleLimit += PAGE_STEP;
+        renderRows();
+      });
+
+      loadAllBtn.addEventListener('click', function () {
+        visibleLimit = currentFiltered.length;
+        renderRows();
+      });
+
+      citySelect.addEventListener('change', function () {
+        populateDistricts();
+        applyFilters();
+      });
+      districtSelect.addEventListener('change', applyFilters);
+      searchInput.addEventListener('input', applyFilters);
+
+      populateCities();
       populateDistricts();
-      renderTable();
+      applyFilters();
     })();
   </script>
 </body>
