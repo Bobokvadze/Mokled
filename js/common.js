@@ -162,6 +162,7 @@
 
     if (currentId && currentId !== 'home') { recordToolUsage(currentId); }
     enableNumericInputMasking();
+    if (currentId === 'loan-calculator') { setupLoanExcelExportButton(); }
 
     const topBtn = document.createElement('button');
     topBtn.type = 'button';
@@ -326,7 +327,325 @@
     return Number.isFinite(num) ? num : 0;
   }
 
+  // --- REAL XLSX GENERATOR START ---
+  const CRC32_TABLE = (function () {
+    const t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let k = 0; k < 8; k++) {
+        c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      }
+      t[i] = c >>> 0;
+    }
+    return t;
+  })();
+
+  function computeCrc32(u8) {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < u8.length; i++) {
+      crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ u8[i]) & 0xFF];
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  function xmlEscape(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function colIndexToLetter(idx) {
+    let s = '';
+    let n = idx + 1;
+    while (n > 0) {
+      const m = (n - 1) % 26;
+      s = String.fromCharCode(65 + m) + s;
+      n = Math.floor((n - 1) / 26);
+    }
+    return s;
+  }
+
+  function buildXlsxBlob(sheetTitle, rows) {
+    const stylesXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+        '<numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>' +
+        '<fonts count="3">' +
+          '<font><sz val="11"/><name val="Sylfaen"/></font>' +
+          '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Sylfaen"/></font>' +
+          '<font><b/><sz val="11"/><name val="Sylfaen"/></font>' +
+        '</fonts>' +
+        '<fills count="3">' +
+          '<fill><patternFill patternType="none"/></fill>' +
+          '<fill><patternFill patternType="gray125"/></fill>' +
+          '<fill><patternFill patternType="solid"><fgColor rgb="FF2563EB"/><bgColor indexed="64"/></patternFill></fill>' +
+        '</fills>' +
+        '<borders count="2">' +
+          '<border><left/><right/><top/><bottom/><diagonal/></border>' +
+          '<border>' +
+            '<left style="thin"><color rgb="FFD1D5DB"/></left>' +
+            '<right style="thin"><color rgb="FFD1D5DB"/></right>' +
+            '<top style="thin"><color rgb="FFD1D5DB"/></top>' +
+            '<bottom style="thin"><color rgb="FFD1D5DB"/></bottom>' +
+            '<diagonal/>' +
+          '</border>' +
+        '</borders>' +
+        '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+        '<cellXfs count="5">' +
+          '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>' +
+          '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' +
+          '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>' +
+          '<xf numFmtId="164" fontId="2" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>' +
+          '<xf numFmtId="0" fontId="2" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1"/>' +
+        '</cellXfs>' +
+        '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      '</styleSheet>';
+
+    let sheetRowsXml = '';
+    for (let r = 0; r < rows.length; r++) {
+      const rowObj = rows[r];
+      const cells = Array.isArray(rowObj) ? rowObj : (rowObj.cells || []);
+      const rowType = (!Array.isArray(rowObj) && rowObj.type) ? rowObj.type : 'data';
+      const rowNum = r + 1;
+      let rowXml = '<row r="' + rowNum + '">';
+      for (let c = 0; c < cells.length; c++) {
+        const ref = colIndexToLetter(c) + rowNum;
+        const rawVal = cells[c];
+        if (rawVal === null || rawVal === undefined || rawVal === '') {
+          rowXml += '<c r="' + ref + '" s="0" t="inlineStr"><is><t></t></is></c>';
+          continue;
+        }
+        if (typeof rawVal === 'number' && Number.isFinite(rawVal)) {
+          let styleIdx = 2;
+          if (rowType === 'header') styleIdx = 1;
+          else if (rowType === 'summary') styleIdx = (c === 0 && Number.isInteger(rawVal)) ? 4 : 3;
+          else if (c === 0 && Number.isInteger(rawVal)) styleIdx = 0;
+          rowXml += '<c r="' + ref + '" s="' + styleIdx + '" t="n"><v>' + rawVal + '</v></c>';
+        } else {
+          let styleIdx = 0;
+          if (rowType === 'header') styleIdx = 1;
+          else if (rowType === 'summary') styleIdx = 4;
+          rowXml += '<c r="' + ref + '" s="' + styleIdx + '" t="inlineStr"><is><t>' + xmlEscape(rawVal) + '</t></is></c>';
+        }
+      }
+      rowXml += '</row>';
+      sheetRowsXml += rowXml;
+    }
+
+    const sheetXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+        '<cols>' +
+          '<col min="1" max="1" width="12" customWidth="1"/>' +
+          '<col min="2" max="8" width="22" customWidth="1"/>' +
+        '</cols>' +
+        '<sheetData>' + sheetRowsXml + '</sheetData>' +
+      '</worksheet>';
+
+    const files = [
+      {
+        name: '[Content_Types].xml',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'
+      },
+      {
+        name: '_rels/.rels',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'
+      },
+      {
+        name: 'xl/workbook.xml',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xmlEscape(sheetTitle || 'სესხის გრაფიკი') + '" sheetId="1" r:id="rId1"/></sheets></workbook>'
+      },
+      {
+        name: 'xl/_rels/workbook.xml.rels',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'
+      },
+      { name: 'xl/styles.xml', content: stylesXml },
+      { name: 'xl/worksheets/sheet1.xml', content: sheetXml }
+    ];
+
+    const enc = new TextEncoder();
+    const localParts = [];
+    const centralParts = [];
+    let offset = 0;
+
+    for (let i = 0; i < files.length; i++) {
+      const nameBytes = enc.encode(files[i].name);
+      const dataBytes = enc.encode(files[i].content);
+      const crc = computeCrc32(dataBytes);
+      const size = dataBytes.length;
+
+      const lh = new Uint8Array(30 + nameBytes.length);
+      const ldv = new DataView(lh.buffer);
+      ldv.setUint32(0, 0x04034b50, true);
+      ldv.setUint16(4, 20, true);
+      ldv.setUint16(6, 0x0800, true);
+      ldv.setUint16(8, 0, true);
+      ldv.setUint16(10, 0, true);
+      ldv.setUint16(12, 0, true);
+      ldv.setUint32(14, crc, true);
+      ldv.setUint32(18, size, true);
+      ldv.setUint32(22, size, true);
+      ldv.setUint16(26, nameBytes.length, true);
+      ldv.setUint16(28, 0, true);
+      lh.set(nameBytes, 30);
+
+      localParts.push(lh, dataBytes);
+
+      const ch = new Uint8Array(46 + nameBytes.length);
+      const cdv = new DataView(ch.buffer);
+      cdv.setUint32(0, 0x02014b50, true);
+      cdv.setUint16(4, 20, true);
+      cdv.setUint16(6, 20, true);
+      cdv.setUint16(8, 0x0800, true);
+      cdv.setUint16(10, 0, true);
+      cdv.setUint16(12, 0, true);
+      cdv.setUint16(14, 0, true);
+      cdv.setUint32(16, crc, true);
+      cdv.setUint32(20, size, true);
+      cdv.setUint32(24, size, true);
+      cdv.setUint16(28, nameBytes.length, true);
+      cdv.setUint16(30, 0, true);
+      cdv.setUint16(32, 0, true);
+      cdv.setUint16(34, 0, true);
+      cdv.setUint16(36, 0, true);
+      cdv.setUint32(38, 0, true);
+      cdv.setUint32(42, offset, true);
+      ch.set(nameBytes, 46);
+
+      centralParts.push(ch);
+      offset += lh.length + size;
+    }
+
+    let cdSize = 0;
+    for (let i = 0; i < centralParts.length; i++) cdSize += centralParts[i].length;
+
+    const eocd = new Uint8Array(22);
+    const edv = new DataView(eocd.buffer);
+    edv.setUint32(0, 0x06054b50, true);
+    edv.setUint16(4, 0, true);
+    edv.setUint16(6, 0, true);
+    edv.setUint16(8, files.length, true);
+    edv.setUint16(10, files.length, true);
+    edv.setUint32(12, cdSize, true);
+    edv.setUint32(16, offset, true);
+    edv.setUint16(20, 0, true);
+
+    return new Blob(localParts.concat(centralParts, [eocd]), {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+  }
+
+  function downloadExcelXlsx(filename, sheetTitle, rows) {
+    const blob = buildXlsxBlob(sheetTitle, rows);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename.endsWith('.xlsx') ? filename : (filename + '.xlsx');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function exportLoanScheduleFromDom() {
+    const table = document.querySelector('table');
+    if (!table) { showToast('გრაფიკის ცხრილი ვერ მოიძებნა.'); return; }
+    const tbody = table.querySelector('tbody');
+    const trList = tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+    if (trList.length === 0) {
+      showToast('ჯერ გამოთვალეთ სესხის გრაფიკი.');
+      return;
+    }
+
+    const excelRows = [];
+    excelRows.push({ type: 'header', cells: ['Mokled - სესხის და იპოთეკის გადახდის გრაფიკი', '', '', '', '', ''] });
+
+    // ამოვიღოთ შემაჯამებელი მაჩვენებლები (.stat-box)
+    const statBoxes = document.querySelectorAll('.stat-box');
+    statBoxes.forEach(function (box) {
+      const lbl = box.querySelector('.stat-label');
+      const val = box.querySelector('.stat-value');
+      if (lbl && val) {
+        excelRows.push({ type: 'summary', cells: [lbl.textContent.trim(), val.textContent.trim()] });
+      }
+    });
+    excelRows.push({ type: 'data', cells: [] });
+
+    // ცხრილის სათაურები
+    const ths = Array.from(table.querySelectorAll('thead th')).map(function (th) { return th.textContent.trim(); });
+    if (ths.length > 0) {
+      excelRows.push({ type: 'header', cells: ths });
+    }
+
+    // ცხრილის სტრიქონები
+    trList.forEach(function (tr) {
+      const tds = Array.from(tr.querySelectorAll('td'));
+      if (tds.length === 0) return;
+      const rowCells = tds.map(function (td, idx) {
+        const raw = td.textContent.trim();
+        const cleaned = raw.replace(/[₾$€,%\s]/g, '').replace(/,/g, '');
+        if (cleaned !== '' && /^-?\d+(\.\d+)?$/.test(cleaned)) {
+          const num = Number(cleaned);
+          return idx === 0 ? Math.round(num) : Number(num.toFixed(2));
+        }
+        return raw;
+      });
+      excelRows.push({ type: 'data', cells: rowCells });
+    });
+
+    downloadExcelXlsx('sesxis-grafiki.xlsx', 'სესხის გრაფიკი', excelRows);
+    showToast('სესხის გრაფიკი ჩამოიტვირთა Excel (.xlsx) ფორმატში!');
+  }
+
+  function setupLoanExcelExportButton() {
+    // დავრწმუნდეთ, რომ GeoCore.calculateLoan მძიმეებიან სტრიქონებსაც სწორად იღებს
+    if (root.GeoCore && typeof root.GeoCore.calculateLoan === 'function' && !root.GeoCore._maskedWrapped) {
+      const origCalcLoan = root.GeoCore.calculateLoan;
+      root.GeoCore.calculateLoan = function (opts) {
+        if (opts && typeof opts === 'object') {
+          const cleanOpts = Object.assign({}, opts);
+          ['principal', 'annualRate', 'months', 'extraPayment', 'prepayment', 'monthlyExtra'].forEach(function (k) {
+            if (cleanOpts[k] !== undefined && typeof cleanOpts[k] === 'string') {
+              cleanOpts[k] = parseMaskedNumber(cleanOpts[k]);
+            }
+          });
+          return origCalcLoan.call(root.GeoCore, cleanOpts);
+        }
+        return origCalcLoan.apply(root.GeoCore, arguments);
+      };
+      root.GeoCore._maskedWrapped = true;
+    }
+
+    let btn = document.getElementById('btn-export-loan-excel') || document.getElementById('btn-export-loan-csv');
+    if (!btn) {
+      const printBtn = document.querySelector('button[onclick*="print"]');
+      if (printBtn && printBtn.parentNode) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'btn-export-loan-excel';
+        btn.className = 'btn btn-secondary';
+        btn.textContent = '📥 Excel-ში ჩამოტვირთვა (.xlsx)';
+        printBtn.parentNode.insertBefore(btn, printBtn);
+      }
+    }
+    if (btn) {
+      const freshBtn = btn.cloneNode(true);
+      freshBtn.id = 'btn-export-loan-excel';
+      freshBtn.textContent = '📥 Excel-ში ჩამოტვირთვა (.xlsx)';
+      btn.parentNode.replaceChild(freshBtn, btn);
+      freshBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        exportLoanScheduleFromDom();
+      });
+    }
+  }
+  // --- REAL XLSX GENERATOR END ---
+
   root.GeoCommon = {
+    downloadExcelXlsx: downloadExcelXlsx,
+    exportLoanScheduleFromDom: exportLoanScheduleFromDom,
     parseMaskedNumber: parseMaskedNumber,
     formatNumberWithCommas: formatNumberWithCommas,
     TOOLS_CATALOG: TOOLS_CATALOG,
