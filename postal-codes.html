@@ -112,8 +112,13 @@
           address: address,
           code: code,
           district: district,
-          searchKey: (code + ' ' + address + ' ' + city + ' ' + district).toLowerCase()
+                    searchKey: (code + ' ' + address + ' ' + city + ' ' + district).toLowerCase()
         };
+      }).sort(function (a, b) {
+        return a.code.localeCompare(b.code, 'ka', { numeric: true }) ||
+               a.city.localeCompare(b.city, 'ka') ||
+               a.district.localeCompare(b.district, 'ka') ||
+               a.address.localeCompare(b.address, 'ka', { numeric: true });
       });
 
       function populateCities() {
