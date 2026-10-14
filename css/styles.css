@@ -1127,7 +1127,7 @@ main.container, main {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  height: 44px !important;
+  height: auto !important;
   padding: 4px 8px !important;
   margin: 0 !important;
   border: 1px solid transparent !important;
@@ -1141,7 +1141,7 @@ main.container, main {
 }
 .brand-logo img,
 [data-theme="dark"] .brand-logo img {
-  height: 36px !important;
+  height: 48px !important;
   width: auto !important;
   display: block !important;
   margin: 0 !important;
@@ -1158,12 +1158,12 @@ main.container, main {
 @media (max-width: 860px) {
   .brand-logo,
   [data-theme="dark"] .brand-logo {
-    height: 42px !important;
-    padding: 3px 7px !important;
+    height: auto !important;
+    padding: 4px 7px !important;
   }
   .brand-logo img,
   [data-theme="dark"] .brand-logo img {
-    height: 34px !important;
+    height: 42px !important;
   }
   .theme-toggle-btn {
     min-width: 104px !important;
