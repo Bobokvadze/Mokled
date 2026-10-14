@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ქართული ტექსტის კონვერტერი (ლათინური / AcadNusx, პარლამენტის სტანდარტი, უნიკოდი, ასომთავრული) | Mokled - მოკლედ</title>
-  <meta name="description" content="გადაიყვანეთ ქართული ტექსტი ლათინურ / ძველ ქართულ ფონტს (AcadNusx / LitNusx), ყოფილი პარლამენტის სტანდარტს (ÀÁÂÃ...ä), თანამედროვე უნიკოდსა (UTF-8 / Sylfaen) და ასომთავრულ დამწერლობას შორის." />
+  <title>ქართული ტექსტის კონვერტერი და ტრანსლიტერაცია (AcadNusx, პარლამენტის, უნიკოდი, ლათინური) | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ ქართული ტექსტი ლათინურ / ძველ ქართულ ფონტს (AcadNusx), ჩატის ტრანსლიტერაციას (sh, ch, dz, kh...), ყოფილი პარლამენტის სტანდარტს (ÀÁÂÃ...ä), უნიკოდსა (Sylfaen) და ასომთავრულს შორის." />
   <link rel="canonical" href="https://mokled.pages.dev/georgian-converter.html" />
-  <meta property="og:title" content="ქართული ტექსტის კონვერტერი | Mokled - მოკლედ" />
-  <meta property="og:description" content="ორმხრივი კონვერტაცია ლათინურ / AcadNusx-ს, ყოფილი პარლამენტის სტანდარტს, ქართულ Unicode-სა (Sylfaen) და ასომთავრულს შორის." />
+  <meta property="og:title" content="ქართული ტექსტის კონვერტერი და ტრანსლიტერაცია | Mokled - მოკლედ" />
+  <meta property="og:description" content="უნივერსალური კონვერტაცია AcadNusx-ს, ლათინურ ტრანსლიტერაციას, პარლამენტის სტანდარტს, ქართულ Unicode-სა და ასომთავრულს შორის." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/georgian-converter.html" />
   <meta property="og:locale" content="ka_GE" />
+  <meta property="og:image" content="https://mokled.pages.dev/assets/logo.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
   <meta name="theme-color" content="#2563eb" />
@@ -25,9 +26,9 @@
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / ტექსტი</div>
       <h1>ქართული ტექსტის კონვერტერი</h1>
       <p>
-        აირჩიეთ საწყისი და სასურველი ფორმატი ქართული ტექსტის გარდასაქმნელად. ხელსაწყო სრულად უჭერს მხარს
-        <strong>ლათინურ / ძველ ქართულ ფონტს (AcadNusx / LitNusx)</strong>, <strong>ყოფილი პარლამენტის სტანდარტს (<code>ÀÁÂÃ...ä</code>)</strong>,
-        თანამედროვე <strong>უნიკოდს (UTF-8 / Sylfaen)</strong> და <strong>ასომთავრულ დამწერლობას</strong>.
+        აირჩიეთ საწყისი და სასურველი ფორმატი ქართული ტექსტის გარდასაქმნელად. ხელსაწყო აერთიანებს
+        <strong>ძველ ქართულ ფონტებს (AcadNusx / LitNusx)</strong>, <strong>ლათინურ ტრანსლიტერაციას (sh, ch, dz, kh...)</strong>,
+        <strong>ყოფილი პარლამენტის სტანდარტს (<code>ÀÁÂÃ...ä</code>)</strong>, თანამედროვე <strong>უნიკოდს (UTF-8 / Sylfaen)</strong> და <strong>ასომთავრულს</strong>.
       </p>
     </div>
 
@@ -38,7 +39,8 @@
         <div class="form-group">
           <label class="form-label" for="source-format">საწყისი ფორმატი:</label>
           <select id="source-format" class="input">
-            <option value="acadnusx" selected>ლათინური / ძველი ქართული ფონტი (AcadNusx / LitNusx)</option>
+            <option value="acadnusx" selected>ლათინური კლავიატურა / ძველი ფონტი (AcadNusx / LitNusx)</option>
+            <option value="translit">ლათინური ტრანსლიტერაცია / ჩატის სტილი (sh, ch, dz, kh...)</option>
             <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
             <option value="unicode">უნიკოდი (UTF-8 / Sylfaen)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
@@ -55,7 +57,8 @@
           <label class="form-label" for="target-format">სასურველი (საბოლოო) ფორმატი:</label>
           <select id="target-format" class="input">
             <option value="unicode" selected>უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="acadnusx">ლათინური / ძველი ქართული ფონტი (AcadNusx / LitNusx)</option>
+            <option value="acadnusx">ლათინური კლავიატურა / ძველი ფონტი (AcadNusx / LitNusx)</option>
+            <option value="translit">ლათინური ტრანსლიტერაცია / ჩატის სტილი (sh, ch, dz, kh...)</option>
             <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
             <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
           </select>
@@ -74,9 +77,10 @@
           <label class="form-label" for="conv-input">საწყისი ტექსტი:</label>
           <textarea id="conv-input" placeholder="ჩასვით ან აკრიფეთ გარდასაქმნელი ტექსტი..."></textarea>
           <div class="btn-row">
-            <span style="font-size: 0.84rem; color: var(--text-muted); align-self: center;">საცდელი მაგალითები:</span>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">ლათინური (AcadNusx)</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის სტანდარტი</button>
+            <span style="font-size: 0.84rem; color: var(--text-muted); align-self: center;">მაგალითები:</span>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">AcadNusx</button>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="translit">ჩატის სტილი (sh, ch...)</button>
+            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="unicode">უნიკოდი → პარლამენტი</button>
             <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="asomtavruli">ასომთავრული</button>
           </div>
@@ -88,17 +92,24 @@
           <div class="btn-row">
             <button type="button" id="btn-convert" class="btn btn-primary">კონვერტაცია</button>
             <button type="button" id="btn-copy-res" class="btn btn-secondary">შედეგის კოპირება</button>
-            <button type="button" id="btn-download-txt" class="btn btn-secondary">TXT ფაილად ჩამოტვირთვა</button>
+            <button type="button" id="btn-download-txt" class="btn btn-secondary">TXT ჩამოტვირთვა</button>
             <button type="button" id="btn-clear-conv" class="btn btn-danger">გასუფთავება</button>
           </div>
         </div>
       </div>
+
+      <div id="translit-suggestions-wrap" class="hidden" style="margin-top: 1.15rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <div style="font-size: 0.88rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">
+          💡 სადავო სიტყვების სწრაფი ჩანაცვლება (დააწკაპუნეთ სასურველ ვარიანტზე):
+        </div>
+        <div id="translit-suggestions" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+      </div>
     </section>
 
     <section class="panel">
-      <h2 class="panel-title">ყოფილი პარლამენტის სტანდარტისა და AcadNusx-ის 33-ასოიანი შესაბამისობის ცხრილი</h2>
+      <h2 class="panel-title">ქართული ანბანის 33 ასოს შესაბამისობის ცხრილი ყველა ფორმატში</h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.85rem;">
-        ცხრილში მოცემულია ქართული ანბანის 33 ასოს ზუსტი შესატყვისი ყოფილი პარლამენტის სტანდარტში (<code>À-ä</code>), ლათინურ / AcadNusx განლაგებასა და ასომთავრულში:
+        ცხრილში მოცემულია ქართული ანბანის 33 ასოს ზუსტი შესატყვისი ყოფილი პარლამენტის სტანდარტში (<code>À-ä</code>), AcadNusx-ში, ჩატის ტრანსლიტერაციასა და ასომთავრულში:
       </p>
       <div class="table-wrap">
         <table>
@@ -107,29 +118,33 @@
               <th>უნიკოდი</th>
               <th>პარლამენტის</th>
               <th>AcadNusx</th>
+              <th>ჩატი (Translit)</th>
               <th>ასომთავრული</th>
               <th>უნიკოდი</th>
               <th>პარლამენტის</th>
               <th>AcadNusx</th>
-              <th>ასომთავრული</th>
-              <th>უნიკოდი</th>
-              <th>პარლამენტის</th>
-              <th>AcadNusx</th>
+              <th>ჩატი (Translit)</th>
               <th>ასომთავრული</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td><strong>ა</strong></td><td><code>À</code></td><td><code>a</code></td><td>Ⴀ</td><td><strong>მ</strong></td><td><code>Ì</code></td><td><code>m</code></td><td>Ⴋ</td><td><strong>შ</strong></td><td><code>Û</code></td><td><code>S</code></td><td>Ⴘ</td></tr>
-            <tr><td><strong>ბ</strong></td><td><code>Á</code></td><td><code>b</code></td><td>Ⴁ</td><td><strong>ნ</strong></td><td><code>Í</code></td><td><code>n</code></td><td>Ⴌ</td><td><strong>ჩ</strong></td><td><code>Ü</code></td><td><code>C</code></td><td>Ⴙ</td></tr>
-            <tr><td><strong>გ</strong></td><td><code>Â</code></td><td><code>g</code></td><td>Ⴂ</td><td><strong>ო</strong></td><td><code>Ï</code></td><td><code>o</code></td><td>Ⴍ</td><td><strong>ც</strong></td><td><code>Ý</code></td><td><code>c</code></td><td>Ⴚ</td></tr>
-            <tr><td><strong>დ</strong></td><td><code>Ã</code></td><td><code>d</code></td><td>Ⴃ</td><td><strong>პ</strong></td><td><code>Ð</code></td><td><code>p</code></td><td>Ⴎ</td><td><strong>ძ</strong></td><td><code>Þ</code></td><td><code>Z</code></td><td>Ⴛ</td></tr>
-            <tr><td><strong>ე</strong></td><td><code>Ä</code></td><td><code>e</code></td><td>Ⴄ</td><td><strong>ჟ</strong></td><td><code>Ñ</code></td><td><code>J</code></td><td>Ⴏ</td><td><strong>წ</strong></td><td><code>ß</code></td><td><code>w</code></td><td>Ⴜ</td></tr>
-            <tr><td><strong>ვ</strong></td><td><code>Å</code></td><td><code>v</code></td><td>Ⴅ</td><td><strong>რ</strong></td><td><code>Ò</code></td><td><code>r</code></td><td>Ⴐ</td><td><strong>ჭ</strong></td><td><code>à</code></td><td><code>W</code></td><td>Ⴝ</td></tr>
-            <tr><td><strong>ზ</strong></td><td><code>Æ</code></td><td><code>z</code></td><td>Ⴆ</td><td><strong>ს</strong></td><td><code>Ó</code></td><td><code>s</code></td><td>Ⴑ</td><td><strong>ხ</strong></td><td><code>á</code></td><td><code>x</code></td><td>Ⴞ</td></tr>
-            <tr><td><strong>თ</strong></td><td><code>È</code></td><td><code>T</code></td><td>Ⴇ</td><td><strong>ტ</strong></td><td><code>Ô</code></td><td><code>t</code></td><td>Ⴒ</td><td><strong>ჯ</strong></td><td><code>ã</code></td><td><code>j</code></td><td>Ⴟ</td></tr>
-            <tr><td><strong>ი</strong></td><td><code>É</code></td><td><code>i</code></td><td>Ⴈ</td><td><strong>უ</strong></td><td><code>Ö</code></td><td><code>u</code></td><td>Ⴓ</td><td><strong>ჰ</strong></td><td><code>ä</code></td><td><code>h</code></td><td>Ⴠ</td></tr>
-            <tr><td><strong>კ</strong></td><td><code>Ê</code></td><td><code>k</code></td><td>Ⴉ</td><td><strong>ფ</strong></td><td><code>×</code></td><td><code>f</code></td><td>Ⴔ</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-            <tr><td><strong>ლ</strong></td><td><code>Ë</code></td><td><code>l</code></td><td>Ⴊ</td><td><strong>ქ / ღ / ყ</strong></td><td><code>Ø / Ù / Ú</code></td><td><code>q / R / y</code></td><td>Ⴕ / Ⴖ / Ⴗ</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr><td><strong>ა</strong></td><td><code>À</code></td><td><code>a</code></td><td><code>a</code></td><td>Ⴀ</td><td><strong>რ</strong></td><td><code>Ò</code></td><td><code>r</code></td><td><code>r</code></td><td>Ⴐ</td></tr>
+            <tr><td><strong>ბ</strong></td><td><code>Á</code></td><td><code>b</code></td><td><code>b</code></td><td>Ⴁ</td><td><strong>ს</strong></td><td><code>Ó</code></td><td><code>s</code></td><td><code>s</code></td><td>Ⴑ</td></tr>
+            <tr><td><strong>გ</strong></td><td><code>Â</code></td><td><code>g</code></td><td><code>g</code></td><td>Ⴂ</td><td><strong>ტ</strong></td><td><code>Ô</code></td><td><code>t</code></td><td><code>t</code></td><td>Ⴒ</td></tr>
+            <tr><td><strong>დ</strong></td><td><code>Ã</code></td><td><code>d</code></td><td><code>d</code></td><td>Ⴃ</td><td><strong>უ</strong></td><td><code>Ö</code></td><td><code>u</code></td><td><code>u</code></td><td>Ⴓ</td></tr>
+            <tr><td><strong>ე</strong></td><td><code>Ä</code></td><td><code>e</code></td><td><code>e</code></td><td>Ⴄ</td><td><strong>ფ</strong></td><td><code>×</code></td><td><code>f</code></td><td><code>p / f</code></td><td>Ⴔ</td></tr>
+            <tr><td><strong>ვ</strong></td><td><code>Å</code></td><td><code>v</code></td><td><code>v</code></td><td>Ⴅ</td><td><strong>ქ</strong></td><td><code>Ø</code></td><td><code>q</code></td><td><code>q / k</code></td><td>Ⴕ</td></tr>
+            <tr><td><strong>ზ</strong></td><td><code>Æ</code></td><td><code>z</code></td><td><code>z</code></td><td>Ⴆ</td><td><strong>ღ</strong></td><td><code>Ù</code></td><td><code>R</code></td><td><code>gh</code></td><td>Ⴖ</td></tr>
+            <tr><td><strong>თ</strong></td><td><code>È</code></td><td><code>T</code></td><td><code>t / T</code></td><td>Ⴇ</td><td><strong>ყ</strong></td><td><code>Ú</code></td><td><code>y</code></td><td><code>y / q</code></td><td>Ⴗ</td></tr>
+            <tr><td><strong>ი</strong></td><td><code>É</code></td><td><code>i</code></td><td><code>i</code></td><td>Ⴈ</td><td><strong>შ</strong></td><td><code>Û</code></td><td><code>S</code></td><td><code>sh</code></td><td>Ⴘ</td></tr>
+            <tr><td><strong>კ</strong></td><td><code>Ê</code></td><td><code>k</code></td><td><code>k</code></td><td>Ⴉ</td><td><strong>ჩ</strong></td><td><code>Ü</code></td><td><code>C</code></td><td><code>ch</code></td><td>Ⴙ</td></tr>
+            <tr><td><strong>ლ</strong></td><td><code>Ë</code></td><td><code>l</code></td><td><code>l</code></td><td>Ⴊ</td><td><strong>ც</strong></td><td><code>Ý</code></td><td><code>c</code></td><td><code>ts / c</code></td><td>Ⴚ</td></tr>
+            <tr><td><strong>მ</strong></td><td><code>Ì</code></td><td><code>m</code></td><td><code>m</code></td><td>Ⴋ</td><td><strong>ძ</strong></td><td><code>Þ</code></td><td><code>Z</code></td><td><code>dz</code></td><td>Ⴛ</td></tr>
+            <tr><td><strong>ნ</strong></td><td><code>Í</code></td><td><code>n</code></td><td><code>n</code></td><td>Ⴌ</td><td><strong>წ</strong></td><td><code>ß</code></td><td><code>w</code></td><td><code>w / ts</code></td><td>Ⴜ</td></tr>
+            <tr><td><strong>ო</strong></td><td><code>Ï</code></td><td><code>o</code></td><td><code>o</code></td><td>Ⴍ</td><td><strong>ჭ</strong></td><td><code>à</code></td><td><code>W</code></td><td><code>tch / W</code></td><td>Ⴝ</td></tr>
+            <tr><td><strong>პ</strong></td><td><code>Ð</code></td><td><code>p</code></td><td><code>p</code></td><td>Ⴎ</td><td><strong>ხ</strong></td><td><code>á</code></td><td><code>x</code></td><td><code>kh / x</code></td><td>Ⴞ</td></tr>
+            <tr><td><strong>ჟ</strong></td><td><code>Ñ</code></td><td><code>J</code></td><td><code>zh / J</code></td><td>Ⴏ</td><td><strong>ჯ</strong></td><td><code>ã</code></td><td><code>j</code></td><td><code>j</code></td><td>Ⴟ</td></tr>
+            <tr><td><strong>-</strong></td><td>-</td><td>-</td><td>-</td><td>-</td><td><strong>ჰ</strong></td><td><code>ä</code></td><td><code>h</code></td><td><code>h</code></td><td>Ⴠ</td></tr>
           </tbody>
         </table>
       </div>
@@ -142,7 +157,7 @@
   <script src="js/common.js"></script>
   <script>
     (function () {
-      const { convertGeorgianText } = window.GeoCore;
+      const { convertGeorgianText, transliterateLatinToGeorgian } = window.GeoCore;
       const { initLayout, copyToClipboard, downloadTextFile, escapeHtml, showToast } = window.GeoCommon;
 
       initLayout('georgian-converter');
@@ -154,12 +169,19 @@
       const convInput = document.getElementById('conv-input');
       const convOutput = document.getElementById('conv-output');
       const warningsBox = document.getElementById('converter-warnings');
+      const suggestionsWrap = document.getElementById('translit-suggestions-wrap');
+      const suggestionsBox = document.getElementById('translit-suggestions');
 
       const SAMPLES = {
         acadnusx: {
           source: 'acadnusx',
           target: 'unicode',
           text: 'saqarTvelos Zveli fonti AcadNusx (2026 weli).\nTbilisis saxelmwifo universiteti.'
+        },
+        translit: {
+          source: 'translit',
+          target: 'unicode',
+          text: 'gamarjoba! tbilisi sakartvelos dedaqalaqia.\ndges kargi amindia, chven ertad vmuShaobt.'
         },
         parliament: {
           source: 'parliament',
@@ -178,6 +200,37 @@
         }
       };
 
+      const SMART_WORDS = {
+        'ტბილისი': 'თბილისი', 'ტბილისის': 'თბილისის', 'ტბილისში': 'თბილისში',
+        'საკარტველო': 'საქართველო', 'საქარტველო': 'საქართველო', 'საკართველო': 'საქართველო',
+        'საკარტველოს': 'საქართველოს', 'საქარტველოს': 'საქართველოს',
+        'კარტული': 'ქართული', 'ქარტული': 'ქართული', 'კართული': 'ქართული',
+        'კუტაისი': 'ქუთაისი', 'ქუტაისი': 'ქუთაისი', 'ბატუმი': 'ბათუმი', 'რუსტავი': 'რუსთავი',
+        'თელავი': 'თელავი', 'ტელავი': 'თელავი', 'მცხეტა': 'მცხეთა', 'სვანეტი': 'სვანეთი',
+        'კახეტი': 'კახეთი', 'იმერეტი': 'იმერეთი', 'ოზურგეტი': 'ოზურგეთი',
+        'გამარჯობატ': 'გამარჯობათ', 'დგეს': 'დღეს', 'ერტად': 'ერთად', 'ერტი': 'ერთი',
+        'ოტხი': 'ოთხი', 'ხუტი': 'ხუთი', 'ეკვსი': 'ექვსი', 'ატასი': 'ათასი',
+        'ტვე': 'თვე', 'ტანხა': 'თანხა', 'ხელპასი': 'ხელფასი', 'ტარიგი': 'თარიღი'
+      };
+
+      const UNICODE_TO_TRANSLIT = {
+        'ა':'a','ბ':'b','გ':'g','დ':'d','ე':'e','ვ':'v','ზ':'z','თ':'t','ი':'i','კ':'k','ლ':'l',
+        'მ':'m','ნ':'n','ო':'o','პ':'p','ჟ':'zh','რ':'r','ს':'s','ტ':'t','უ':'u','ფ':'f','ქ':'q',
+        'ღ':'gh','ყ':'y','შ':'sh','ჩ':'ch','ც':'ts','ძ':'dz','წ':'ts','ჭ':'tch','ხ':'kh','ჯ':'j','ჰ':'h'
+      };
+
+      function unicodeToTranslitText(str) {
+        return Array.from(String(str || '')).map(function (ch) {
+          return UNICODE_TO_TRANSLIT[ch] !== undefined ? UNICODE_TO_TRANSLIT[ch] : ch;
+        }).join('');
+      }
+
+      function applySmartDictionary(georgianStr) {
+        return georgianStr.replace(/[ა-ჰ]+/g, function (word) {
+          return SMART_WORDS[word] || word;
+        });
+      }
+
       function syncUiState() {
         if (toggleSylfaen.checked) {
           convOutput.classList.add('font-sylfaen');
@@ -186,22 +239,84 @@
         }
       }
 
+      function renderSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0 || sourceFormat.value !== 'translit' || targetFormat.value !== 'unicode') {
+          suggestionsWrap.classList.add('hidden');
+          suggestionsBox.innerHTML = '';
+          return;
+        }
+        suggestionsWrap.classList.remove('hidden');
+        suggestionsBox.innerHTML = suggestions.map(function (item) {
+          const alts = item.alternatives.slice(0, 3).map(function (alt) {
+            return '<button type="button" class="btn btn-secondary btn-sm alt-word-btn" data-orig="' + escapeHtml(item.converted) + '" data-alt="' + escapeHtml(alt) + '">' + escapeHtml(alt) + '</button>';
+          }).join(' ');
+          return '<div style="display:inline-flex;align-items:center;gap:0.35rem;background:var(--bg-subtle);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--border);font-size:0.84rem;">' +
+            '<span>' + escapeHtml(item.converted) + ' →</span>' + alts + '</div>';
+        }).join('');
+
+        suggestionsBox.querySelectorAll('.alt-word-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const orig = btn.getAttribute('data-orig');
+            const alt = btn.getAttribute('data-alt');
+            convOutput.value = convOutput.value.split(orig).join(alt);
+            showToast('ჩანაცვლდა: ' + orig + ' → ' + alt);
+          });
+        });
+      }
+
       function runConversion() {
         syncUiState();
-        const res = convertGeorgianText(convInput.value, sourceFormat.value, targetFormat.value, {
-          normalizeMtavruliInput: true
-        });
-        convOutput.value = res.output;
+        const src = sourceFormat.value;
+        const dst = targetFormat.value;
+        const raw = convInput.value;
 
-        if (res.warnings && res.warnings.length > 0) {
-          warningsBox.innerHTML = res.warnings.map(function (w) {
-            return '<div>• ' + escapeHtml(w) + '</div>';
-          }).join('');
+        if (!raw) {
+          convOutput.value = '';
+          warningsBox.classList.add('hidden');
+          renderSuggestions([]);
+          return;
+        }
+
+        if (src === dst) {
+          convOutput.value = raw;
+          warningsBox.classList.add('hidden');
+          renderSuggestions([]);
+          return;
+        }
+
+        let unicodeIntermediate = '';
+        let warnings = [];
+        let suggestions = [];
+
+        if (src === 'translit') {
+          const trRes = transliterateLatinToGeorgian(raw);
+          unicodeIntermediate = applySmartDictionary(trRes.output);
+          suggestions = trRes.suggestions || [];
+        } else {
+          const toUni = convertGeorgianText(raw, src, 'unicode', { normalizeMtavruliInput: true });
+          unicodeIntermediate = toUni.output;
+          warnings = toUni.warnings || [];
+        }
+
+        if (dst === 'unicode') {
+          convOutput.value = unicodeIntermediate;
+        } else if (dst === 'translit') {
+          convOutput.value = unicodeToTranslitText(unicodeIntermediate);
+        } else {
+          const fromUni = convertGeorgianText(unicodeIntermediate, 'unicode', dst, { normalizeMtavruliInput: true });
+          convOutput.value = fromUni.output;
+          warnings = warnings.concat(fromUni.warnings || []);
+        }
+
+        if (warnings.length > 0) {
+          warningsBox.innerHTML = warnings.map(function (w) { return '<div>• ' + escapeHtml(w) + '</div>'; }).join('');
           warningsBox.classList.remove('hidden');
         } else {
           warningsBox.classList.add('hidden');
           warningsBox.innerHTML = '';
         }
+
+        renderSuggestions(suggestions);
       }
 
       convInput.addEventListener('input', runConversion);
@@ -256,6 +371,7 @@
         convInput.value = '';
         convOutput.value = '';
         warningsBox.classList.add('hidden');
+        renderSuggestions([]);
       });
 
       syncUiState();
