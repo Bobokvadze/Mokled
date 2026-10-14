@@ -1138,7 +1138,7 @@ main.container, main {
 }
 .brand-logo img,
 [data-theme="dark"] .brand-logo img {
-  height: 48px !important;
+  height: 58px !important;
   width: auto !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1166,7 +1166,7 @@ main.container, main {
 @media (max-width: 860px) {
   .brand-logo img,
   [data-theme="dark"] .brand-logo img {
-    height: 42px !important;
+    height: 50px !important;
   }
   .theme-toggle-btn {
     min-width: 104px !important;
