@@ -161,6 +161,7 @@
     }
 
     if (currentId && currentId !== 'home') { recordToolUsage(currentId); }
+    enableNumericInputMasking();
 
     const topBtn = document.createElement('button');
     topBtn.type = 'button';
@@ -273,7 +274,61 @@
     copyToClipboard(url.toString(), 'გამოთვლის ბმული დაკოპირდა!');
   }
 
+
+  function formatNumberWithCommas(rawVal, allowDecimals) {
+    let clean = String(rawVal || '').replace(/[^0-9.]/g, '');
+    if (!clean) return '';
+    const parts = clean.split('.');
+    const intPart = parts[0].replace(/^0+(?=\d)/, '');
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (allowDecimals && parts.length > 1) {
+      return formattedInt + '.' + parts.slice(1).join('').slice(0, 4);
+    }
+    return formattedInt;
+  }
+
+  function enableNumericInputMasking() {
+    const maskTargets = document.querySelectorAll('input[data-mask="money"], #loan-principal, #loan-prepay, #sal-amount, #vat-amount, #num-input');
+    maskTargets.forEach(function (inp) {
+      if (inp.getAttribute('data-mask-bound') === '1') return;
+      inp.setAttribute('data-mask-bound', '1');
+      inp.setAttribute('type', 'text');
+      inp.setAttribute('inputmode', 'decimal');
+
+      if (inp.value) {
+        inp.value = formatNumberWithCommas(inp.value, true);
+      }
+
+      inp.addEventListener('input', function () {
+        const oldVal = inp.value;
+        const selStart = inp.selectionStart || oldVal.length;
+        const digitsBeforeCursor = oldVal.slice(0, selStart).replace(/[^0-9.]/g, '').length;
+        const newVal = formatNumberWithCommas(oldVal, true);
+        if (oldVal !== newVal) {
+          inp.value = newVal;
+          let newCursor = 0;
+          let seenDigits = 0;
+          for (let i = 0; i < newVal.length; i++) {
+            if (/[0-9.]/.test(newVal[i])) seenDigits++;
+            if (seenDigits >= digitsBeforeCursor) { newCursor = i + 1; break; }
+          }
+          if (digitsBeforeCursor === 0) newCursor = 0;
+          try { inp.setSelectionRange(newCursor, newCursor); } catch (_) {}
+        }
+      });
+    });
+  }
+
+  function parseMaskedNumber(val) {
+    if (val === undefined || val === null) return 0;
+    const clean = String(val).replace(/,/g, '').trim();
+    const num = Number(clean);
+    return Number.isFinite(num) ? num : 0;
+  }
+
   root.GeoCommon = {
+    parseMaskedNumber: parseMaskedNumber,
+    formatNumberWithCommas: formatNumberWithCommas,
     TOOLS_CATALOG: TOOLS_CATALOG,
     escapeHtml: escapeHtml,
     recordToolUsage: recordToolUsage,

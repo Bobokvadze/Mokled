@@ -181,19 +181,17 @@
         asomtavruli: 'ასომთავრული (ႠႡ...)'
       };
 
-      function detectSourceFormat(text) {
+            function detectSourceFormat(text) {
         if (!text || !text.trim()) return null;
         if (/[\u10A0-\u10CF]/.test(text)) return 'asomtavruli';
         if (/[À-ä×ØÙÚÛÜÝÞßàáã]/.test(text)) return 'parliament';
         if (/[\u10D0-\u10FF\u1C90-\u1CBF]/.test(text)) return 'unicode';
         if (/[a-zA-Z]/.test(text)) {
-          const hasDigraphs = /\b[a-z]*(sh|ch|tch|dz|kh|gh|zh|ts)[a-z]*\b/i.test(text);
-          const hasMidWordAcadCaps = /[a-z][TSWCZRJ]|[TSWCZRJ][a-z].*[a-z][TSWCZRJ]/.test(text);
-          if (hasDigraphs && !hasMidWordAcadCaps) return 'translit';
+          const hasMidWordAcadCaps = /[a-z][TSWCZRJ]/.test(text);
           if (hasMidWordAcadCaps) return 'acadnusx';
-          const lowerChatWords = /\b(gamarjoba|tbilisi|sakartvelo|kutaisi|batumi|rogor|xar|madloba|kargi|dges|ertad)\b/i.test(text);
-          if (lowerChatWords) return 'translit';
-          return sourceFormat.value === 'translit' ? 'translit' : 'acadnusx';
+          const hasDigraphs = /(sh|ch|tch|dz|kh|gh|zh|ts)/i.test(text);
+          if (hasDigraphs) return 'translit';
+          return sourceFormat.value === 'acadnusx' ? 'acadnusx' : 'translit';
         }
         return null;
       }
@@ -271,27 +269,46 @@
         }
       }
 
-      function renderSuggestions(suggestions) {
-        if (!suggestions || suggestions.length === 0 || sourceFormat.value !== 'translit' || targetFormat.value !== 'unicode') {
+            function renderSuggestions(suggestions) {
+        if (!Array.isArray(suggestions) || suggestions.length === 0 || sourceFormat.value !== 'translit' || targetFormat.value !== 'unicode') {
+          suggestionsWrap.classList.add('hidden');
+          suggestionsBox.innerHTML = '';
+          return;
+        }
+        const validItems = suggestions.filter(function (item) {
+          const list = item && (item.alternatives || item.variants);
+          return Array.isArray(list) && list.length > 0;
+        });
+        if (validItems.length === 0) {
           suggestionsWrap.classList.add('hidden');
           suggestionsBox.innerHTML = '';
           return;
         }
         suggestionsWrap.classList.remove('hidden');
-        suggestionsBox.innerHTML = suggestions.map(function (item) {
-          const alts = item.alternatives.slice(0, 3).map(function (alt) {
-            return '<button type="button" class="btn btn-secondary btn-sm alt-word-btn" data-orig="' + escapeHtml(item.converted) + '" data-alt="' + escapeHtml(alt) + '">' + escapeHtml(alt) + '</button>';
+        suggestionsBox.innerHTML = validItems.map(function (item) {
+          const baseWord = item.converted || item.base || item.token || '';
+          const list = (item.alternatives || item.variants || []).filter(function (w) { return w !== baseWord; }).slice(0, 4);
+          if (list.length === 0) return '';
+          const alts = list.map(function (alt) {
+            return '<button type="button" class="btn btn-secondary btn-sm alt-word-btn" data-orig="' + escapeHtml(baseWord) + '" data-alt="' + escapeHtml(alt) + '">' + escapeHtml(alt) + '</button>';
           }).join(' ');
           return '<div style="display:inline-flex;align-items:center;gap:0.35rem;background:var(--bg-subtle);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--border);font-size:0.84rem;">' +
-            '<span>' + escapeHtml(item.converted) + ' →</span>' + alts + '</div>';
-        }).join('');
+            '<span>' + escapeHtml(baseWord) + ' →</span>' + alts + '</div>';
+        }).filter(Boolean).join('');
+
+        if (!suggestionsBox.innerHTML.trim()) {
+          suggestionsWrap.classList.add('hidden');
+          return;
+        }
 
         suggestionsBox.querySelectorAll('.alt-word-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             const orig = btn.getAttribute('data-orig');
             const alt = btn.getAttribute('data-alt');
-            convOutput.value = convOutput.value.split(orig).join(alt);
-            showToast('ჩანაცვლდა: ' + orig + ' → ' + alt);
+            if (orig && alt) {
+              convOutput.value = convOutput.value.split(orig).join(alt);
+              showToast('ჩანაცვლდა: ' + orig + ' → ' + alt);
+            }
           });
         });
       }

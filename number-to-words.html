@@ -143,7 +143,7 @@
 
       document.querySelectorAll('.num-sample').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          numInput.value = btn.getAttribute('data-val');
+          numInput.value = window.GeoCommon.formatNumberWithCommas(btn.getAttribute('data-val'), true);
           updateWords();
         });
       });

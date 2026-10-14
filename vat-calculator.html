@@ -39,7 +39,7 @@
       <div class="grid-3">
         <div class="form-group">
           <label class="form-label" for="vat-amount">თანხა (₾):</label>
-          <input type="number" id="vat-amount" class="input" value="1000" min="0" step="0.01" placeholder="მაგ.: 1000" />
+          <input type="number" id="vat-amount" class="input" value="1,000" min="0" step="0.01" placeholder="მაგ.: 1000" />
         </div>
 
         <div class="form-group">
@@ -140,7 +140,7 @@
       });
 
       document.getElementById('btn-reset-vat').addEventListener('click', function () {
-        amountInput.value = '1000';
+        amountInput.value = '1,000';
         modeSelect.value = 'add';
         rateInput.value = '18';
         runVatCalc();
