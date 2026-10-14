@@ -117,7 +117,7 @@
       }).sort(function (a, b) {
         return a.code.localeCompare(b.code, 'ka', { numeric: true }) ||
                a.city.localeCompare(b.city, 'ka') ||
-               a.district.localeCompare(b.district, 'ka') ||
+               ((a.district ? 0 : 1) - (b.district ? 0 : 1)) || a.district.localeCompare(b.district, 'ka') ||
                a.address.localeCompare(b.address, 'ka', { numeric: true });
       });
 
