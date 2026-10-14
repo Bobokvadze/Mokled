@@ -26,15 +26,15 @@
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / მონაცემები</div>
       <h1>საქართველოს საფოსტო ინდექსების საძიებო</h1>
       <p>
-        მოძებნეთ თბილისის ნებისმიერი ქუჩის, ჩიხის, შესახვევისა და საქართველოს ყველა ქალაქისა და სოფლის 4-ნიშნა საფოსტო ინდექსი (7,060+ მისამართი).
+        მოძებნეთ თბილისის ნებისმიერი ქუჩის, ჩიხის, შესახვევისა და საქართველოს ყველა ქალაქისა და სოფლის 4-ნიშნა საფოსტო ინდექსი (7,000+ მისამართი). დააწკაპუნეთ ინდექსზე მყისიერი კოპირებისთვის.
       </p>
     </div>
 
     <section class="panel">
       <div class="grid-3" style="align-items: end;">
         <div class="form-group">
-          <label class="form-label" for="postal-search">მისამართი, ქუჩა, სოფელი ან ინდექსი:</label>
-          <input type="search" id="postal-search" class="input" placeholder="მაგ.: პეკინის, ჭავჭავაძის, ქავთარაძის, 0186, პატარძეული..." />
+          <label class="form-label" for="postal-search">მისამართი, ქუჩა, სოფელი ან ინდექსი (ქართულად ან ლათინურად):</label>
+          <input type="search" id="postal-search" class="input" placeholder="მაგ.: პეკინის, vake, ჭავჭავაძის, 0186, პატარძეული..." />
         </div>
         <div class="form-group">
           <label class="form-label" for="postal-city">ქალაქი / მუნიციპალიტეტი:</label>
@@ -52,18 +52,17 @@
 
       <div class="section-header" style="margin-top: 0.35rem;">
         <span style="font-size: 0.9rem; color: var(--text-muted);">ნაპოვნი მისამართები: <strong id="postal-count">0</strong></span>
-        <span class="badge">თბილისის ზოგადი კოდი: 0100</span>
+        <span class="badge">დააწკაპუნეთ კოდზე დასაკოპირებლად</span>
       </div>
 
       <div class="table-wrap" style="max-height: 580px;">
         <table>
           <thead>
             <tr>
-              <th style="width: 115px;">ინდექსი</th>
+              <th style="width: 125px;">ინდექსი</th>
               <th>მისამართი (ქუჩა / ჩიხი / დასახლება)</th>
-              <th style="width: 170px;">ქალაქი / მუნიციპალიტეტი</th>
-              <th style="width: 180px;">უბანი</th>
-              <th style="width: 120px;">მოქმედება</th>
+              <th class="col-city" style="width: 180px;">ქალაქი / მუნიციპალიტეტი</th>
+              <th class="col-district" style="width: 190px;">უბანი</th>
             </tr>
           </thead>
           <tbody id="postal-tbody"></tbody>
@@ -101,23 +100,44 @@
       let visibleLimit = PAGE_STEP;
       let currentFiltered = [];
 
-      // მოვამზადოთ მონაცემები სწრაფი ძიებისთვის
+      // ქართული ტექსტის ფონეტიკურ საძიებო გასაღებად გადაყვანა, რომ ლათინურმა ძიებამაც (vake, pekini, chavchavadze...) იმუშაოს
+      const KA_SKELETON_MAP = {
+        'ა':'a','ბ':'b','გ':'g','დ':'d','ე':'e','ვ':'v','ზ':'z','თ':'t','ი':'i','კ':'k','ლ':'l',
+        'მ':'m','ნ':'n','ო':'o','პ':'p','ჟ':'j','რ':'r','ს':'s','ტ':'t','უ':'u','ფ':'p','ქ':'k',
+        'ღ':'g','ყ':'k','შ':'s','ჩ':'c','ც':'c','ძ':'z','წ':'c','ჭ':'c','ხ':'x','ჯ':'j','ჰ':'h'
+      };
+
+      function toPhoneticSkeleton(str) {
+        let s = String(str || '').toLowerCase();
+        s = s.replace(/tch/g, 'c').replace(/ch/g, 'c').replace(/sh/g, 's').replace(/dz/g, 'z')
+             .replace(/ts/g, 'c').replace(/kh/g, 'x').replace(/gh/g, 'g').replace(/zh/g, 'j')
+             .replace(/ph/g, 'p').replace(/q/g, 'k').replace(/y/g, 'k').replace(/w/g, 'c').replace(/f/g, 'p');
+        let out = '';
+        for (let i = 0; i < s.length; i++) {
+          const ch = s[i];
+          out += KA_SKELETON_MAP[ch] !== undefined ? KA_SKELETON_MAP[ch] : ch;
+        }
+        return out;
+      }
+
       const POSTAL_ITEMS = RAW_DATA.map(function (row) {
         const city = row[0] || '';
         const address = row[1] || '';
         const code = row[2] || '';
         const district = row[3] || '';
+        const rawKey = (code + ' ' + address + ' ' + city + ' ' + district).toLowerCase();
         return {
           city: city,
           address: address,
           code: code,
           district: district,
-                    searchKey: (code + ' ' + address + ' ' + city + ' ' + district).toLowerCase()
+          searchKey: rawKey + ' ' + toPhoneticSkeleton(rawKey)
         };
       }).sort(function (a, b) {
         return a.code.localeCompare(b.code, 'ka', { numeric: true }) ||
                a.city.localeCompare(b.city, 'ka') ||
-               ((a.district ? 0 : 1) - (b.district ? 0 : 1)) || a.district.localeCompare(b.district, 'ka') ||
+               ((a.district ? 0 : 1) - (b.district ? 0 : 1)) ||
+               a.district.localeCompare(b.district, 'ka') ||
                a.address.localeCompare(b.address, 'ka', { numeric: true });
       });
 
@@ -153,13 +173,13 @@
         const slice = currentFiltered.slice(0, visibleLimit);
 
         tbody.innerHTML = slice.map(function (item) {
+          const metaText = item.district ? (escapeHtml(item.city) + ' • ' + escapeHtml(item.district)) : escapeHtml(item.city);
           return (
             '<tr>' +
-              '<td><code style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">' + escapeHtml(item.code) + '</code></td>' +
-              '<td><strong>' + escapeHtml(item.address) + '</strong></td>' +
-              '<td>' + escapeHtml(item.city) + '</td>' +
-              '<td>' + (item.district ? escapeHtml(item.district) : '<span style="color:var(--text-muted);">-</span>') + '</td>' +
-              '<td><button type="button" class="btn btn-secondary btn-sm copy-zip-btn" data-code="' + escapeHtml(item.code) + '">კოპირება</button></td>' +
+              '<td><button type="button" class="zip-pill copy-zip-btn" data-code="' + escapeHtml(item.code) + '" title="დააწკაპუნეთ ინდექსის დასაკოპირებლად">📋 ' + escapeHtml(item.code) + '</button></td>' +
+              '<td><strong>' + escapeHtml(item.address) + '</strong><span class="mobile-meta">' + metaText + '</span></td>' +
+              '<td class="col-city">' + escapeHtml(item.city) + '</td>' +
+              '<td class="col-district">' + (item.district ? escapeHtml(item.district) : '<span style="color:var(--text-muted);">-</span>') + '</td>' +
             '</tr>'
           );
         }).join('');
@@ -177,7 +197,10 @@
       function applyFilters() {
         visibleLimit = PAGE_STEP;
         const q = searchInput.value.trim().toLowerCase();
-        const tokens = q ? q.split(/\s+/) : [];
+        const rawTokens = q ? q.split(/\s+/) : [];
+        const tokens = rawTokens.map(function (t) {
+          return /[a-z]/i.test(t) ? toPhoneticSkeleton(t) : t;
+        });
         const c = citySelect.value;
         const d = districtSelect.value;
 
@@ -193,12 +216,11 @@
         renderRows();
       }
 
-      // Event Delegation კოპირების ღილაკებისთვის
       tbody.addEventListener('click', function (e) {
         const btn = e.target.closest('.copy-zip-btn');
         if (!btn) return;
         const code = btn.getAttribute('data-code');
-        copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!');
+        copyToClipboard(code, 'საფოსტო ინდექსი ' + code + ' დაკოპირდა!', btn);
       });
 
       loadMoreBtn.addEventListener('click', function () {

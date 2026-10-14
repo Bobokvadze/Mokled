@@ -67,9 +67,14 @@
 
       <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-sm);">
         <label class="checkbox-label">
+          <input type="checkbox" id="toggle-autodetect" checked />
+          <span>საწყისი ფორმატის <strong>ავტომატური ამოცნობა</strong></span>
+        </label>
+        <label class="checkbox-label">
           <input type="checkbox" id="toggle-sylfaen" />
           <span>შედეგის <strong>Sylfaen</strong> ფონტით ვიზუალურად ჩვენება</span>
         </label>
+        <span id="detected-badge" class="badge hidden" style="margin-left: auto;"></span>
       </div>
 
       <div class="grid-2">
@@ -166,6 +171,33 @@
       const targetFormat = document.getElementById('target-format');
       const swapBtn = document.getElementById('btn-swap-formats');
       const toggleSylfaen = document.getElementById('toggle-sylfaen');
+      const toggleAutoDetect = document.getElementById('toggle-autodetect');
+      const detectedBadge = document.getElementById('detected-badge');
+      const FORMAT_LABELS = {
+        acadnusx: 'AcadNusx / ლათინური კლავიატურა',
+        translit: 'ჩატის ტრანსლიტერაცია (sh, ch...)',
+        parliament: 'პარლამენტის სტანდარტი (ÀÁÂ...)',
+        unicode: 'ქართული უნიკოდი',
+        asomtavruli: 'ასომთავრული (ႠႡ...)'
+      };
+
+      function detectSourceFormat(text) {
+        if (!text || !text.trim()) return null;
+        if (/[\u10A0-\u10CF]/.test(text)) return 'asomtavruli';
+        if (/[À-ä×ØÙÚÛÜÝÞßàáã]/.test(text)) return 'parliament';
+        if (/[\u10D0-\u10FF\u1C90-\u1CBF]/.test(text)) return 'unicode';
+        if (/[a-zA-Z]/.test(text)) {
+          const hasDigraphs = /\b[a-z]*(sh|ch|tch|dz|kh|gh|zh|ts)[a-z]*\b/i.test(text);
+          const hasMidWordAcadCaps = /[a-z][TSWCZRJ]|[TSWCZRJ][a-z].*[a-z][TSWCZRJ]/.test(text);
+          if (hasDigraphs && !hasMidWordAcadCaps) return 'translit';
+          if (hasMidWordAcadCaps) return 'acadnusx';
+          const lowerChatWords = /\b(gamarjoba|tbilisi|sakartvelo|kutaisi|batumi|rogor|xar|madloba|kargi|dges|ertad)\b/i.test(text);
+          if (lowerChatWords) return 'translit';
+          return sourceFormat.value === 'translit' ? 'translit' : 'acadnusx';
+        }
+        return null;
+      }
+
       const convInput = document.getElementById('conv-input');
       const convOutput = document.getElementById('conv-output');
       const warningsBox = document.getElementById('converter-warnings');
@@ -319,7 +351,26 @@
         renderSuggestions(suggestions);
       }
 
-      convInput.addEventListener('input', runConversion);
+      convInput.addEventListener('input', function () {
+        if (toggleAutoDetect && toggleAutoDetect.checked) {
+          const det = detectSourceFormat(convInput.value);
+          if (det) {
+            sourceFormat.value = det;
+            if (det !== 'unicode' && targetFormat.value === det) {
+              targetFormat.value = 'unicode';
+            } else if (det === 'unicode' && targetFormat.value === 'unicode') {
+              targetFormat.value = 'acadnusx';
+            }
+            if (detectedBadge) {
+              detectedBadge.textContent = '✨ ამოცნობილია: ' + FORMAT_LABELS[det];
+              detectedBadge.classList.remove('hidden');
+            }
+          } else if (detectedBadge) {
+            detectedBadge.classList.add('hidden');
+          }
+        }
+        runConversion();
+      });
       sourceFormat.addEventListener('change', runConversion);
       targetFormat.addEventListener('change', runConversion);
       toggleSylfaen.addEventListener('change', syncUiState);

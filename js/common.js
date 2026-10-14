@@ -10,11 +10,18 @@
     { id: 'iban-validator', title: 'ქართული IBAN შემმოწმებელი', shortTitle: 'IBAN შემოწმება', url: 'iban-validator.html', category: 'ფინანსები', icon: '🏦', description: 'საბანკო ანგარიშის (IBAN) ვალიდაცია MOD-97 სტანდარტით, ქართული ბანკისა და SWIFT კოდის ავტომატური ამოცნობით.' },
     { id: 'vat-calculator', title: 'დღგ-ის კალკულატორი (18%)', shortTitle: 'დღგ 18%', url: 'vat-calculator.html', category: 'ფინანსები', icon: '₾', description: '18%-იანი დღგ-ის დამატება თანხაზე და დღგ-ის შემცველი თანხიდან დღგ-ის ნაწილის ზუსტი გამოყოფა ფორმულებითა და შუალედური შედეგებით.' },
     { id: 'qr-generator', title: 'QR კოდის გენერატორი', shortTitle: 'QR კოდი', url: 'qr-generator.html', category: 'მედია', icon: '▣', description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში - PNG და SVG ჩამოტვირთვით.' },
-    { id: 'postal-codes', title: 'საქართველოს საფოსტო ინდექსები', shortTitle: 'საფოსტო კოდები', url: 'postal-codes.html', category: 'მონაცემები', icon: '📮', description: 'თბილისის ყველა უბნის, გამზირისა და საქართველოს ქალაქების/მუნიციპალიტეტების საფოსტო კოდების (0100-6500) სწრაფი საძიებო.' },
+    { id: 'postal-codes', title: 'საქართველოს საფოსტო ინდექსები', shortTitle: 'საფოსტო კოდები', url: 'postal-codes.html', category: 'მონაცემები', icon: '📮', description: 'თბილისის ყველა ქუჩის, ჩიხისა და საქართველოს ქალაქების/სოფლების საფოსტო კოდების (7,000+ მისამართი) სწრაფი საძიებო.' },
     { id: 'text-tools', title: 'ტექსტის დამმუშავებელი', shortTitle: 'ტექსტის ანალიზი', url: 'text-tools.html', category: 'ტექსტი', icon: 'T', description: 'სიტყვებისა და სიმბოლოების დათვლა, ზედმეტი გამოტოვებებისა და ცარიელი ხაზების მოცილება, მხედრული/მთავრული რეგისტრის შეცვლა.' },
     { id: 'csv-json', title: 'CSV / JSON გარდამქმნელი', shortTitle: 'CSV ⇄ JSON', url: 'csv-json.html', category: 'მონაცემები', icon: '{}', description: 'CSV ფაილის წაკითხვა, ცხრილად ჩვენება და CSV-სა და JSON-ს შორის უსაფრთხო გარდაქმნა ქართული Unicode-ის სრული მხარდაჭერით.' },
     { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: '📅', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების გათვალისწინებით.' },
     { id: 'image-tools', title: 'სურათის ხელსაწყო', shortTitle: 'სურათის შეკუმშვა', url: 'image-tools.html', category: 'მედია', icon: '🖼️', description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, WebP, PNG) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' }
+  ];
+
+  const NAV_GROUPS = [
+    { label: 'ფინანსები', ids: ['loan-calculator', 'salary-calculator', 'number-to-words', 'iban-validator', 'vat-calculator'] },
+    { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
+    { label: 'PDF და მედია', ids: ['pdf-tools', 'image-tools', 'qr-generator'] },
+    { label: 'მონაცემები და დრო', ids: ['postal-codes', 'csv-json', 'date-calculator'] }
   ];
 
   const USAGE_STORAGE_KEY = 'geotools_usage_counts_v1';
@@ -83,7 +90,27 @@
     const footerEl = document.getElementById('site-footer');
 
     if (headerEl) {
-      const navLinksHtml = ['<a href="index.html" class="nav-link ' + (currentId === 'home' ? 'active' : '') + '">მთავარი</a>'].concat(
+      const desktopDropdowns = NAV_GROUPS.map(function (grp) {
+        const groupTools = grp.ids.map(function (id) {
+          return TOOLS_CATALOG.find(function (t) { return t.id === id; });
+        }).filter(Boolean);
+        const hasActive = groupTools.some(function (t) { return t.id === currentId; });
+        const itemsHtml = groupTools.map(function (t) {
+          return '<a href="' + t.url + '" class="nav-drop-item ' + (currentId === t.id ? 'active' : '') + '">' +
+            '<span class="nav-drop-icon">' + escapeHtml(t.icon) + '</span>' +
+            '<span>' + escapeHtml(t.title) + '</span>' +
+          '</a>';
+        }).join('');
+
+        return '<div class="nav-dropdown">' +
+          '<button type="button" class="nav-link nav-drop-btn ' + (hasActive ? 'active' : '') + '">' +
+            escapeHtml(grp.label) + ' <span class="caret">▾</span>' +
+          '</button>' +
+          '<div class="nav-drop-menu">' + itemsHtml + '</div>' +
+        '</div>';
+      }).join('');
+
+      const mobileLinksHtml = ['<a href="index.html" class="nav-link ' + (currentId === 'home' ? 'active' : '') + '">🏠 მთავარი</a>'].concat(
         TOOLS_CATALOG.map(function (t) {
           return '<a href="' + t.url + '" class="nav-link ' + (currentId === t.id ? 'active' : '') + '">' + escapeHtml(t.shortTitle) + '</a>';
         })
@@ -95,11 +122,15 @@
       headerEl.innerHTML =
         '<div class="container header-inner">' +
           '<a href="index.html" class="brand" aria-label="Mokled - მთავარი გვერდი"><span class="brand-logo"><img src="assets/logo.png" alt="Mokled" /></span></a>' +
+          '<nav class="desktop-nav" aria-label="მთავარი ნავიგაცია">' +
+            '<a href="index.html" class="nav-link ' + (currentId === 'home' ? 'active' : '') + '">მთავარი</a>' +
+            desktopDropdowns +
+          '</nav>' +
           '<div class="header-controls">' +
             '<button type="button" class="theme-toggle-btn" id="theme-toggle-btn">' + themeLabel + '</button>' +
             '<button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false">მენიუ ☰</button>' +
           '</div>' +
-          '<nav class="main-nav" id="main-nav" aria-label="მთავარი ნავიგაცია">' + navLinksHtml + '</nav>' +
+          '<nav class="main-nav" id="main-nav" aria-label="მობილური ნავიგაცია">' + mobileLinksHtml + '</nav>' +
         '</div>';
 
       const menuBtn = document.getElementById('mobile-menu-toggle');
@@ -165,22 +196,56 @@
     setTimeout(function () { toast.remove(); }, 2600);
   }
 
-  function copyToClipboard(text, successMsg) {
-    const msg = successMsg || 'ტექსტი დაკოპირდა!';
-    if (!text) { showToast('დასაკოპირებელი მონაცემი ცარიელია.'); return; }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { showToast(msg); }).catch(function () { fallbackCopy(text, msg); });
-    } else { fallbackCopy(text, msg); }
+  function triggerButtonCopyFeedback(btnEl) {
+    const el = btnEl || (document.activeElement && document.activeElement.tagName === 'BUTTON' ? document.activeElement : null);
+    if (!el) return;
+    if (el.getAttribute('data-copy-busy') === '1') return;
+    const origHtml = el.innerHTML;
+    el.setAttribute('data-copy-busy', '1');
+    el.classList.add('btn-copied');
+    if (el.classList.contains('zip-pill')) {
+      const code = el.getAttribute('data-code') || '';
+      el.innerHTML = '✓ ' + escapeHtml(code);
+    } else {
+      el.innerHTML = '✓ დაკოპირდა';
+    }
+    setTimeout(function () {
+      el.innerHTML = origHtml;
+      el.classList.remove('btn-copied');
+      el.removeAttribute('data-copy-busy');
+    }, 1500);
   }
 
-  function fallbackCopy(text, msg) {
+  function copyToClipboard(text, successMsg, triggerEl) {
+    const msg = successMsg || 'ტექსტი დაკოპირდა!';
+    if (!text) { showToast('დასაკოპირებელი მონაცემი ცარიელია.'); return; }
+    const activeBtn = triggerEl || (document.activeElement && document.activeElement.tagName === 'BUTTON' ? document.activeElement : null);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        triggerButtonCopyFeedback(activeBtn);
+        showToast(msg);
+      }).catch(function () {
+        fallbackCopy(text, msg, activeBtn);
+      });
+    } else {
+      fallbackCopy(text, msg, activeBtn);
+    }
+  }
+
+  function fallbackCopy(text, msg, activeBtn) {
     const ta = document.createElement('textarea');
     ta.value = text;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand('copy'); showToast(msg); } catch (_) { showToast('კოპირება ვერ მოხერხდა.'); }
+    try {
+      document.execCommand('copy');
+      triggerButtonCopyFeedback(activeBtn);
+      showToast(msg);
+    } catch (_) {
+      showToast('კოპირება ვერ მოხერხდა.');
+    }
     ta.remove();
   }
 
