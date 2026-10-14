@@ -1172,3 +1172,19 @@ main.container, main {
     min-width: 104px !important;
   }
 }
+
+/* Prevent Mobile Auto-Zoom & Double-Tap Zoom */
+html, body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn, .nav-link, .tool-card {
+  touch-action: manipulation;
+}
+@media (max-width: 860px) {
+  input, select, textarea, .input {
+    font-size: 16px !important;
+  }
+}
