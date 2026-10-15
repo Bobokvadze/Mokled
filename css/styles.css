@@ -1330,3 +1330,75 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
     gap: 0.8rem;
   }
 }
+
+/* NBG Header Rates Widget */
+.nbg-header-rates {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.24rem 0.45rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.nbg-badge-lbl {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0 0.2rem;
+  user-select: none;
+}
+.nbg-rate-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 0.24rem 0.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text-main);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.81rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nbg-rate-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.nbg-sym {
+  color: var(--primary);
+  font-weight: 800;
+  margin-right: 0.08rem;
+}
+.nbg-rate-pill.btn-copied .nbg-sym {
+  color: #ffffff;
+}
+.nbg-up {
+  color: #dc2626;
+  font-size: 0.65rem;
+  margin-left: 0.1rem;
+}
+.nbg-down {
+  color: #16a34a;
+  font-size: 0.65rem;
+  margin-left: 0.1rem;
+}
+@media (max-width: 980px) {
+  .nbg-badge-lbl {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .nbg-header-rates {
+    padding: 0.18rem 0.3rem;
+    gap: 0.22rem;
+  }
+  .nbg-rate-pill {
+    padding: 0.2rem 0.38rem;
+    font-size: 0.75rem;
+  }
+}

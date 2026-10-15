@@ -3,8 +3,7 @@
 
   const TOOLS_CATALOG = [
     { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'Ⴀა', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
-    { id: 'exchange-rates', title: 'ვალუტის კურსები და კონვერტერი', shortTitle: 'ვალუტის კურსები', url: 'exchange-rates.html', category: 'ფინანსები', icon: '💱', description: 'ეროვნული ბანკის (NBG) ოფიციალური კურსი და 5 ძირითადი კომერციული ბანკის დოლარისა და ევროს კურსები და კონვერტერი.' },
-    { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: '🏠', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, სრული გრაფიკისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
+    { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: '🏠', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
     { id: 'pdf-tools', title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, გვერდების ამოღება/დაყოფა, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
     { id: 'number-to-words', title: 'თანხის და რიცხვის სიტყვიერად ჩაწერა', shortTitle: 'თანხა სიტყვიერად', url: 'number-to-words.html', category: 'ფინანსები', icon: '№', description: 'თანხისა და რიცხვების უშეცდომო სიტყვიერი ჩაწერა ქართულად (ლარი და თეთრი, დოლარი, ევრო) ხელშეკრულებებისა და ინვოისებისთვის.' },
     { id: 'salary-calculator', title: 'ხელფასის კალკულატორი (Net ⇄ Gross)', shortTitle: 'ხელფასი', url: 'salary-calculator.html', category: 'ფინანსები', icon: '💼', description: 'დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასის ზუსტი კალკულატორი საშემოსავლო გადასახადისა (20% / 5%) და საპენსიო შენატანის (2%) დათვლით.' },
@@ -18,7 +17,7 @@
   ];
 
   const NAV_GROUPS = [
-    { label: 'ფინანსები', ids: ['exchange-rates', 'loan-calculator', 'salary-calculator', 'number-to-words', 'iban-validator', 'vat-calculator'] },
+    { label: 'ფინანსები', ids: ['loan-calculator', 'salary-calculator', 'number-to-words', 'iban-validator', 'vat-calculator'] },
     { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
     { label: 'PDF და მედია', ids: ['pdf-tools', 'image-tools', 'qr-generator'] },
     { label: 'მონაცემები და დრო', ids: ['postal-codes', 'date-calculator'] }
@@ -27,6 +26,7 @@
   const USAGE_STORAGE_KEY = 'geotools_usage_counts_v1';
   const FAV_STORAGE_KEY = 'mokled_favorites_v1';
   const THEME_STORAGE_KEY = 'mokled_theme_v1';
+  const NBG_CACHE_KEY = 'mokled_nbg_rates_v1';
 
   function getSavedTheme() {
     try { return localStorage.getItem(THEME_STORAGE_KEY) || 'light'; } catch (_) { return 'light'; }
@@ -104,7 +104,7 @@
   }
 
   function enableNumericInputMasking() {
-    const maskTargets = document.querySelectorAll('input[data-mask="money"], #loan-principal, #loan-prepay, #sal-amount, #vat-amount, #num-input, #fx-amount');
+    const maskTargets = document.querySelectorAll('input[data-mask="money"], #loan-principal, #loan-prepay, #sal-amount, #vat-amount, #num-input');
     maskTargets.forEach(function (inp) {
       if (inp.getAttribute('data-mask-bound') === '1') return;
       inp.setAttribute('data-mask-bound', '1');
@@ -133,6 +133,68 @@
         }
       });
     });
+  }
+
+  function initNbgHeaderRates() {
+    const usdBtn = document.getElementById('nbg-pill-usd');
+    const eurBtn = document.getElementById('nbg-pill-eur');
+    if (!usdBtn || !eurBtn) return;
+
+    function applyRatesToDom(data) {
+      if (!data || !data.usd || !data.eur) return;
+      const uRate = Number(data.usd.rate).toFixed(4);
+      const eRate = Number(data.eur.rate).toFixed(4);
+      const uDiff = Number(data.usd.diff || 0);
+      const eDiff = Number(data.eur.diff || 0);
+      const dateStr = data.date ? String(data.date).slice(0, 10) : '';
+
+      const uArrow = Math.abs(uDiff) < 0.00005 ? '' : (uDiff > 0 ? ' <span class="nbg-up">▲</span>' : ' <span class="nbg-down">▼</span>');
+      const eArrow = Math.abs(eDiff) < 0.00005 ? '' : (eDiff > 0 ? ' <span class="nbg-up">▲</span>' : ' <span class="nbg-down">▼</span>');
+
+      usdBtn.setAttribute('data-rate', uRate);
+      eurBtn.setAttribute('data-rate', eRate);
+      usdBtn.innerHTML = '<span class="nbg-sym">$</span>' + uRate + uArrow;
+      eurBtn.innerHTML = '<span class="nbg-sym">€</span>' + eRate + eArrow;
+
+      const uSign = uDiff > 0 ? '+' : '';
+      const eSign = eDiff > 0 ? '+' : '';
+      usdBtn.title = 'ეროვნული ბანკის კურსი' + (dateStr ? ' (' + dateStr + ')' : '') + ': 1 USD = ' + uRate + ' ₾ (' + uSign + uDiff.toFixed(4) + ') — დააწკაპუნეთ დასაკოპირებლად';
+      eurBtn.title = 'ეროვნული ბანკის კურსი' + (dateStr ? ' (' + dateStr + ')' : '') + ': 1 EUR = ' + eRate + ' ₾ (' + eSign + eDiff.toFixed(4) + ') — დააწკაპუნეთ დასაკოპირებლად';
+    }
+
+    try {
+      const cached = localStorage.getItem(NBG_CACHE_KEY);
+      if (cached) applyRatesToDom(JSON.parse(cached));
+    } catch (_) {}
+
+    usdBtn.addEventListener('click', function () {
+      const r = usdBtn.getAttribute('data-rate') || '2.5987';
+      copyToClipboard(r, 'სებ-ის USD კურსი (' + r + ') დაკოპირდა!', usdBtn);
+    });
+
+    eurBtn.addEventListener('click', function () {
+      const r = eurBtn.getAttribute('data-rate') || '2.9129';
+      copyToClipboard(r, 'სებ-ის EUR კურსი (' + r + ') დაკოპირდა!', eurBtn);
+    });
+
+    fetch('https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/ka/json')
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        if (!json || !json[0] || !Array.isArray(json[0].currencies)) return;
+        const list = json[0].currencies;
+        const u = list.find(function (c) { return c.code === 'USD'; });
+        const e = list.find(function (c) { return c.code === 'EUR'; });
+        if (u && e) {
+          const payload = {
+            date: json[0].date || u.date || '',
+            usd: { rate: Number(u.rate), diff: Number(u.diff || 0) },
+            eur: { rate: Number(e.rate), diff: Number(e.diff || 0) }
+          };
+          applyRatesToDom(payload);
+          try { localStorage.setItem(NBG_CACHE_KEY, JSON.stringify(payload)); } catch (_) {}
+        }
+      })
+      .catch(function () {});
   }
 
   const CRC32_TABLE = (function () {
@@ -367,7 +429,7 @@
     }
 
     const excelRows = [];
-    excelRows.push({ type: 'header', cells: ['Mokled - სესხის და იპოთეკის გადახდის გრაფიკი', '', '', '', '', ''] });
+    excelRows.push({ type: 'header', cells: ['Mokled - სესხის გადახდის გრაფიკი', '', '', '', '', ''] });
 
     const statBoxes = document.querySelectorAll('.stat-box');
     statBoxes.forEach(function (box) {
@@ -463,6 +525,11 @@
             desktopDropdowns +
           '</nav>' +
           '<div class="header-controls">' +
+            '<div class="nbg-header-rates" aria-label="ეროვნული ბანკის კურსი">' +
+              '<span class="nbg-badge-lbl" title="საქართველოს ეროვნული ბანკის ოფიციალური კურსი">სებ:</span>' +
+              '<button type="button" class="nbg-rate-pill" id="nbg-pill-usd" data-rate="2.5987" title="ეროვნული ბანკის USD კურსი — დააწკაპუნეთ დასაკოპირებლად"><span class="nbg-sym">$</span>2.5987</button>' +
+              '<button type="button" class="nbg-rate-pill" id="nbg-pill-eur" data-rate="2.9129" title="ეროვნული ბანკის EUR კურსი — დააწკაპუნეთ დასაკოპირებლად"><span class="nbg-sym">€</span>2.9129</button>' +
+            '</div>' +
             '<button type="button" class="theme-toggle-btn" id="theme-toggle-btn">' + themeLabel + '</button>' +
             '<button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false">მენიუ ☰</button>' +
           '</div>' +
@@ -484,6 +551,8 @@
           applyTheme(getSavedTheme() === 'dark' ? 'light' : 'dark');
         });
       }
+
+      initNbgHeaderRates();
     }
 
     if (footerEl) {
@@ -514,7 +583,12 @@
 
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {}); if (window.caches) { caches.keys().then(function (keys) { keys.forEach(function (k) { if (k !== 'mokled-cache-v42') caches.delete(k); }); }); }
+        navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
+        if (window.caches) {
+          caches.keys().then(function (keys) {
+            keys.forEach(function (k) { if (k !== 'mokled-cache-v43') caches.delete(k); });
+          });
+        }
       });
     }
   }
@@ -544,6 +618,9 @@
     if (el.classList.contains('zip-pill')) {
       const code = el.getAttribute('data-code') || '';
       el.innerHTML = '✓ ' + escapeHtml(code);
+    } else if (el.classList.contains('nbg-rate-pill')) {
+      const rate = el.getAttribute('data-rate') || '';
+      el.innerHTML = '✓ ' + escapeHtml(rate);
     } else {
       el.innerHTML = '✓ დაკოპირდა';
     }
