@@ -1178,7 +1178,7 @@ html, body {
   touch-action: manipulation;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn, .nav-link, .tool-card {
   touch-action: manipulation;
@@ -1401,4 +1401,33 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
     padding: 0.2rem 0.38rem;
     font-size: 0.75rem;
   }
+}
+
+/* Sticky Header & Table Header Upgrade */
+.site-header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(255, 255, 255, 0.90) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+[data-theme="dark"] .site-header {
+  background: rgba(15, 23, 42, 0.90) !important;
+}
+.site-header.is-scrolled {
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08) !important;
+}
+[data-theme="dark"] .site-header.is-scrolled {
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.45) !important;
+}
+.table-wrap thead th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg-subtle);
+  box-shadow: 0 1px 0 var(--border);
 }

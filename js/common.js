@@ -578,6 +578,7 @@
 
     window.addEventListener('scroll', function () {
       if (window.scrollY > 360) { topBtn.classList.remove('hidden'); } else { topBtn.classList.add('hidden'); }
+      if (headerEl) { headerEl.classList.toggle('is-scrolled', window.scrollY > 8); }
     });
     topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
@@ -586,7 +587,7 @@
         navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
         if (window.caches) {
           caches.keys().then(function (keys) {
-            keys.forEach(function (k) { if (k !== 'mokled-cache-v43') caches.delete(k); });
+            keys.forEach(function (k) { if (k !== 'mokled-cache-v44') caches.delete(k); });
           });
         }
       });
