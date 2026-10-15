@@ -514,7 +514,7 @@
 
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {}); if (window.caches) { caches.keys().then(function (keys) { keys.forEach(function (k) { if (k !== 'mokled-cache-v41') caches.delete(k); }); }); }
+        navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {}); if (window.caches) { caches.keys().then(function (keys) { keys.forEach(function (k) { if (k !== 'mokled-cache-v42') caches.delete(k); }); }); }
       });
     }
   }
