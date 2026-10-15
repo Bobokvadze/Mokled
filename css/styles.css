@@ -1188,3 +1188,68 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
     font-size: 16px !important;
   }
 }
+
+/* Loan Grace Row Polish */
+.loan-secondary-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1.25fr 0.85fr;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 0.35rem;
+}
+.loan-secondary-grid.has-grace {
+  grid-template-columns: 1.15fr 0.95fr 1.15fr 0.75fr;
+}
+.loan-secondary-grid .form-group {
+  margin-bottom: 0;
+}
+.loan-secondary-grid .form-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grace-field-anim {
+  animation: graceSlideIn 0.18s ease-out;
+}
+@keyframes graceSlideIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.input-unit-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-unit-wrap .input {
+  padding-right: 3.4rem !important;
+  border-color: var(--primary);
+  background: var(--bg-surface);
+}
+.input-unit-badge {
+  position: absolute;
+  right: 0.55rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-radius: 6px;
+  pointer-events: none;
+}
+.stat-grace-pill {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-radius: 6px;
+}
+@media (max-width: 860px) {
+  .loan-secondary-grid,
+  .loan-secondary-grid.has-grace {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+}

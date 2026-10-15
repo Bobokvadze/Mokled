@@ -35,12 +35,12 @@
       <div class="grid-3">
         <div class="form-group">
           <label class="form-label" for="loan-principal">სესხის თანხა:</label>
-          <input type="text" id="loan-principal" data-mask="money" class="input" value="25,000" inputmode="decimal" />
+          <input type="text" id="loan-principal" data-mask="money" class="input" value="100,000" inputmode="decimal" />
         </div>
 
         <div class="form-group">
           <label class="form-label" for="loan-rate">წლიური საპროცენტო განაკვეთი (%):</label>
-          <input type="number" id="loan-rate" class="input" value="12.5" min="0" max="100" step="0.1" inputmode="decimal" />
+          <input type="number" id="loan-rate" class="input" value="14" min="0" max="100" step="0.1" inputmode="decimal" />
         </div>
 
         <div class="form-group">
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <div class="grid-3" style="margin-top: 0.25rem;">
+      <div class="loan-secondary-grid" id="loan-secondary-grid">
         <div class="form-group">
           <label class="form-label" for="loan-type">გრაფიკის ტიპი:</label>
           <select id="loan-type" class="input">
@@ -58,13 +58,16 @@
           </select>
         </div>
 
-        <div class="form-group hidden" id="grace-months-group">
-          <label class="form-label" for="loan-grace-months">საშეღავათო პერიოდი (თვე):</label>
-          <input type="number" id="loan-grace-months" class="input" value="6" min="1" max="599" step="1" inputmode="numeric" placeholder="მაგ.: 6" />
+        <div class="form-group hidden grace-field-anim" id="grace-months-group">
+          <label class="form-label" for="loan-grace-months">საშეღავათო პერიოდი:</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="loan-grace-months" class="input" value="6" min="1" max="599" step="1" inputmode="numeric" />
+            <span class="input-unit-badge">თვე</span>
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="loan-prepay">ყოველთვიური დამატებითი წინსწრება (არასავალდებულო):</label>
+          <label class="form-label" for="loan-prepay">ყოველთვიური წინსწრება (არასავალდებულო):</label>
           <input type="text" id="loan-prepay" data-mask="money" class="input" value="0" inputmode="decimal" />
         </div>
 
@@ -78,11 +81,11 @@
         </div>
       </div>
 
-      <div class="stats-grid" style="margin-top: 0.75rem;">
+      <div class="stats-grid" style="margin-top: 1.15rem;">
         <div class="stat-box">
           <div class="stat-label" id="stat-lbl-payment">ყოველთვიური შენატანი</div>
           <div class="stat-value" id="stat-monthly">0.00 ₾</div>
-          <div id="stat-sub-payment" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;"></div>
+          <div id="stat-sub-payment"></div>
         </div>
         <div class="stat-box">
           <div class="stat-label">სესხის ძირი თანხა</div>
@@ -98,10 +101,9 @@
         </div>
       </div>
 
-      <div id="grace-info-banner" class="alert alert-info hidden" style="margin-top: 1rem;"></div>
-      <div id="prepay-savings-banner" class="alert alert-success hidden" style="margin-top: 0.75rem;"></div>
+      <div id="prepay-savings-banner" class="alert alert-success hidden" style="margin-top: 0.9rem;"></div>
 
-      <div class="btn-row" style="margin-top: 1.1rem;">
+      <div class="btn-row" style="margin-top: 1.15rem;">
         <button type="button" id="btn-calc-loan" class="btn btn-primary">გამოთვლა</button>
         <button type="button" id="btn-copy-loan-summary" class="btn btn-secondary">შედეგის კოპირება</button>
         <button type="button" id="btn-share-loan" class="btn btn-secondary">🔗 ბმულის გაზიარება</button>
@@ -145,6 +147,7 @@
       const principalInput = document.getElementById('loan-principal');
       const rateInput = document.getElementById('loan-rate');
       const monthsInput = document.getElementById('loan-months');
+      const secondaryGrid = document.getElementById('loan-secondary-grid');
       const typeSelect = document.getElementById('loan-type');
       const graceGroup = document.getElementById('grace-months-group');
       const graceInput = document.getElementById('loan-grace-months');
@@ -157,7 +160,6 @@
       const statPrincipal = document.getElementById('stat-principal');
       const statInterest = document.getElementById('stat-interest');
       const statTotal = document.getElementById('stat-total');
-      const graceBanner = document.getElementById('grace-info-banner');
       const prepayBanner = document.getElementById('prepay-savings-banner');
       const scheduleBadge = document.getElementById('schedule-badge');
       const scheduleBody = document.getElementById('schedule-tbody');
@@ -190,7 +192,6 @@
           let scheduledPrincipal = 0;
 
           if (m <= G) {
-            // საშეღავათო პერიოდი: იფარება მხოლოდ პროცენტი
             scheduledPrincipal = 0;
           } else {
             if (m === G + 1 && balance !== P) {
@@ -245,6 +246,7 @@
       function syncGraceVisibility() {
         if (typeSelect.value === 'grace') {
           graceGroup.classList.remove('hidden');
+          secondaryGrid.classList.add('has-grace');
           const maxGrace = Math.max(1, (Number(monthsInput.value) || 60) - 1);
           graceInput.max = String(maxGrace);
           if (!graceInput.value || Number(graceInput.value) < 1) {
@@ -254,6 +256,7 @@
           }
         } else {
           graceGroup.classList.add('hidden');
+          secondaryGrid.classList.remove('has-grace');
         }
       }
 
@@ -272,20 +275,13 @@
         const baseNoExtra = computeSchedule(P, rate, months, mode, graceMonths, 0);
 
         if (mode === 'grace' && res.graceMonths > 0) {
-          statLblPayment.textContent = 'შენატანი (საშეღავათო → შემდეგ)';
-          statMonthly.textContent = formatMoney(res.firstGracePayment) + ' → ' + formatMoney(res.postGracePayment) + ' ' + sym;
-          statSubPayment.textContent = '1–' + res.graceMonths + ' თვე: მხოლოდ პროცენტი | ' + (res.graceMonths + 1) + '–' + res.totalMonths + ' თვე: ანუიტეტი';
-
-          graceBanner.innerHTML =
-            '<strong>📌 საშეღავათო პერიოდის პირობა (' + res.graceMonths + ' თვე):</strong> ' +
-            'პირველი <strong>' + res.graceMonths + ' თვის</strong> განმავლობაში იხდით მხოლოდ პროცენტს (<strong>' + formatMoney(res.firstGracePayment) + ' ' + sym + '</strong>/თვეში), ' +
-            'ხოლო <strong>მე-' + (res.graceMonths + 1) + ' თვიდან</strong> დარჩენილ ' + (res.totalMonths - res.graceMonths) + ' თვეზე იწყება ძირისა და პროცენტის თანაბარი დაფარვა (<strong>' + formatMoney(res.postGracePayment) + ' ' + sym + '</strong>/თვეში).';
-          graceBanner.classList.remove('hidden');
+          statLblPayment.textContent = 'ძირითადი შენატანი (' + (res.graceMonths + 1) + '–' + res.totalMonths + ' თვე)';
+          statMonthly.textContent = formatMoney(res.postGracePayment) + ' ' + sym;
+          statSubPayment.innerHTML = '<span class="stat-grace-pill">1–' + res.graceMonths + ' თვე (საშეღავათო): ' + formatMoney(res.firstGracePayment) + ' ' + escapeHtml(sym) + '</span>';
         } else {
           statLblPayment.textContent = 'ყოველთვიური შენატანი';
           statMonthly.textContent = formatMoney(res.postGracePayment) + ' ' + sym;
-          statSubPayment.textContent = 'თანაბარი ანუიტეტური შენატანი';
-          graceBanner.classList.add('hidden');
+          statSubPayment.innerHTML = '';
         }
 
         statPrincipal.textContent = formatMoney(res.principal) + ' ' + sym;
@@ -307,7 +303,7 @@
         scheduleBadge.textContent = res.actualMonths + ' თვე';
         scheduleBody.innerHTML = res.schedule.map(function (row) {
           const rowStyle = row.isGraceMonth ? ' style="background: var(--bg-subtle);"' : '';
-          const monthLabel = row.isGraceMonth ? (row.month + ' <small style="color:var(--primary);">(საშეღ.)</small>') : String(row.month);
+          const monthLabel = row.isGraceMonth ? (row.month + ' <small style="color:var(--primary);font-weight:600;">(საშეღ.)</small>') : String(row.month);
           return (
             '<tr' + rowStyle + '>' +
               '<td>' + monthLabel + '</td>' +
@@ -321,7 +317,6 @@
         }).join('');
       }
 
-      // URL პარამეტრების წაკითხვა გაზიარებული ბმულიდან
       const params = new URLSearchParams(window.location.search);
       if (params.get('p')) principalInput.value = formatNumberWithCommas(params.get('p'), true);
       if (params.get('r')) rateInput.value = params.get('r');
