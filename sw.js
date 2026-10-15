@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v36';
+const CACHE_NAME = 'mokled-cache-v37';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -12,7 +12,6 @@ const CORE_ASSETS = [
   '/vat-calculator.html',
   '/qr-generator.html',
   '/text-tools.html',
-  '/csv-json.html',
   '/date-calculator.html',
   '/image-tools.html',
   '/404.html',

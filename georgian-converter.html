@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ქართული ტექსტის კონვერტერი (AcadNusx, New, პარლამენტის, უნიკოდი, ლათინური) | Mokled - მოკლედ</title>
-  <meta name="description" content="გადაიყვანეთ ქართული ტექსტი ლათინურ / ძველ ქართულ ფონტს (AcadNusx), New ფონტს (‹Œ•–...), ჩატის ტრანსლიტერაციას (sh, ch, dz, kh...), ყოფილი პარლამენტის სტანდარტს (ÀÁÂÃ...ä), უნიკოდსა და ასომთავრულს შორის." />
+  <title>ქართული ტექსტის კონვერტერი | Mokled - მოკლედ</title>
+  <meta name="description" content="ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის." />
   <link rel="canonical" href="https://mokled.pages.dev/georgian-converter.html" />
-  <meta property="og:title" content="ქართული ტექსტის კონვერტერი და ტრანსლიტერაცია | Mokled - მოკლედ" />
-  <meta property="og:description" content="უნივერსალური კონვერტაცია AcadNusx-ს, New ფონტს, ლათინურ ტრანსლიტერაციას, პარლამენტის სტანდარტს, ქართულ Unicode-სა და ასომთავრულს შორის." />
+  <meta property="og:title" content="ქართული ტექსტის კონვერტერი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/georgian-converter.html" />
   <meta property="og:locale" content="ka_GE" />
@@ -25,12 +25,7 @@
     <div class="page-header">
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / ტექსტი</div>
       <h1>ქართული ტექსტის კონვერტერი</h1>
-      <p>
-        აირჩიეთ საწყისი და სასურველი ფორმატი ქართული ტექსტის გარდასაქმნელად. ხელსაწყო აერთიანებს
-        <strong>ძველ ქართულ ფონტებს (AcadNusx / LitNusx)</strong>, <strong>New ფონტს (<code>‹Œ•–—...¿</code>)</strong>,
-        <strong>ლათინურ ტრანსლიტერაციას (sh, ch, dz, kh...)</strong>, <strong>ყოფილი პარლამენტის სტანდარტს (<code>ÀÁÂÃ...ä</code>)</strong>,
-        თანამედროვე <strong>უნიკოდს (UTF-8 / Sylfaen)</strong> და <strong>ასომთავრულს</strong>.
-      </p>
+      <p>ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.</p>
     </div>
 
     <div id="converter-warnings" class="alert alert-warning hidden" role="alert"></div>
@@ -84,14 +79,6 @@
         <div>
           <label class="form-label" for="conv-input">საწყისი ტექსტი:</label>
           <textarea id="conv-input" placeholder="ჩასვით ან აკრიფეთ გარდასაქმნელი ტექსტი..."></textarea>
-          <div class="btn-row">
-            <span style="font-size: 0.84rem; color: var(--text-muted); align-self: center;">მაგალითები:</span>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="acadnusx">AcadNusx</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="translit">ჩატის სტილი (sh, ch...)</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="parliament">პარლამენტის</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="new">New ფონტი</button>
-            <button type="button" class="btn btn-secondary btn-sm sample-trigger" data-sample="asomtavruli">ასომთავრული</button>
-          </div>
         </div>
 
         <div>
@@ -138,7 +125,6 @@
       const suggestionsWrap = document.getElementById('translit-suggestions-wrap');
       const suggestionsBox = document.getElementById('translit-suggestions');
 
-      // New ფონტის ზუსტი 33-ასოიანი ცხრილი
       const UNICODE_TO_NEW_FONT = {
         'ა': '\u2039', 'ბ': '\u0152', 'გ': '\u2022', 'დ': '\u2013', 'ე': '\u2014',
         'ვ': '\u02DC', 'ზ': '\u0161', 'თ': '\u203A', 'ი': '\u0153', 'კ': '\u0178',
@@ -153,7 +139,6 @@
       Object.keys(UNICODE_TO_NEW_FONT).forEach(function (ka) {
         NEW_FONT_TO_UNICODE[UNICODE_TO_NEW_FONT[ka]] = ka;
       });
-      // დამატებით CP1252 C1 კონტროლ-სიმბოლოების მხარდაჭერა (თუ ძველი ფაილიდან პირდაპირ ბაიტებით გადმოკოპირდა)
       NEW_FONT_TO_UNICODE['\u008B'] = 'ა';
       NEW_FONT_TO_UNICODE['\u008C'] = 'ბ';
       NEW_FONT_TO_UNICODE['\u0095'] = 'გ';
@@ -174,7 +159,6 @@
       function unicodeToNewFontText(str) {
         return Array.from(String(str || '')).map(function (ch) {
           const code = ch.charCodeAt(0);
-          // თუ მთავრული უნიკოდია (Ა-Ჿ), გადავიყვანოთ მხედრულში
           const norm = (code >= 0x1C90 && code <= 0x1CBF) ? String.fromCharCode(code - 0x1C90 + 0x10D0) : ch;
           return UNICODE_TO_NEW_FONT[norm] !== undefined ? UNICODE_TO_NEW_FONT[norm] : ch;
         }).join('');
@@ -187,34 +171,6 @@
         'new': 'New ფონტი (‹Œ•–...)',
         unicode: 'ქართული უნიკოდი',
         asomtavruli: 'ასომთავრული (ႠႡ...)'
-      };
-
-      const SAMPLES = {
-        acadnusx: {
-          source: 'acadnusx',
-          target: 'unicode',
-          text: 'saqarTvelos Zveli fonti AcadNusx (2026 weli).\nTbilisis saxelmwifo universiteti.'
-        },
-        translit: {
-          source: 'translit',
-          target: 'unicode',
-          text: 'gamarjoba! tbilisi sakartvelos dedaqalaqia.\ndges kargi amindia, chven ertad vmushaobt.'
-        },
-        parliament: {
-          source: 'parliament',
-          target: 'unicode',
-          text: 'ÓÀØÀÒÈÅÄËÏÓ ÐÀÒËÀÌÄÍÔÉÓ ÚÏ×ÉËÉ ÓÔÀÍÃÀÒÔÉ (2026 ßÄËÉ).\nÈÁÉËÉÓÉ, äÀÄÒÉ ÃÀ ØÀÒÈÖËÉ ÖÍÉÊÏÃÉ.'
-        },
-        'new': {
-          source: 'new',
-          target: 'unicode',
-          text: '«‹°‹ª›˜—¡¤« –‹¢¤\u00ADŸœ–—Œ¡¤Œœ« –±— - ›Œœ¡œ«œ (2026 »—¡œ).'
-        },
-        asomtavruli: {
-          source: 'asomtavruli',
-          target: 'unicode',
-          text: 'ႱႠႵႠႰႧႥႤႪႭႱ ႣႠႫႭႳႩႨႣႤႡႪႭႡႨႱ ႣႶႤ - 26 ႫႠႨႱႨ.'
-        }
       };
 
       const SMART_WORDS = {
@@ -414,23 +370,6 @@
         }
         runConversion();
         showToast('საწყისი და საბოლოო ფორმატები გაიცვალა.');
-      });
-
-      document.querySelectorAll('.sample-trigger').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          const key = btn.getAttribute('data-sample');
-          const sample = SAMPLES[key];
-          if (sample) {
-            sourceFormat.value = sample.source;
-            targetFormat.value = sample.target;
-            convInput.value = sample.text;
-            if (detectedBadge) {
-              detectedBadge.textContent = '✨ ამოცნობილია: ' + FORMAT_LABELS[sample.source];
-              detectedBadge.classList.remove('hidden');
-            }
-            runConversion();
-          }
-        });
       });
 
       document.getElementById('btn-copy-res').addEventListener('click', function () {
