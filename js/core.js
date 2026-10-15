@@ -1630,7 +1630,7 @@
     );
   }
 
-  /* 12. სესხის და იპოთეკის კალკულატორი */
+  /* 12. სესხის კალკულატორი */
   function roundMoney(n) {
     return Math.round((n + Number.EPSILON) * 100) / 100;
   }

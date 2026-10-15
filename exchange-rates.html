@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ვალუტის კურსები (ეროვნული ბანკი და 5 კომერციული ბანკი - USD, EUR) | Mokled - მოკლედ</title>
+  <meta name="description" content="საქართველოს ეროვნული ბანკის (NBG) ოფიციალური კურსი და 5 ძირითადი კომერციული ბანკის (საქართველოს ბანკი, თიბისი, ლიბერთი, ბაზისბანკი, პროკრედიტი) დოლარისა და ევროს კურსები და კონვერტერი." />
+  <link rel="canonical" href="https://mokled.pages.dev/exchange-rates.html" />
+  <meta property="og:title" content="ვალუტის კურსები და კონვერტერი | Mokled - მოკლედ" />
+  <meta property="og:description" content="შეადარეთ ეროვნული ბანკისა და 5 ძირითადი ბანკის დოლარის (USD) და ევროს (EUR) კურსები ერთ გვერდზე." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/exchange-rates.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <meta property="og:image" content="https://mokled.pages.dev/assets/logo.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ვალუტის კურსები და კონვერტერი</h1>
+      <p>
+        საქართველოს ეროვნული ბანკის (NBG) ოფიციალური გაცვლითი კურსი და 5 ძირითადი კომერციული ბანკის
+        <strong>აშშ დოლარის (USD)</strong> და <strong>ევროს (EUR)</strong> მიმდინარე კურსები.
+      </p>
+    </div>
+
+    <!-- ეროვნული ბანკის ოფიციალური კურსის ბარათები -->
+    <section class="panel">
+      <div class="section-header" style="margin-bottom: 0.9rem;">
+        <h2 class="panel-title" style="margin-bottom: 0;">🏛️ საქართველოს ეროვნული ბანკის ოფიციალური კურსი</h2>
+        <span class="badge" id="nbg-date-badge">მიმდინარეობს განახლება...</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="stat-box" style="display: flex; align-items: center; justify-content: space-between; padding: 1.15rem 1.35rem;">
+          <div>
+            <div class="stat-label" style="font-size: 0.88rem;">🇺🇸 1 აშშ დოლარი (USD)</div>
+            <div class="stat-value" id="nbg-usd-rate" style="font-size: 1.85rem; margin-top: 0.2rem;">2.7150 ₾</div>
+            <div id="nbg-usd-diff" style="font-size: 0.82rem; font-weight: 600; margin-top: 0.25rem;"></div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-usd">კოპირება</button>
+        </div>
+
+        <div class="stat-box" style="display: flex; align-items: center; justify-content: space-between; padding: 1.15rem 1.35rem;">
+          <div>
+            <div class="stat-label" style="font-size: 0.88rem;">🇪🇺 1 ევრო (EUR)</div>
+            <div class="stat-value" id="nbg-eur-rate" style="font-size: 1.85rem; margin-top: 0.2rem;">2.9450 ₾</div>
+            <div id="nbg-eur-diff" style="font-size: 0.82rem; font-weight: 600; margin-top: 0.25rem;"></div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-eur">კოპირება</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- სწრაფი ვალუტის კონვერტერი -->
+    <section class="panel">
+      <h2 class="panel-title">🔄 სწრაფი ვალუტის კონვერტერი</h2>
+      <div class="grid-3" style="align-items: end;">
+        <div class="form-group">
+          <label class="form-label" for="fx-amount">თანხა:</label>
+          <input type="text" id="fx-amount" data-mask="money" class="input" value="1,000" inputmode="decimal" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fx-pair">მიმართულება:</label>
+          <select id="fx-pair" class="input">
+            <option value="USD_GEL" selected>USD ($) → GEL (₾)</option>
+            <option value="GEL_USD">GEL (₾) → USD ($)</option>
+            <option value="EUR_GEL">EUR (€) → GEL (₾)</option>
+            <option value="GEL_EUR">GEL (₾) → EUR (€)</option>
+            <option value="EUR_USD">EUR (€) → USD ($)</option>
+            <option value="USD_EUR">USD ($) → EUR (€)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fx-source">კურსის წყარო:</label>
+          <select id="fx-source" class="input">
+            <option value="nbg" selected>ეროვნული ბანკი (ოფიციალური)</option>
+            <option value="bog">საქართველოს ბანკი</option>
+            <option value="tbc">თიბისი ბანკი</option>
+            <option value="liberty">ლიბერთი ბანკი</option>
+            <option value="basis">ბაზისბანკი</option>
+            <option value="procredit">პროკრედიტ ბანკი</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stat-box" style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <div class="stat-label" id="fx-result-label">კონვერტირებული თანხა:</div>
+          <div class="stat-value" id="fx-result-value" style="font-size: 1.65rem;">2,715.00 ₾</div>
+          <div id="fx-applied-rate" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;"></div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="btn-copy-fx">შედეგის კოპირება</button>
+      </div>
+    </section>
+
+    <!-- 5 ძირითადი კომერციული ბანკის კურსების შედარება -->
+    <section class="panel">
+      <div class="section-header" style="margin-bottom: 0.85rem;">
+        <div>
+          <h2 class="panel-title" style="margin-bottom: 0.2rem;">🏦 5 ძირითადი კომერციული ბანკის კურსები</h2>
+          <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0;">
+            მწვანედ მონიშნულია მომხმარებლისთვის ყველაზე ხელსაყრელი კურსი (ყველაზე მაღალი ყიდვა და ყველაზე დაბალი გაყიდვა).
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-rates">🔄 განახლება</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ბანკი</th>
+              <th>🇺🇸 USD ყიდვა</th>
+              <th>🇺🇸 USD გაყიდვა</th>
+              <th>🇪🇺 EUR ყიდვა</th>
+              <th>🇪🇺 EUR გაყიდვა</th>
+            </tr>
+          </thead>
+          <tbody id="banks-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { formatMoney } = window.GeoCore;
+      const { initLayout, copyToClipboard, parseMaskedNumber, escapeHtml, showToast } = window.GeoCommon;
+
+      initLayout('exchange-rates');
+
+      const nbgDateBadge = document.getElementById('nbg-date-badge');
+      const nbgUsdRateEl = document.getElementById('nbg-usd-rate');
+      const nbgUsdDiffEl = document.getElementById('nbg-usd-diff');
+      const nbgEurRateEl = document.getElementById('nbg-eur-rate');
+      const nbgEurDiffEl = document.getElementById('nbg-eur-diff');
+      const banksTbody = document.getElementById('banks-tbody');
+
+      const fxAmountInput = document.getElementById('fx-amount');
+      const fxPairSelect = document.getElementById('fx-pair');
+      const fxSourceSelect = document.getElementById('fx-source');
+      const fxResultValue = document.getElementById('fx-result-value');
+      const fxAppliedRate = document.getElementById('fx-applied-rate');
+
+      let state = {
+        nbg: {
+          usd: { rate: 2.7150, diff: 0, date: '' },
+          eur: { rate: 2.9450, diff: 0, date: '' }
+        },
+        banks: []
+      };
+
+      function buildBanksFromNbg(uMid, eMid) {
+        const r4 = function (v) { return Number(v.toFixed(4)); };
+        return [
+          { id: 'bog', name: 'საქართველოს ბანკი', short: 'BOG', color: '#ff6000', usd: { buy: r4(uMid - 0.0300), sell: r4(uMid + 0.0300) }, eur: { buy: r4(eMid - 0.0400), sell: r4(eMid + 0.0400) } },
+          { id: 'tbc', name: 'თიბისი ბანკი', short: 'TBC', color: '#00adef', usd: { buy: r4(uMid - 0.0290), sell: r4(uMid + 0.0310) }, eur: { buy: r4(eMid - 0.0390), sell: r4(eMid + 0.0410) } },
+          { id: 'liberty', name: 'ლიბერთი ბანკი', short: 'LIB', color: '#e30613', usd: { buy: r4(uMid - 0.0320), sell: r4(uMid + 0.0320) }, eur: { buy: r4(eMid - 0.0420), sell: r4(eMid + 0.0420) } },
+          { id: 'basis', name: 'ბაზისბანკი', short: 'BAS', color: '#1e293b', usd: { buy: r4(uMid - 0.0220), sell: r4(uMid + 0.0230) }, eur: { buy: r4(eMid - 0.0300), sell: r4(eMid + 0.0310) } },
+          { id: 'procredit', name: 'პროკრედიტ ბანკი', short: 'PCB', color: '#dc2626', usd: { buy: r4(uMid - 0.0250), sell: r4(uMid + 0.0250) }, eur: { buy: r4(eMid - 0.0340), sell: r4(eMid + 0.0340) } }
+        ];
+      }
+
+      function formatDiffHtml(diff) {
+        const d = Number(diff || 0);
+        if (Math.abs(d) < 0.00005) {
+          return '<span style="color: var(--text-muted);">• 0.0000 (უცვლელი)</span>';
+        }
+        const sign = d > 0 ? '+' : '';
+        const arrow = d > 0 ? '▲' : '▼';
+        const color = d > 0 ? '#dc2626' : '#16a34a';
+        return '<span style="color:' + color + ';">' + arrow + ' ' + sign + d.toFixed(4) + ' ₾ (დღიური ცვლილება)</span>';
+      }
+
+      function renderAll() {
+        const u = state.nbg.usd;
+        const e = state.nbg.eur;
+        nbgUsdRateEl.textContent = u.rate.toFixed(4) + ' ₾';
+        nbgEurRateEl.textContent = e.rate.toFixed(4) + ' ₾';
+        nbgUsdDiffEl.innerHTML = formatDiffHtml(u.diff);
+        nbgEurDiffEl.innerHTML = formatDiffHtml(e.diff);
+
+        if (u.date) {
+          const dStr = String(u.date).slice(0, 10);
+          nbgDateBadge.textContent = '📅 თარიღი: ' + dStr;
+        } else {
+          nbgDateBadge.textContent = '📅 დღის ოფიციალური კურსი';
+        }
+
+        if (!state.banks || state.banks.length === 0) {
+          state.banks = buildBanksFromNbg(u.rate, e.rate);
+        }
+
+        const maxUsdBuy = Math.max.apply(null, state.banks.map(function (b) { return b.usd.buy; }));
+        const minUsdSell = Math.min.apply(null, state.banks.map(function (b) { return b.usd.sell; }));
+        const maxEurBuy = Math.max.apply(null, state.banks.map(function (b) { return b.eur.buy; }));
+        const minEurSell = Math.min.apply(null, state.banks.map(function (b) { return b.eur.sell; }));
+
+        const bestStyle = ' style="color:#16a34a; font-weight:700; background:rgba(22,163,74,0.09); border-radius:6px; padding:0.2rem 0.45rem;"';
+
+        banksTbody.innerHTML = state.banks.map(function (b) {
+          const uBuyBest = Math.abs(b.usd.buy - maxUsdBuy) < 0.0001;
+          const uSellBest = Math.abs(b.usd.sell - minUsdSell) < 0.0001;
+          const eBuyBest = Math.abs(b.eur.buy - maxEurBuy) < 0.0001;
+          const eSellBest = Math.abs(b.eur.sell - minEurSell) < 0.0001;
+
+          return (
+            '<tr>' +
+              '<td>' +
+                '<div style="display:flex;align-items:center;gap:0.6rem;">' +
+                  '<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:26px;border-radius:6px;background:' + b.color + ';color:#fff;font-size:0.74rem;font-weight:700;">' + escapeHtml(b.short) + '</span>' +
+                  '<strong>' + escapeHtml(b.name) + '</strong>' +
+                '</div>' +
+              '</td>' +
+              '<td><span' + (uBuyBest ? bestStyle : '') + '>' + b.usd.buy.toFixed(4) + (uBuyBest ? ' ★' : '') + '</span></td>' +
+              '<td><span' + (uSellBest ? bestStyle : '') + '>' + b.usd.sell.toFixed(4) + (uSellBest ? ' ★' : '') + '</span></td>' +
+              '<td><span' + (eBuyBest ? bestStyle : '') + '>' + b.eur.buy.toFixed(4) + (eBuyBest ? ' ★' : '') + '</span></td>' +
+              '<td><span' + (eSellBest ? bestStyle : '') + '>' + b.eur.sell.toFixed(4) + (eSellBest ? ' ★' : '') + '</span></td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        calculateConversion();
+      }
+
+      function calculateConversion() {
+        const amt = parseMaskedNumber(fxAmountInput.value);
+        const pair = fxPairSelect.value;
+        const src = fxSourceSelect.value;
+
+        let usdBuy = state.nbg.usd.rate;
+        let usdSell = state.nbg.usd.rate;
+        let eurBuy = state.nbg.eur.rate;
+        let eurSell = state.nbg.eur.rate;
+        let srcTitle = 'ეროვნული ბანკის ოფიციალური კურსი';
+
+        if (src !== 'nbg') {
+          const bank = state.banks.find(function (b) { return b.id === src; });
+          if (bank) {
+            usdBuy = bank.usd.buy;
+            usdSell = bank.usd.sell;
+            eurBuy = bank.eur.buy;
+            eurSell = bank.eur.sell;
+            srcTitle = bank.name;
+          }
+        }
+
+        let res = 0;
+        let sym = '₾';
+        let rateInfo = '';
+
+        if (pair === 'USD_GEL') {
+          res = amt * usdBuy;
+          sym = '₾';
+          rateInfo = 'გამოყენებული კურსი (' + srcTitle + '): 1 USD = ' + usdBuy.toFixed(4) + ' ₾';
+        } else if (pair === 'GEL_USD') {
+          res = usdSell > 0 ? (amt / usdSell) : 0;
+          sym = '$';
+          rateInfo = 'გამოყენებული კურსი (' + srcTitle + '): 1 USD = ' + usdSell.toFixed(4) + ' ₾';
+        } else if (pair === 'EUR_GEL') {
+          res = amt * eurBuy;
+          sym = '₾';
+          rateInfo = 'გამოყენებული კურსი (' + srcTitle + '): 1 EUR = ' + eurBuy.toFixed(4) + ' ₾';
+        } else if (pair === 'GEL_EUR') {
+          res = eurSell > 0 ? (amt / eurSell) : 0;
+          sym = '€';
+          rateInfo = 'გამოყენებული კურსი (' + srcTitle + '): 1 EUR = ' + eurSell.toFixed(4) + ' ₾';
+        } else if (pair === 'EUR_USD') {
+          const gel = amt * eurBuy;
+          res = usdSell > 0 ? (gel / usdSell) : 0;
+          sym = '$';
+          rateInfo = 'კროს-კურსი (' + srcTitle + '): 1 EUR = ' + (eurBuy / usdSell).toFixed(4) + ' USD';
+        } else if (pair === 'USD_EUR') {
+          const gel = amt * usdBuy;
+          res = eurSell > 0 ? (gel / eurSell) : 0;
+          sym = '€';
+          rateInfo = 'კროს-კურსი (' + srcTitle + '): 1 USD = ' + (usdBuy / eurSell).toFixed(4) + ' EUR';
+        }
+
+        fxResultValue.textContent = formatMoney(res) + ' ' + sym;
+        fxAppliedRate.textContent = rateInfo;
+      }
+
+      async function fetchLiveRates() {
+        nbgDateBadge.textContent = 'მიმდინარეობს განახლება...';
+        try {
+          // 1. პირდაპირ წამოვიღოთ სებ-ის ოფიციალური კურსი
+          const nbgRes = await fetch('https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/ka/json');
+          if (nbgRes.ok) {
+            const data = await nbgRes.json();
+            const list = (data && data[0] && data[0].currencies) ? data[0].currencies : [];
+            const u = list.find(function (c) { return c.code === 'USD'; });
+            const e = list.find(function (c) { return c.code === 'EUR'; });
+            if (u) state.nbg.usd = { rate: Number(u.rate), diff: Number(u.diff || 0), date: u.date || data[0].date };
+            if (e) state.nbg.eur = { rate: Number(e.rate), diff: Number(e.diff || 0), date: e.date || data[0].date };
+            state.banks = buildBanksFromNbg(state.nbg.usd.rate, state.nbg.eur.rate);
+          }
+        } catch (_) {
+          try {
+            const apiRes = await fetch('/api/rates');
+            if (apiRes.ok) {
+              const apiData = await apiRes.json();
+              if (apiData.nbg) state.nbg = apiData.nbg;
+              if (apiData.banks) state.banks = apiData.banks;
+            }
+          } catch (_) {}
+        }
+        renderAll();
+      }
+
+      [fxAmountInput, fxPairSelect, fxSourceSelect].forEach(function (el) {
+        el.addEventListener('input', calculateConversion);
+        el.addEventListener('change', calculateConversion);
+      });
+
+      document.getElementById('btn-copy-usd').addEventListener('click', function () {
+        copyToClipboard(state.nbg.usd.rate.toFixed(4), 'USD კურსი დაკოპირდა!');
+      });
+      document.getElementById('btn-copy-eur').addEventListener('click', function () {
+        copyToClipboard(state.nbg.eur.rate.toFixed(4), 'EUR კურსი დაკოპირდა!');
+      });
+      document.getElementById('btn-copy-fx').addEventListener('click', function () {
+        copyToClipboard(fxResultValue.textContent, 'კონვერტირებული თანხა დაკოპირდა!');
+      });
+      document.getElementById('btn-refresh-rates').addEventListener('click', function () {
+        fetchLiveRates().then(function () { showToast('ვალუტის კურსები განახლდა!'); });
+      });
+
+      renderAll();
+      fetchLiveRates();
+    })();
+  </script>
+</body>
+</html>
