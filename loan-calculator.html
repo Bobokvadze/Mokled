@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>სესხის და იპოთეკის კალკულატორი (ანუიტეტური, საშეღავათო პერიოდი, წინსწრება) | Mokled - მოკლედ</title>
-  <meta name="description" content="სესხისა და იპოთეკის ზუსტი კალკულატორი: ანუიტეტური გრაფიკი, საშეღავათო პერიოდის დათვლა, წინსწრებით დაფარვა და გრაფიკის Excel (.xlsx) ჩამოტვირთვა." />
+  <title>სესხის კალკულატორი (ანუიტეტური, საშეღავათო, გარანტია, ერთჯერადი წინსწრება) | Mokled - მოკლედ</title>
+  <meta name="description" content="სესხის ზუსტი კალკულატორი: ანუიტეტური გრაფიკი, საშეღავათო პერიოდი, გარანტია, კონკრეტულ თვეს ერთჯერადი წინსწრებით დაფარვა (ვადის ან ყოველთვიური შენატანის შემცირებით) და Excel (.xlsx) ჩამოტვირთვა." />
   <link rel="canonical" href="https://mokled.pages.dev/loan-calculator.html" />
-  <meta property="og:title" content="სესხის და იპოთეკის კალკულატორი | Mokled - მოკლედ" />
-  <meta property="og:description" content="გამოთვალეთ სესხის ყოველთვიური შენატანი, საშეღავათო პერიოდი და გადახდის სრული გრაფიკი Excel-ში ჩამოტვირთვით." />
+  <meta property="og:title" content="სესხის კალკულატორი | Mokled - მოკლედ" />
+  <meta property="og:description" content="გამოთვალეთ სესხის ყოველთვიური შენატანი, ერთჯერადი წინსწრებით ვადის ან შენატანის შემცირება და ჩამოტვირთეთ გრაფიკი Excel-ში." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mokled.pages.dev/loan-calculator.html" />
   <meta property="og:locale" content="ka_GE" />
@@ -24,10 +24,10 @@
   <main class="container">
     <div class="page-header">
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
-      <h1>სესხის და იპოთეკის კალკულატორი</h1>
+      <h1>სესხის კალკულატორი</h1>
       <p>
-        გამოთვალეთ სესხის ყოველთვიური შენატანი, ჯამური პროცენტი და გადახდის დეტალური გრაფიკი
-        <strong>ანუიტეტური</strong> ან <strong>საშეღავათო პერიოდის</strong> პირობით.
+        გამოთვალეთ სესხის ყოველთვიური შენატანი, ჯამური პროცენტი, კონკრეტულ თვეს ერთჯერადი წინსწრების ეფექტი
+        (ვადის ან შენატანის შემცირებით) და გადახდის დეტალური გრაფიკი.
       </p>
     </div>
 
@@ -55,6 +55,7 @@
           <select id="loan-type" class="input">
             <option value="annuity" selected>ანუიტეტური (თანაბარი შენატანი)</option>
             <option value="grace">საშეღავათო პერიოდით</option>
+            <option value="guarantee">გარანტია (მხოლოდ პროცენტი)</option>
           </select>
         </div>
 
@@ -67,11 +68,6 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="loan-prepay">ყოველთვიური წინსწრება (არასავალდებულო):</label>
-          <input type="text" id="loan-prepay" data-mask="money" class="input" value="0" inputmode="decimal" />
-        </div>
-
-        <div class="form-group">
           <label class="form-label" for="loan-currency">ვალუტა:</label>
           <select id="loan-currency" class="input">
             <option value="₾" selected>₾ (GEL - ლარი)</option>
@@ -81,14 +77,52 @@
         </div>
       </div>
 
-      <div class="stats-grid" style="margin-top: 1.15rem;">
+      <!-- წინსწრებით დაფარვის პარამეტრები -->
+      <div class="loan-prepay-box">
+        <div class="loan-prepay-title">
+          <span>⚡ წინსწრებით დაფარვა (არასავალდებულო)</span>
+          <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted);">მიუთითეთ თანხა ვადის ან ყოველთვიური შენატანის კლების სანახავად</span>
+        </div>
+        <div class="loan-prepay-grid" id="loan-prepay-grid">
+          <div class="form-group">
+            <label class="form-label" for="loan-prepay">წინსწრების თანხა:</label>
+            <input type="text" id="loan-prepay" data-mask="money" class="input" value="0" placeholder="მაგ.: 20,000" inputmode="decimal" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loan-prepay-type">წინსწრების პერიოდულობა:</label>
+            <select id="loan-prepay-type" class="input">
+              <option value="onetime" selected>ერთჯერადი (კონკრეტულ თვეს)</option>
+              <option value="monthly">ყოველთვიური დამატებითი</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="prepay-month-group">
+            <label class="form-label" for="loan-prepay-month">წინსწრების თვე:</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="loan-prepay-month" class="input" value="12" min="1" max="600" step="1" inputmode="numeric" />
+              <span class="input-unit-badge">თვე</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loan-prepay-goal">გადაანგარიშების წესი:</label>
+            <select id="loan-prepay-goal" class="input">
+              <option value="reduce_term" selected>ვადის შემცირება (შენატანი უცვლელია)</option>
+              <option value="reduce_payment">შენატანის შემცირება (ვადა უცვლელია)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid" style="margin-top: 1.1rem;">
         <div class="stat-box">
           <div class="stat-label" id="stat-lbl-payment">ყოველთვიური შენატანი</div>
           <div class="stat-value" id="stat-monthly">0.00 ₾</div>
           <div id="stat-sub-payment"></div>
         </div>
         <div class="stat-box">
-          <div class="stat-label">სესხის ძირი თანხა</div>
+          <div class="stat-label" id="stat-lbl-principal">სესხის ძირი თანხა</div>
           <div class="stat-value" id="stat-principal">0.00 ₾</div>
         </div>
         <div class="stat-box">
@@ -101,7 +135,8 @@
         </div>
       </div>
 
-      <div id="prepay-savings-banner" class="alert alert-success hidden" style="margin-top: 0.9rem;"></div>
+      <!-- წინსწრების 2 ვარიანტის (ვადის შემცირება vs შენატანის შემცირება) შედარება -->
+      <div id="prepay-compare-wrap" class="prepay-compare-grid hidden"></div>
 
       <div class="btn-row" style="margin-top: 1.15rem;">
         <button type="button" id="btn-calc-loan" class="btn btn-primary">გამოთვლა</button>
@@ -151,63 +186,89 @@
       const typeSelect = document.getElementById('loan-type');
       const graceGroup = document.getElementById('grace-months-group');
       const graceInput = document.getElementById('loan-grace-months');
-      const prepayInput = document.getElementById('loan-prepay');
       const currencySelect = document.getElementById('loan-currency');
 
+      const prepayGrid = document.getElementById('loan-prepay-grid');
+      const prepayInput = document.getElementById('loan-prepay');
+      const prepayTypeSelect = document.getElementById('loan-prepay-type');
+      const prepayMonthGroup = document.getElementById('prepay-month-group');
+      const prepayMonthInput = document.getElementById('loan-prepay-month');
+      const prepayGoalSelect = document.getElementById('loan-prepay-goal');
+      const prepayCompareWrap = document.getElementById('prepay-compare-wrap');
+
       const statLblPayment = document.getElementById('stat-lbl-payment');
+      const statLblPrincipal = document.getElementById('stat-lbl-principal');
       const statMonthly = document.getElementById('stat-monthly');
       const statSubPayment = document.getElementById('stat-sub-payment');
       const statPrincipal = document.getElementById('stat-principal');
       const statInterest = document.getElementById('stat-interest');
       const statTotal = document.getElementById('stat-total');
-      const prepayBanner = document.getElementById('prepay-savings-banner');
       const scheduleBadge = document.getElementById('schedule-badge');
       const scheduleBody = document.getElementById('schedule-tbody');
 
       initLayout('loan-calculator');
 
-      function computeSchedule(principal, annualRate, totalMonths, mode, graceMonths, extraMonthly) {
+      function computeSchedule(principal, annualRate, totalMonths, mode, graceMonths, prepayAmount, prepayType, prepayMonth, prepayGoal) {
         const P = Math.max(0, Number(principal) || 0);
         const N = Math.max(1, Math.min(600, Math.round(Number(totalMonths) || 1)));
         const r = Math.max(0, Number(annualRate) || 0) / 100 / 12;
-        const extra = Math.max(0, Number(extraMonthly) || 0);
+        const extraAmt = Math.max(0, Number(prepayAmount) || 0);
+        const pType = prepayType === 'monthly' ? 'monthly' : 'onetime';
+        const pMonth = Math.max(1, Math.min(N, Math.round(Number(prepayMonth) || 1)));
+        const pGoal = prepayGoal === 'reduce_payment' ? 'reduce_payment' : 'reduce_term';
+
         const isGrace = mode === 'grace';
-        const G = isGrace ? Math.max(1, Math.min(N - 1, Math.round(Number(graceMonths) || 1))) : 0;
+        const isGuarantee = mode === 'guarantee';
+        const G = isGrace ? Math.max(1, Math.min(N - 1, Math.round(Number(graceMonths) || 1))) : (isGuarantee ? N : 0);
 
         let balance = P;
         const schedule = [];
         let totalInterest = 0;
         let totalPayment = 0;
 
+        const firstInterestPayment = P * r;
         const remMonthsAfterGrace = Math.max(1, N - G);
-        let annuityAfterGrace = r > 0
-          ? (P * r * Math.pow(1 + r, remMonthsAfterGrace)) / (Math.pow(1 + r, remMonthsAfterGrace) - 1)
-          : (P / remMonthsAfterGrace);
+        const origPostGraceAnnuity = isGuarantee
+          ? firstInterestPayment
+          : (r > 0 ? (P * r * Math.pow(1 + r, remMonthsAfterGrace)) / (Math.pow(1 + r, remMonthsAfterGrace) - 1) : (P / remMonthsAfterGrace));
 
-        const firstGracePayment = P * r;
+        let currentAnnuity = origPostGraceAnnuity;
+        let newAnnuityAfterPrepay = origPostGraceAnnuity;
 
         for (let m = 1; m <= N; m++) {
-          if (balance <= 0.0001) break;
+          if (balance <= 0.005) break;
           const interest = balance * r;
           let scheduledPrincipal = 0;
 
-          if (m <= G) {
+          if (isGuarantee || m <= G) {
             scheduledPrincipal = 0;
           } else {
-            if (m === G + 1 && balance !== P) {
-              const rem = Math.max(1, N - G);
-              annuityAfterGrace = r > 0
-                ? (balance * r * Math.pow(1 + r, rem)) / (Math.pow(1 + r, rem) - 1)
-                : (balance / rem);
+            if (m === G + 1 && Math.abs(balance - P) > 0.005) {
+              if (pGoal === 'reduce_payment') {
+                const rem = Math.max(1, N - G);
+                currentAnnuity = r > 0
+                  ? (balance * r * Math.pow(1 + r, rem)) / (Math.pow(1 + r, rem) - 1)
+                  : (balance / rem);
+                newAnnuityAfterPrepay = currentAnnuity;
+              }
             }
-            scheduledPrincipal = Math.max(0, annuityAfterGrace - interest);
+            scheduledPrincipal = Math.max(0, currentAnnuity - interest);
           }
 
           if (scheduledPrincipal > balance) {
             scheduledPrincipal = balance;
           }
 
-          let actualExtra = extra;
+          let requestedExtra = 0;
+          if (extraAmt > 0) {
+            if (pType === 'onetime' && m === pMonth) {
+              requestedExtra = extraAmt;
+            } else if (pType === 'monthly') {
+              requestedExtra = extraAmt;
+            }
+          }
+
+          let actualExtra = requestedExtra;
           if (scheduledPrincipal + actualExtra > balance) {
             actualExtra = Math.max(0, balance - scheduledPrincipal);
           }
@@ -221,33 +282,56 @@
 
           schedule.push({
             month: m,
-            isGraceMonth: m <= G,
+            isGraceMonth: isGrace && m <= G,
+            isGuaranteeMonth: isGuarantee,
+            hasExtra: actualExtra > 0.005,
             payment: payment,
             principal: scheduledPrincipal,
             interest: interest,
             extraPayment: actualExtra,
             balance: balance
           });
+
+          // თუ მოხდა წინსწრება და არჩეულია შენატანის შემცირება, გადავითვალოთ მომდევნო თვეების ანუიტეტი
+          if (actualExtra > 0.005 && balance > 0.005 && pGoal === 'reduce_payment') {
+            if (isGuarantee) {
+              currentAnnuity = balance * r;
+              newAnnuityAfterPrepay = currentAnnuity;
+            } else if (m >= G) {
+              const rem = Math.max(1, N - m);
+              currentAnnuity = r > 0
+                ? (balance * r * Math.pow(1 + r, rem)) / (Math.pow(1 + r, rem) - 1)
+                : (balance / rem);
+              newAnnuityAfterPrepay = currentAnnuity;
+            } else {
+              const rem = Math.max(1, N - G);
+              newAnnuityAfterPrepay = r > 0
+                ? (balance * r * Math.pow(1 + r, rem)) / (Math.pow(1 + r, rem) - 1)
+                : (balance / rem);
+            }
+          }
         }
 
         return {
           principal: P,
           totalMonths: N,
           actualMonths: schedule.length,
-          graceMonths: G,
-          firstGracePayment: firstGracePayment,
-          postGracePayment: annuityAfterGrace,
+          graceMonths: isGrace ? G : 0,
+          firstGracePayment: firstInterestPayment,
+          origPostGracePayment: origPostGraceAnnuity,
+          newPostGracePayment: newAnnuityAfterPrepay,
           totalInterest: totalInterest,
           totalPayment: totalPayment,
           schedule: schedule
         };
       }
 
-      function syncGraceVisibility() {
+      function syncUiControls() {
+        const totalM = Math.max(1, Number(monthsInput.value) || 60);
         if (typeSelect.value === 'grace') {
           graceGroup.classList.remove('hidden');
           secondaryGrid.classList.add('has-grace');
-          const maxGrace = Math.max(1, (Number(monthsInput.value) || 60) - 1);
+          const maxGrace = Math.max(1, totalM - 1);
           graceInput.max = String(maxGrace);
           if (!graceInput.value || Number(graceInput.value) < 1) {
             graceInput.value = String(Math.min(6, maxGrace));
@@ -258,10 +342,24 @@
           graceGroup.classList.add('hidden');
           secondaryGrid.classList.remove('has-grace');
         }
+
+        if (prepayTypeSelect.value === 'onetime') {
+          prepayMonthGroup.classList.remove('hidden');
+          prepayGrid.classList.remove('is-monthly');
+          prepayMonthInput.max = String(totalM);
+          if (!prepayMonthInput.value || Number(prepayMonthInput.value) < 1) {
+            prepayMonthInput.value = String(Math.min(12, totalM));
+          } else if (Number(prepayMonthInput.value) > totalM) {
+            prepayMonthInput.value = String(totalM);
+          }
+        } else {
+          prepayMonthGroup.classList.add('hidden');
+          prepayGrid.classList.add('is-monthly');
+        }
       }
 
       function calculateAndRender() {
-        syncGraceVisibility();
+        syncUiControls();
 
         const P = parseMaskedNumber(principalInput.value);
         const rate = Number(rateInput.value) || 0;
@@ -269,48 +367,129 @@
         const mode = typeSelect.value;
         const graceMonths = Math.max(1, Math.round(Number(graceInput.value) || 1));
         const extra = parseMaskedNumber(prepayInput.value);
+        const prepayType = prepayTypeSelect.value;
+        const prepayMonth = Math.max(1, Math.round(Number(prepayMonthInput.value) || 1));
+        const prepayGoal = prepayGoalSelect.value;
         const sym = currencySelect.value;
 
-        const res = computeSchedule(P, rate, months, mode, graceMonths, extra);
-        const baseNoExtra = computeSchedule(P, rate, months, mode, graceMonths, 0);
+        const baseNoExtra = computeSchedule(P, rate, months, mode, graceMonths, 0, prepayType, prepayMonth, 'reduce_term');
+        const resTerm = computeSchedule(P, rate, months, mode, graceMonths, extra, prepayType, prepayMonth, 'reduce_term');
+        const resPayment = computeSchedule(P, rate, months, mode, graceMonths, extra, prepayType, prepayMonth, 'reduce_payment');
+        const res = prepayGoal === 'reduce_payment' ? resPayment : resTerm;
 
-        if (mode === 'grace' && res.graceMonths > 0) {
-          statLblPayment.textContent = 'ძირითადი შენატანი (' + (res.graceMonths + 1) + '–' + res.totalMonths + ' თვე)';
-          statMonthly.textContent = formatMoney(res.postGracePayment) + ' ' + sym;
+        if (mode === 'guarantee') {
+          statLblPayment.textContent = 'ყოველთვიური პროცენტი';
+          if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+          } else {
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+          }
+          statSubPayment.innerHTML = '<span class="stat-grace-pill">გარანტია: იფარება მხოლოდ პროცენტი (' + res.actualMonths + ' თვე)</span>';
+          statLblPrincipal.textContent = 'გარანტიის ძირი თანხა';
+        } else if (mode === 'grace' && res.graceMonths > 0) {
+          statLblPayment.textContent = 'ძირითადი შენატანი (' + (res.graceMonths + 1) + '–' + res.actualMonths + ' თვე)';
+          if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+          } else {
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+          }
           statSubPayment.innerHTML = '<span class="stat-grace-pill">1–' + res.graceMonths + ' თვე (საშეღავათო): ' + formatMoney(res.firstGracePayment) + ' ' + escapeHtml(sym) + '</span>';
+          statLblPrincipal.textContent = 'სესხის ძირი თანხა';
         } else {
-          statLblPayment.textContent = 'ყოველთვიური შენატანი';
-          statMonthly.textContent = formatMoney(res.postGracePayment) + ' ' + sym;
-          statSubPayment.innerHTML = '';
+          if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
+            statLblPayment.textContent = 'შენატანი (წინსწრებამდე → შემდეგ)';
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+            const diffPmt = Math.max(0, res.origPostGracePayment - res.newPostGracePayment);
+            statSubPayment.innerHTML = '<span class="stat-grace-pill">მცირდება -' + formatMoney(diffPmt) + ' ' + escapeHtml(sym) + '/თვეში</span>';
+          } else {
+            statLblPayment.textContent = 'ყოველთვიური შენატანი';
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+            if (extra > 0 && prepayGoal === 'reduce_term' && baseNoExtra.actualMonths > res.actualMonths) {
+              const savedM = baseNoExtra.actualMonths - res.actualMonths;
+              statSubPayment.innerHTML = '<span class="stat-grace-pill">ვადა მცირდება -' + savedM + ' თვით (' + res.actualMonths + ' თვემდე)</span>';
+            } else {
+              statSubPayment.innerHTML = '';
+            }
+          }
+          statLblPrincipal.textContent = 'სესხის ძირი თანხა';
         }
 
         statPrincipal.textContent = formatMoney(res.principal) + ' ' + sym;
         statInterest.textContent = formatMoney(res.totalInterest) + ' ' + sym;
         statTotal.textContent = formatMoney(res.totalPayment) + ' ' + sym;
 
-        if (extra > 0 && baseNoExtra.totalInterest > res.totalInterest) {
-          const savedInterest = baseNoExtra.totalInterest - res.totalInterest;
-          const savedMonths = baseNoExtra.actualMonths - res.actualMonths;
-          prepayBanner.innerHTML =
-            '<strong>💡 წინსწრების შედეგი:</strong> ყოველთვიური +' + formatMoney(extra) + ' ' + sym +
-            ' დამატებით თქვენ ზოგავთ <strong>' + formatMoney(savedInterest) + ' ' + sym + '</strong> პროცენტს და სესხს ასრულებთ <strong>' +
-            savedMonths + ' თვით ადრე</strong> (' + res.actualMonths + ' თვეში).';
-          prepayBanner.classList.remove('hidden');
+        // ვაჩვენოთ წინსწრების ორივე ვარიანტის შედარებითი ბარათები
+        if (extra > 0) {
+          const savedMonthsTerm = Math.max(0, baseNoExtra.actualMonths - resTerm.actualMonths);
+          const savedInterestTerm = Math.max(0, baseNoExtra.totalInterest - resTerm.totalInterest);
+
+          const oldPmt = resPayment.origPostGracePayment;
+          const newPmt = resPayment.newPostGracePayment;
+          const pmtDrop = Math.max(0, oldPmt - newPmt);
+          const savedInterestPmt = Math.max(0, baseNoExtra.totalInterest - resPayment.totalInterest);
+
+          const prepayDesc = prepayType === 'onetime'
+            ? ('მე-' + prepayMonth + ' თვეს ' + formatMoney(extra) + ' ' + escapeHtml(sym) + ' ერთჯერადი წინსწრებისას')
+            : ('ყოველთვიურად +' + formatMoney(extra) + ' ' + escapeHtml(sym) + ' წინსწრებისას');
+
+          prepayCompareWrap.innerHTML =
+            '<div class="prepay-option-card ' + (prepayGoal === 'reduce_term' ? 'active' : '') + '" data-goal="reduce_term">' +
+              '<div class="prepay-option-head">' +
+                '<span>⏱️ ვარიანტი 1: ვადის შემცირება</span>' +
+                '<span class="prepay-option-badge">' + (prepayGoal === 'reduce_term' ? '✓ არჩეულია გრაფიკში' : 'აირჩიეთ') + '</span>' +
+              '</div>' +
+              '<div class="prepay-option-metrics">' +
+                '<div>• <strong>ახალი ვადა:</strong> ' + baseNoExtra.actualMonths + ' თვე → <strong>' + resTerm.actualMonths + ' თვე</strong> (<span style="color:#16a34a;font-weight:700;">-' + savedMonthsTerm + ' თვე</span>)</div>' +
+                '<div>• <strong>ყოველთვიური შენატანი:</strong> უცვლელი (' + formatMoney(oldPmt) + ' ' + escapeHtml(sym) + ')</div>' +
+                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span style="color:#16a34a;font-weight:700;">' + formatMoney(savedInterestTerm) + ' ' + escapeHtml(sym) + '</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="prepay-option-card ' + (prepayGoal === 'reduce_payment' ? 'active' : '') + '" data-goal="reduce_payment">' +
+              '<div class="prepay-option-head">' +
+                '<span>📉 ვარიანტი 2: შენატანის შემცირება</span>' +
+                '<span class="prepay-option-badge">' + (prepayGoal === 'reduce_payment' ? '✓ არჩეულია გრაფიკში' : 'აირჩიეთ') + '</span>' +
+              '</div>' +
+              '<div class="prepay-option-metrics">' +
+                '<div>• <strong>ახალი შენატანი:</strong> ' + formatMoney(oldPmt) + ' → <strong>' + formatMoney(newPmt) + ' ' + escapeHtml(sym) + '</strong> (<span style="color:#16a34a;font-weight:700;">-' + formatMoney(pmtDrop) + ' ' + escapeHtml(sym) + '/თვეში</span>)</div>' +
+                '<div>• <strong>სესხის ვადა:</strong> უცვლელი (' + resPayment.actualMonths + ' თვე)</div>' +
+                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span style="color:#16a34a;font-weight:700;">' + formatMoney(savedInterestPmt) + ' ' + escapeHtml(sym) + '</span></div>' +
+              '</div>' +
+            '</div>';
+
+          prepayCompareWrap.classList.remove('hidden');
+          prepayCompareWrap.querySelectorAll('.prepay-option-card').forEach(function (card) {
+            card.addEventListener('click', function () {
+              prepayGoalSelect.value = card.getAttribute('data-goal');
+              calculateAndRender();
+            });
+          });
         } else {
-          prepayBanner.classList.add('hidden');
+          prepayCompareWrap.classList.add('hidden');
+          prepayCompareWrap.innerHTML = '';
         }
 
         scheduleBadge.textContent = res.actualMonths + ' თვე';
         scheduleBody.innerHTML = res.schedule.map(function (row) {
-          const rowStyle = row.isGraceMonth ? ' style="background: var(--bg-subtle);"' : '';
-          const monthLabel = row.isGraceMonth ? (row.month + ' <small style="color:var(--primary);font-weight:600;">(საშეღ.)</small>') : String(row.month);
+          let rowClass = '';
+          if (row.hasExtra && prepayType === 'onetime') {
+            rowClass = ' class="prepay-highlight-row"';
+          } else if (row.isGraceMonth) {
+            rowClass = ' style="background: var(--bg-subtle);"';
+          }
+          let monthLabel = String(row.month);
+          if (row.isGraceMonth) {
+            monthLabel += ' <small style="color:var(--primary);font-weight:600;">(საშეღ.)</small>';
+          }
+          if (row.hasExtra && prepayType === 'onetime') {
+            monthLabel += ' <small style="color:#16a34a;font-weight:700;">(წინსწრება)</small>';
+          }
           return (
-            '<tr' + rowStyle + '>' +
+            '<tr' + rowClass + '>' +
               '<td>' + monthLabel + '</td>' +
               '<td><strong>' + formatMoney(row.payment) + ' ' + sym + '</strong></td>' +
               '<td>' + formatMoney(row.principal) + ' ' + sym + '</td>' +
               '<td>' + formatMoney(row.interest) + ' ' + sym + '</td>' +
-              '<td>' + formatMoney(row.extraPayment) + ' ' + sym + '</td>' +
+              '<td>' + (row.extraPayment > 0 ? ('<strong style="color:#16a34a;">+' + formatMoney(row.extraPayment) + ' ' + sym + '</strong>') : (formatMoney(0) + ' ' + sym)) + '</td>' +
               '<td>' + formatMoney(row.balance) + ' ' + sym + '</td>' +
             '</tr>'
           );
@@ -321,12 +500,17 @@
       if (params.get('p')) principalInput.value = formatNumberWithCommas(params.get('p'), true);
       if (params.get('r')) rateInput.value = params.get('r');
       if (params.get('m')) monthsInput.value = params.get('m');
-      if (params.get('t') && (params.get('t') === 'annuity' || params.get('t') === 'grace')) typeSelect.value = params.get('t');
+      if (params.get('t') && (params.get('t') === 'annuity' || params.get('t') === 'grace' || params.get('t') === 'guarantee')) {
+        typeSelect.value = params.get('t');
+      }
       if (params.get('g')) graceInput.value = params.get('g');
       if (params.get('e')) prepayInput.value = formatNumberWithCommas(params.get('e'), true);
+      if (params.get('pt') && (params.get('pt') === 'onetime' || params.get('pt') === 'monthly')) prepayTypeSelect.value = params.get('pt');
+      if (params.get('pm')) prepayMonthInput.value = params.get('pm');
+      if (params.get('pg') && (params.get('pg') === 'reduce_term' || params.get('pg') === 'reduce_payment')) prepayGoalSelect.value = params.get('pg');
       if (params.get('c')) currencySelect.value = params.get('c');
 
-      [principalInput, rateInput, monthsInput, typeSelect, graceInput, prepayInput, currencySelect].forEach(function (el) {
+      [principalInput, rateInput, monthsInput, typeSelect, graceInput, prepayInput, prepayTypeSelect, prepayMonthInput, prepayGoalSelect, currencySelect].forEach(function (el) {
         el.addEventListener('input', calculateAndRender);
         el.addEventListener('change', calculateAndRender);
       });
@@ -335,8 +519,9 @@
 
       document.getElementById('btn-copy-loan-summary').addEventListener('click', function () {
         const summary =
-          'სესხის თანხა: ' + statPrincipal.textContent + '\n' +
+          statLblPrincipal.textContent + ': ' + statPrincipal.textContent + '\n' +
           statLblPayment.textContent + ': ' + statMonthly.textContent + '\n' +
+          'ფაქტობრივი ვადა: ' + scheduleBadge.textContent + '\n' +
           'ჯამური პროცენტი: ' + statInterest.textContent + '\n' +
           'სულ გადასახდელი: ' + statTotal.textContent;
         copyToClipboard(summary, 'სესხის შეჯამება დაკოპირდა!');
@@ -350,6 +535,9 @@
           t: typeSelect.value,
           g: typeSelect.value === 'grace' ? graceInput.value : '',
           e: parseMaskedNumber(prepayInput.value),
+          pt: prepayTypeSelect.value,
+          pm: prepayTypeSelect.value === 'onetime' ? prepayMonthInput.value : '',
+          pg: prepayGoalSelect.value,
           c: currencySelect.value
         });
       });
