@@ -1431,3 +1431,101 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
   background: var(--bg-subtle);
   box-shadow: 0 1px 0 var(--border);
 }
+
+/* Mobile Header Proportions Fix */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+@media (max-width: 860px) {
+  .site-header .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .header-inner {
+    min-height: 58px;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    gap: 0.35rem;
+  }
+  .brand-logo img,
+  [data-theme="dark"] .brand-logo img {
+    height: 38px !important;
+    width: auto !important;
+  }
+  .header-controls {
+    gap: 0.35rem;
+  }
+  .btn-label-text {
+    display: none !important;
+  }
+  .theme-toggle-btn,
+  .mobile-menu-btn {
+    min-width: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.05rem !important;
+    line-height: 1 !important;
+  }
+  .nbg-header-rates {
+    height: 38px !important;
+    padding: 0 0.28rem !important;
+    gap: 0.2rem !important;
+    border-radius: 9px !important;
+    box-sizing: border-box !important;
+  }
+  .nbg-badge-lbl {
+    display: none !important;
+  }
+  .nbg-rate-pill {
+    height: 28px !important;
+    padding: 0 0.38rem !important;
+    font-size: 0.74rem !important;
+    border-radius: 6px !important;
+    line-height: 1 !important;
+  }
+  .nbg-up, .nbg-down {
+    display: none !important;
+  }
+  .main-nav.open {
+    flex-basis: 100%;
+    width: 100%;
+    margin-top: 0.35rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--border);
+  }
+}
+@media (max-width: 380px) {
+  .brand-logo img,
+  [data-theme="dark"] .brand-logo img {
+    height: 33px !important;
+  }
+  .nbg-rate-pill {
+    padding: 0 0.28rem !important;
+    font-size: 0.7rem !important;
+  }
+  .theme-toggle-btn,
+  .mobile-menu-btn {
+    min-width: 34px !important;
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .nbg-header-rates {
+    height: 34px !important;
+  }
+}

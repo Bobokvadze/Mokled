@@ -38,7 +38,7 @@
     try { localStorage.setItem(THEME_STORAGE_KEY, active); } catch (_) {}
     const btn = document.getElementById('theme-toggle-btn');
     if (btn) {
-      btn.textContent = active === 'dark' ? '☀️ ნათელი' : '🌙 მუქი';
+      btn.innerHTML = active === 'dark' ? '<span class="theme-icon">☀️</span><span class="btn-label-text"> ნათელი</span>' : '<span class="theme-icon">🌙</span><span class="btn-label-text"> მუქი</span>';
       btn.setAttribute('aria-label', active === 'dark' ? 'ნათელ რეჟიმზე გადართვა' : 'მუქ რეჟიმზე გადართვა');
     }
   }
@@ -515,7 +515,7 @@
       ).join('');
 
       const curTheme = getSavedTheme();
-      const themeLabel = curTheme === 'dark' ? '☀️ ნათელი' : '🌙 მუქი';
+      const themeLabel = curTheme === 'dark' ? '<span class="theme-icon">☀️</span><span class="btn-label-text"> ნათელი</span>' : '<span class="theme-icon">🌙</span><span class="btn-label-text"> მუქი</span>';
 
       headerEl.innerHTML =
         '<div class="container header-inner">' +
@@ -531,7 +531,7 @@
               '<button type="button" class="nbg-rate-pill" id="nbg-pill-eur" data-rate="2.9129" title="ეროვნული ბანკის EUR კურსი — დააწკაპუნეთ დასაკოპირებლად"><span class="nbg-sym">€</span>2.9129</button>' +
             '</div>' +
             '<button type="button" class="theme-toggle-btn" id="theme-toggle-btn">' + themeLabel + '</button>' +
-            '<button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false">მენიუ ☰</button>' +
+            '<button type="button" class="mobile-menu-btn" id="mobile-menu-toggle" aria-expanded="false" aria-label="მენიუ"><span class="btn-label-text">მენიუ </span>☰</button>' +
           '</div>' +
           '<nav class="main-nav" id="main-nav" aria-label="მობილური ნავიგაცია">' + mobileLinksHtml + '</nav>' +
         '</div>';
@@ -587,7 +587,7 @@
         navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
         if (window.caches) {
           caches.keys().then(function (keys) {
-            keys.forEach(function (k) { if (k !== 'mokled-cache-v44') caches.delete(k); });
+            keys.forEach(function (k) { if (k !== 'mokled-cache-v45') caches.delete(k); });
           });
         }
       });
