@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v46';
+const CACHE_NAME = 'mokled-cache-v47';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -19,6 +19,7 @@ const CORE_ASSETS = [
   '/css/styles.css',
   '/js/core.js',
   '/js/common.js',
+  '/js/djvu.min.js',
   '/js/postal-data.js',
   '/manifest.json'
 ];

@@ -29,7 +29,6 @@
     </div>
 
     <section class="panel">
-      <!-- ფაილის ასარჩევი ზონა -->
       <div id="djvu-dropzone" class="dropzone" style="border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 2.2rem 1.2rem; text-align: center; cursor: pointer; background: var(--bg-subtle); transition: border-color 0.2s, background 0.2s;">
         <div style="font-size: 2.4rem; margin-bottom: 0.5rem;">📕 ➡️ 📄</div>
         <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.3rem;">აირჩიეთ ან ჩააგდეთ DjVu ფაილი აქ</div>
@@ -38,7 +37,6 @@
         <input type="file" id="djvu-file-input" accept=".djvu,.djv,image/vnd.djvu,image/x-djvu" class="hidden" />
       </div>
 
-      <!-- ფაილის ინფორმაცია და პარამეტრები -->
       <div id="djvu-workspace" class="hidden" style="margin-top: 1.35rem;">
         <div class="stats-grid" style="margin-bottom: 1.15rem;">
           <div class="stat-box">
@@ -83,7 +81,6 @@
           </div>
         </div>
 
-        <!-- პროგრეს ბარი -->
         <div id="djvu-progress-wrap" class="hidden" style="margin: 1rem 0; padding: 1rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-md);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; font-size: 0.9rem; font-weight: 600;">
             <span id="djvu-progress-text">მიმდინარეობს გვერდების დამუშავება...</span>
@@ -101,7 +98,6 @@
           <button type="button" id="btn-reset-djvu" class="btn btn-secondary">🔄 სხვა ფაილის არჩევა</button>
         </div>
 
-        <!-- გვერდის წინასწარი ნახვა (Preview) -->
         <div style="margin-top: 1.35rem; padding-top: 1.1rem; border-top: 1px solid var(--border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
             <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);" id="djvu-preview-label">გვერდის წინასწარი ნახვა (Preview):</span>
@@ -118,6 +114,7 @@
 
   <script src="js/core.js"></script>
   <script src="js/common.js"></script>
+  <script src="js/djvu.min.js"></script>
   <script>
     (function () {
       const { initLayout, showToast } = window.GeoCommon;
@@ -166,8 +163,11 @@
         if (window.DjVu && window.DjVu.Document) return Promise.resolve();
         const urls = [
           'js/djvu.min.js',
-          'https://cdn.jsdelivr.net/npm/djvujs@0.4.8/dist/djvu.js',
-          'https://unpkg.com/djvujs@0.4.8/dist/djvu.js'
+          'https://djvu.js.org/assets/dist/djvu.js',
+          'https://djvu.js.org/assets/djvu.js',
+          'https://cdn.jsdelivr.net/npm/djvujs-dist/dist/djvu.js',
+          'https://cdn.jsdelivr.net/npm/djvujs-dist/djvu.js',
+          'https://unpkg.com/djvujs-dist/dist/djvu.js'
         ];
         let idx = 0;
         return new Promise(function (resolve, reject) {
@@ -277,7 +277,6 @@
         });
       }
 
-      // სწრაფი და ნული დამოკიდებულების მქონე PDF 1.4 გენერატორი პირდაპირ JPEG გვერდებიდან
       function buildPdfBlobFromJpegPages(pages) {
         const enc = new TextEncoder();
         const chunks = [];
