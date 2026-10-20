@@ -4,7 +4,9 @@
   const TOOLS_CATALOG = [
     { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'Ⴀა', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
     { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: '🏠', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
-    { id: 'pdf-tools', title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, გვერდების ამოღება/დაყოფა, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
+    { id: 'pdf-tools',
+     title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, გვერდების ამოღება/დაყოფა, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
+    { id: 'djvu-to-pdf', title: 'DjVu → PDF კონვერტერი', shortTitle: 'DjVu → PDF', url: 'djvu-to-pdf.html', category: 'მედია', icon: '📕', description: 'DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.' },
     { id: 'number-to-words', title: 'თანხის და რიცხვის სიტყვიერად ჩაწერა', shortTitle: 'თანხა სიტყვიერად', url: 'number-to-words.html', category: 'ფინანსები', icon: '№', description: 'თანხისა და რიცხვების უშეცდომო სიტყვიერი ჩაწერა ქართულად (ლარი და თეთრი, დოლარი, ევრო) ხელშეკრულებებისა და ინვოისებისთვის.' },
     { id: 'salary-calculator', title: 'ხელფასის კალკულატორი (Net ⇄ Gross)', shortTitle: 'ხელფასი', url: 'salary-calculator.html', category: 'ფინანსები', icon: '💼', description: 'დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასის ზუსტი კალკულატორი საშემოსავლო გადასახადისა (20% / 5%) და საპენსიო შენატანის (2%) დათვლით.' },
     { id: 'iban-validator', title: 'ქართული IBAN შემმოწმებელი', shortTitle: 'IBAN შემოწმება', url: 'iban-validator.html', category: 'ფინანსები', icon: '🏦', description: 'საბანკო ანგარიშის (IBAN) ვალიდაცია MOD-97 სტანდარტით, ქართული ბანკისა და SWIFT კოდის ავტომატური ამოცნობით.' },
@@ -19,7 +21,7 @@
   const NAV_GROUPS = [
     { label: 'ფინანსები', ids: ['loan-calculator', 'salary-calculator', 'number-to-words', 'iban-validator', 'vat-calculator'] },
     { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
-    { label: 'PDF და მედია', ids: ['pdf-tools', 'image-tools', 'qr-generator'] },
+    { label: 'PDF და მედია', ids: ['pdf-tools', 'djvu-to-pdf', 'image-tools', 'qr-generator'] },
     { label: 'მონაცემები და დრო', ids: ['postal-codes', 'date-calculator'] }
   ];
 
@@ -587,7 +589,7 @@
         navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
         if (window.caches) {
           caches.keys().then(function (keys) {
-            keys.forEach(function (k) { if (k !== 'mokled-cache-v45') caches.delete(k); });
+            keys.forEach(function (k) { if (k !== 'mokled-cache-v46') caches.delete(k); });
           });
         }
       });

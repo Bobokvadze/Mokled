@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DjVu → PDF კონვერტერი (DjVu ფაილის PDF-ად გადაყვანა) | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ DjVu (.djvu, .djv) ფაილები და წიგნები PDF ფორმატში პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე. ყველა გვერდის ან შერჩეული გვერდების კონვერტაცია." />
+  <link rel="canonical" href="https://mokled.pages.dev/djvu-to-pdf.html" />
+  <meta property="og:title" content="DjVu → PDF კონვერტერი | Mokled - მოკლედ" />
+  <meta property="og:description" content="DjVu ფაილებისა და წიგნების სწრაფი გადაყვანა PDF ფორმატში პირდაპირ ბრაუზერში." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/djvu-to-pdf.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <meta property="og:image" content="https://mokled.pages.dev/assets/logo.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / <a href="pdf-tools.html">PDF და მედია</a> / DjVu → PDF</div>
+      <h1>DjVu → PDF კონვერტერი</h1>
+      <p>გადაიყვანეთ <strong>.djvu</strong> და <strong>.djv</strong> ფორმატის წიგნები და დოკუმენტები სტანდარტულ <strong>PDF</strong> ფაილად პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.</p>
+    </div>
+
+    <section class="panel">
+      <!-- ფაილის ასარჩევი ზონა -->
+      <div id="djvu-dropzone" class="dropzone" style="border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 2.2rem 1.2rem; text-align: center; cursor: pointer; background: var(--bg-subtle); transition: border-color 0.2s, background 0.2s;">
+        <div style="font-size: 2.4rem; margin-bottom: 0.5rem;">📕 ➡️ 📄</div>
+        <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.3rem;">აირჩიეთ ან ჩააგდეთ DjVu ფაილი აქ</div>
+        <div style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1rem;">მხარდაჭერილია .djvu და .djv ფაილები (ნებისმიერი მოცულობის)</div>
+        <button type="button" class="btn btn-primary" id="btn-pick-djvu">📂 DjVu ფაილის არჩევა</button>
+        <input type="file" id="djvu-file-input" accept=".djvu,.djv,image/vnd.djvu,image/x-djvu" class="hidden" />
+      </div>
+
+      <!-- ფაილის ინფორმაცია და პარამეტრები -->
+      <div id="djvu-workspace" class="hidden" style="margin-top: 1.35rem;">
+        <div class="stats-grid" style="margin-bottom: 1.15rem;">
+          <div class="stat-box">
+            <div class="stat-label">ფაილის სახელი</div>
+            <div class="stat-value" id="djvu-stat-name" style="font-size: 1.02rem; word-break: break-all;">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ფაილის ზომა</div>
+            <div class="stat-value" id="djvu-stat-size">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">გვერდების რაოდენობა</div>
+            <div class="stat-value" id="djvu-stat-pages">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">სტატუსი</div>
+            <div class="stat-value" id="djvu-stat-status" style="font-size: 1.05rem; color: var(--primary);">მზადაა</div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="align-items: end;">
+          <div class="form-group">
+            <label class="form-label" for="djvu-page-range">გვერდების დიაპაზონი:</label>
+            <input type="text" id="djvu-page-range" class="input" placeholder="ყველა (ან მაგ.: 1-15, 20)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="djvu-quality">PDF-ის ხარისხი და ზომა:</label>
+            <select id="djvu-quality" class="input">
+              <option value="0.84" selected>სტანდარტული (ოპტიმალური ზომა და ხარისხი)</option>
+              <option value="0.93">მაღალი ხარისხი (93% JPEG)</option>
+              <option value="0.70">კომპაქტური (მცირე მოცულობის PDF)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="djvu-color-mode">ფერის რეჟიმი:</label>
+            <select id="djvu-color-mode" class="input">
+              <option value="color" selected>ორიგინალი ფერები</option>
+              <option value="grayscale">შავ-თეთრი (ტექსტური წიგნებისთვის)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- პროგრეს ბარი -->
+        <div id="djvu-progress-wrap" class="hidden" style="margin: 1rem 0; padding: 1rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; font-size: 0.9rem; font-weight: 600;">
+            <span id="djvu-progress-text">მიმდინარეობს გვერდების დამუშავება...</span>
+            <span id="djvu-progress-pct">0%</span>
+          </div>
+          <div style="width: 100%; height: 10px; background: var(--border); border-radius: 999px; overflow: hidden;">
+            <div id="djvu-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.15s ease;"></div>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 1rem;">
+          <button type="button" id="btn-start-djvu-conv" class="btn btn-primary">⚡ PDF-ად კონვერტაცია და ჩამოტვირთვა</button>
+          <button type="button" id="btn-stop-djvu-conv" class="btn btn-danger hidden">⏹ შეჩერება</button>
+          <button type="button" id="btn-download-ready-pdf" class="btn btn-secondary hidden">📥 მზა PDF-ის ჩამოტვირთვა</button>
+          <button type="button" id="btn-reset-djvu" class="btn btn-secondary">🔄 სხვა ფაილის არჩევა</button>
+        </div>
+
+        <!-- გვერდის წინასწარი ნახვა (Preview) -->
+        <div style="margin-top: 1.35rem; padding-top: 1.1rem; border-top: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);" id="djvu-preview-label">გვერდის წინასწარი ნახვა (Preview):</span>
+          </div>
+          <div style="display: flex; justify-content: center; background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); overflow: auto; max-height: 460px;">
+            <canvas id="djvu-preview-canvas" style="max-width: 100%; height: auto; box-shadow: var(--shadow-sm); background: #fff;"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { initLayout, showToast } = window.GeoCommon;
+      initLayout('djvu-to-pdf');
+
+      const dropzone = document.getElementById('djvu-dropzone');
+      const pickBtn = document.getElementById('btn-pick-djvu');
+      const fileInput = document.getElementById('djvu-file-input');
+      const workspace = document.getElementById('djvu-workspace');
+
+      const statName = document.getElementById('djvu-stat-name');
+      const statSize = document.getElementById('djvu-stat-size');
+      const statPages = document.getElementById('djvu-stat-pages');
+      const statStatus = document.getElementById('djvu-stat-status');
+
+      const rangeInput = document.getElementById('djvu-page-range');
+      const qualitySelect = document.getElementById('djvu-quality');
+      const colorModeSelect = document.getElementById('djvu-color-mode');
+
+      const progressWrap = document.getElementById('djvu-progress-wrap');
+      const progressText = document.getElementById('djvu-progress-text');
+      const progressPct = document.getElementById('djvu-progress-pct');
+      const progressBar = document.getElementById('djvu-progress-bar');
+
+      const startBtn = document.getElementById('btn-start-djvu-conv');
+      const stopBtn = document.getElementById('btn-stop-djvu-conv');
+      const downloadReadyBtn = document.getElementById('btn-download-ready-pdf');
+      const resetBtn = document.getElementById('btn-reset-djvu');
+      const previewLabel = document.getElementById('djvu-preview-label');
+      const previewCanvas = document.getElementById('djvu-preview-canvas');
+
+      let djvuDoc = null;
+      let totalPagesCount = 0;
+      let currentFileName = 'document';
+      let cancelRequested = false;
+      let lastGeneratedPdfBlob = null;
+
+      function formatBytes(bytes) {
+        if (!bytes) return '0 B';
+        const mb = bytes / (1024 * 1024);
+        if (mb >= 1) return mb.toFixed(2) + ' MB';
+        return (bytes / 1024).toFixed(1) + ' KB';
+      }
+
+      function ensureDjvuLibraryLoaded() {
+        if (window.DjVu && window.DjVu.Document) return Promise.resolve();
+        const urls = [
+          'js/djvu.min.js',
+          'https://cdn.jsdelivr.net/npm/djvujs@0.4.8/dist/djvu.js',
+          'https://unpkg.com/djvujs@0.4.8/dist/djvu.js'
+        ];
+        let idx = 0;
+        return new Promise(function (resolve, reject) {
+          function tryNext() {
+            if (window.DjVu && window.DjVu.Document) { resolve(); return; }
+            if (idx >= urls.length) { reject(new Error('DjVu ბიბლიოთეკის ჩატვირთვა ვერ მოხერხდა.')); return; }
+            const s = document.createElement('script');
+            s.src = urls[idx++];
+            s.onload = function () {
+              if (window.DjVu && window.DjVu.Document) resolve();
+              else tryNext();
+            };
+            s.onerror = tryNext;
+            document.head.appendChild(s);
+          }
+          tryNext();
+        });
+      }
+
+      function parsePageRange(rangeStr, maxPages) {
+        const clean = String(rangeStr || '').trim();
+        if (!clean) {
+          const all = [];
+          for (let i = 1; i <= maxPages; i++) all.push(i);
+          return all;
+        }
+        const set = new Set();
+        const parts = clean.split(',');
+        parts.forEach(function (part) {
+          const p = part.trim();
+          if (!p) return;
+          if (p.indexOf('-') !== -1) {
+            const seg = p.split('-');
+            let a = parseInt(seg[0], 10);
+            let b = parseInt(seg[1], 10);
+            if (Number.isFinite(a) && Number.isFinite(b)) {
+              if (a > b) { const t = a; a = b; b = t; }
+              a = Math.max(1, a);
+              b = Math.min(maxPages, b);
+              for (let k = a; k <= b; k++) set.add(k);
+            }
+          } else {
+            const num = parseInt(p, 10);
+            if (Number.isFinite(num) && num >= 1 && num <= maxPages) set.add(num);
+          }
+        });
+        return Array.from(set).sort(function (a, b) { return a - b; });
+      }
+
+      async function renderPageToCanvas(doc, pageNum, targetCanvas, grayscale) {
+        let page = null;
+        let imgData = null;
+        if (typeof doc.getPage === 'function') {
+          page = doc.getPage(pageNum);
+          if (page && typeof page.then === 'function') page = await page;
+        } else if (doc.pages && doc.pages[pageNum - 1]) {
+          page = doc.pages[pageNum - 1];
+        }
+        if (page && typeof page.getImageData === 'function') {
+          imgData = page.getImageData();
+          if (imgData && typeof imgData.then === 'function') imgData = await imgData;
+        } else if (typeof doc.getPageImageDataWithDpi === 'function') {
+          const res = await doc.getPageImageDataWithDpi(pageNum);
+          imgData = res && res.imageData ? res.imageData : res;
+        }
+        if (!imgData) throw new Error('გვერდი ' + pageNum + ' ვერ წაიკითხა.');
+
+        targetCanvas.width = imgData.width;
+        targetCanvas.height = imgData.height;
+        const ctx = targetCanvas.getContext('2d');
+
+        if (grayscale) {
+          const copy = new Uint8ClampedArray(imgData.data);
+          for (let i = 0; i < copy.length; i += 4) {
+            const lum = Math.round(0.299 * copy[i] + 0.587 * copy[i + 1] + 0.114 * copy[i + 2]);
+            copy[i] = lum; copy[i + 1] = lum; copy[i + 2] = lum;
+          }
+          ctx.putImageData(new ImageData(copy, imgData.width, imgData.height), 0, 0);
+        } else {
+          ctx.putImageData(imgData, 0, 0);
+        }
+
+        if (page && typeof page.reset === 'function') {
+          try { page.reset(); } catch (_) {}
+        }
+        if (typeof doc.resetPage === 'function') {
+          try { doc.resetPage(pageNum); } catch (_) {}
+        }
+        return { width: imgData.width, height: imgData.height };
+      }
+
+      function canvasToJpegUint8(canvas, quality) {
+        return new Promise(function (resolve, reject) {
+          if (canvas.toBlob) {
+            canvas.toBlob(function (blob) {
+              if (!blob) { reject(new Error('JPEG კოდირების შეცდომა')); return; }
+              blob.arrayBuffer().then(function (buf) { resolve(new Uint8Array(buf)); }).catch(reject);
+            }, 'image/jpeg', quality);
+          } else {
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            const b64 = dataUrl.split(',')[1] || '';
+            const bin = atob(b64);
+            const u8 = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+            resolve(u8);
+          }
+        });
+      }
+
+      // სწრაფი და ნული დამოკიდებულების მქონე PDF 1.4 გენერატორი პირდაპირ JPEG გვერდებიდან
+      function buildPdfBlobFromJpegPages(pages) {
+        const enc = new TextEncoder();
+        const chunks = [];
+        let byteLen = 0;
+
+        function pushAscii(str) {
+          const u8 = enc.encode(str);
+          chunks.push(u8);
+          byteLen += u8.length;
+        }
+        function pushBytes(u8) {
+          chunks.push(u8);
+          byteLen += u8.length;
+        }
+
+        const headerBytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34, 0x0A, 0x25, 0xFF, 0xFF, 0xFF, 0xFF, 0x0A]);
+        pushBytes(headerBytes);
+
+        const n = pages.length;
+        const totalObjs = 2 + n * 3;
+        const offsets = new Array(totalObjs + 1).fill(0);
+
+        offsets[1] = byteLen;
+        pushAscii('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+
+        const kids = [];
+        for (let i = 0; i < n; i++) kids.push((3 + i * 3) + ' 0 R');
+        offsets[2] = byteLen;
+        pushAscii('2 0 obj\n<< /Type /Pages /Kids [ ' + kids.join(' ') + ' ] /Count ' + n + ' >>\nendobj\n');
+
+        for (let i = 0; i < n; i++) {
+          const pg = pages[i];
+          const pageId = 3 + i * 3;
+          const contentId = 4 + i * 3;
+          const imgId = 5 + i * 3;
+
+          const wPx = pg.width;
+          const hPx = pg.height;
+          const pdfW = 595.28;
+          const pdfH = Number((pdfW * (hPx / wPx)).toFixed(2));
+
+          offsets[pageId] = byteLen;
+          pushAscii(
+            pageId + ' 0 obj\n' +
+            '<< /Type /Page /Parent 2 0 R /MediaBox [ 0 0 ' + pdfW.toFixed(2) + ' ' + pdfH.toFixed(2) + ' ] ' +
+            '/Resources << /XObject << /Im0 ' + imgId + ' 0 R >> >> ' +
+            '/Contents ' + contentId + ' 0 R >>\nendobj\n'
+          );
+
+          const cmdStr = 'q\n' + pdfW.toFixed(2) + ' 0 0 ' + pdfH.toFixed(2) + ' 0 0 cm\n/Im0 Do\nQ\n';
+          const cmdBytes = enc.encode(cmdStr);
+          offsets[contentId] = byteLen;
+          pushAscii(contentId + ' 0 obj\n<< /Length ' + cmdBytes.length + ' >>\nstream\n');
+          pushBytes(cmdBytes);
+          pushAscii('\nendstream\nendobj\n');
+
+          offsets[imgId] = byteLen;
+          pushAscii(
+            imgId + ' 0 obj\n' +
+            '<< /Type /XObject /Subtype /Image /Width ' + wPx + ' /Height ' + hPx +
+            ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + pg.bytes.length + ' >>\nstream\n'
+          );
+          pushBytes(pg.bytes);
+          pushAscii('\nendstream\nendobj\n');
+        }
+
+        const xrefOffset = byteLen;
+        pushAscii('xref\n0 ' + (totalObjs + 1) + '\n');
+        pushAscii('0000000000 65535 f \n');
+        for (let objId = 1; objId <= totalObjs; objId++) {
+          const offStr = String(offsets[objId]).padStart(10, '0');
+          pushAscii(offStr + ' 00000 n \n');
+        }
+        pushAscii('trailer\n<< /Size ' + (totalObjs + 1) + ' /Root 1 0 R >>\nstartxref\n' + xrefOffset + '\n%%EOF\n');
+
+        return new Blob(chunks, { type: 'application/pdf' });
+      }
+
+      function triggerBlobDownload(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+      }
+
+      async function handleFileSelected(file) {
+        if (!file) return;
+        dropzone.classList.add('hidden');
+        workspace.classList.remove('hidden');
+        downloadReadyBtn.classList.add('hidden');
+        lastGeneratedPdfBlob = null;
+
+        currentFileName = file.name.replace(/\.(djvu|djv)$/i, '') || 'document';
+        statName.textContent = file.name;
+        statSize.textContent = formatBytes(file.size);
+        statPages.textContent = '...';
+        statStatus.textContent = 'იტვირთება...';
+
+        try {
+          await ensureDjvuLibraryLoaded();
+          const buf = await file.arrayBuffer();
+          djvuDoc = new window.DjVu.Document(buf);
+          totalPagesCount = typeof djvuDoc.getPagesQuantity === 'function'
+            ? djvuDoc.getPagesQuantity()
+            : (djvuDoc.pages ? djvuDoc.pages.length : 0);
+
+          if (!totalPagesCount || totalPagesCount < 1) {
+            throw new Error('დოკუმენტში გვერდები ვერ მოიძებნა.');
+          }
+
+          statPages.textContent = String(totalPagesCount);
+          rangeInput.placeholder = 'ყველა (1-' + totalPagesCount + ')';
+          rangeInput.value = '';
+          statStatus.textContent = 'მზადაა კონვერტაციისთვის';
+
+          previewLabel.textContent = 'გვერდი 1 / ' + totalPagesCount + ' (წინასწარი ნახვა):';
+          await renderPageToCanvas(djvuDoc, 1, previewCanvas, false);
+          showToast('DjVu ფაილი ჩაიტვირთა (' + totalPagesCount + ' გვერდი).');
+        } catch (err) {
+          statStatus.textContent = 'შეცდომა';
+          showToast('შეცდომა: ' + (err && err.message ? err.message : 'ფაილი ვერ წაიკითხა.'));
+        }
+      }
+
+      async function startConversion() {
+        if (!djvuDoc || totalPagesCount < 1) {
+          showToast('ჯერ აირჩიეთ DjVu ფაილი.');
+          return;
+        }
+        const pagesToConvert = parsePageRange(rangeInput.value, totalPagesCount);
+        if (pagesToConvert.length === 0) {
+          showToast('გთხოვთ სწორად მიუთითოთ გვერდების დიაპაზონი (მაგ.: 1-' + totalPagesCount + ').');
+          return;
+        }
+
+        const quality = parseFloat(qualitySelect.value) || 0.84;
+        const isGray = colorModeSelect.value === 'grayscale';
+
+        cancelRequested = false;
+        startBtn.disabled = true;
+        stopBtn.classList.remove('hidden');
+        downloadReadyBtn.classList.add('hidden');
+        progressWrap.classList.remove('hidden');
+
+        const renderedPages = [];
+        try {
+          for (let i = 0; i < pagesToConvert.length; i++) {
+            if (cancelRequested) break;
+            const pNum = pagesToConvert[i];
+            const pct = Math.round(((i + 1) / pagesToConvert.length) * 100);
+
+            progressText.textContent = 'მუშავდება გვერდი ' + pNum + ' (' + (i + 1) + ' / ' + pagesToConvert.length + ')...';
+            progressPct.textContent = pct + '%';
+            progressBar.style.width = pct + '%';
+            statStatus.textContent = (i + 1) + ' / ' + pagesToConvert.length + ' გვერდი';
+            previewLabel.textContent = 'მიმდინარე გვერდი: ' + pNum + ' / ' + totalPagesCount;
+
+            await new Promise(function (r) { setTimeout(r, 12); });
+            const dims = await renderPageToCanvas(djvuDoc, pNum, previewCanvas, isGray);
+            const jpgBytes = await canvasToJpegUint8(previewCanvas, quality);
+            renderedPages.push({ bytes: jpgBytes, width: dims.width, height: dims.height });
+          }
+
+          if (renderedPages.length > 0) {
+            progressText.textContent = 'იწყობა PDF ფაილი...';
+            await new Promise(function (r) { setTimeout(r, 20); });
+            lastGeneratedPdfBlob = buildPdfBlobFromJpegPages(renderedPages);
+            const outName = currentFileName + '.pdf';
+            triggerBlobDownload(lastGeneratedPdfBlob, outName);
+            downloadReadyBtn.classList.remove('hidden');
+            statStatus.textContent = cancelRequested ? ('შეჩერდა (' + renderedPages.length + ' გვ.)') : 'დასრულდა ✓';
+            progressText.textContent = 'მზადაა! PDF ჩამოიტვირთა (' + renderedPages.length + ' გვერდი, ' + formatBytes(lastGeneratedPdfBlob.size) + ').';
+            showToast('PDF ფაილი წარმატებით შეიქმნა და ჩამოიტვირთა!');
+          } else {
+            statStatus.textContent = 'გაუქმდა';
+          }
+        } catch (err) {
+          statStatus.textContent = 'შეცდომა';
+          showToast('კონვერტაციის შეცდომა: ' + (err && err.message ? err.message : ''));
+        } finally {
+          startBtn.disabled = false;
+          stopBtn.classList.add('hidden');
+        }
+      }
+
+      pickBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        fileInput.click();
+      });
+      dropzone.addEventListener('click', function () { fileInput.click(); });
+      dropzone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropzone.style.borderColor = 'var(--primary)';
+      });
+      dropzone.addEventListener('dragleave', function () {
+        dropzone.style.borderColor = 'var(--border)';
+      });
+      dropzone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropzone.style.borderColor = 'var(--border)';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleFileSelected(e.dataTransfer.files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', function () {
+        if (fileInput.files && fileInput.files[0]) {
+          handleFileSelected(fileInput.files[0]);
+        }
+      });
+
+      startBtn.addEventListener('click', startConversion);
+      stopBtn.addEventListener('click', function () {
+        cancelRequested = true;
+        showToast('კონვერტაცია ჩერდება... უკვე დამუშავებული გვერდები შეინახება PDF-ად.');
+      });
+      downloadReadyBtn.addEventListener('click', function () {
+        if (lastGeneratedPdfBlob) {
+          triggerBlobDownload(lastGeneratedPdfBlob, currentFileName + '.pdf');
+        }
+      });
+      resetBtn.addEventListener('click', function () {
+        cancelRequested = true;
+        djvuDoc = null;
+        totalPagesCount = 0;
+        fileInput.value = '';
+        workspace.classList.add('hidden');
+        progressWrap.classList.add('hidden');
+        dropzone.classList.remove('hidden');
+      });
+    })();
+  </script>
+</body>
+</html>
