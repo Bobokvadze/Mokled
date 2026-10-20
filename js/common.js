@@ -589,7 +589,7 @@
         navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
         if (window.caches) {
           caches.keys().then(function (keys) {
-            keys.forEach(function (k) { if (k !== 'mokled-cache-v47') caches.delete(k); });
+            keys.forEach(function (k) { if (k !== 'mokled-cache-v48') caches.delete(k); });
           });
         }
       });
