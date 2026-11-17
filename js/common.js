@@ -1,28 +1,79 @@
 (function (root) {
   'use strict';
 
+  // Lucide ხატულები (lucide-static 0.460.0, ISC License - https://lucide.dev/license)
+  const ICONS = {
+    "languages": "<path d=\"m5 8 6 6\" /><path d=\"m4 14 6-6 2-3\" /><path d=\"M2 5h12\" /><path d=\"M7 2h1\" /><path d=\"m22 22-5-10-5 10\" /><path d=\"M14 18h6\" />",
+    "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />",
+    "file-text": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\" /><path d=\"M14 2v4a2 2 0 0 0 2 2h4\" /><path d=\"M10 9H8\" /><path d=\"M16 13H8\" /><path d=\"M16 17H8\" />",
+    "book-open": "<path d=\"M12 7v14\" /><path d=\"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z\" />",
+    "text-cursor-input": "<path d=\"M5 4h1a3 3 0 0 1 3 3 3 3 0 0 1 3-3h1\" /><path d=\"M13 20h-1a3 3 0 0 1-3-3 3 3 0 0 1-3 3H5\" /><path d=\"M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1\" /><path d=\"M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7\" /><path d=\"M9 7v10\" />",
+    "briefcase": "<path d=\"M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\" /><rect width=\"20\" height=\"14\" x=\"2\" y=\"6\" rx=\"2\" />",
+    "landmark": "<line x1=\"3\" x2=\"21\" y1=\"22\" y2=\"22\" /><line x1=\"6\" x2=\"6\" y1=\"18\" y2=\"11\" /><line x1=\"10\" x2=\"10\" y1=\"18\" y2=\"11\" /><line x1=\"14\" x2=\"14\" y1=\"18\" y2=\"11\" /><line x1=\"18\" x2=\"18\" y1=\"18\" y2=\"11\" /><polygon points=\"12 2 20 7 4 7\" />",
+    "percent": "<line x1=\"19\" x2=\"5\" y1=\"5\" y2=\"19\" /><circle cx=\"6.5\" cy=\"6.5\" r=\"2.5\" /><circle cx=\"17.5\" cy=\"17.5\" r=\"2.5\" />",
+    "qr-code": "<rect width=\"5\" height=\"5\" x=\"3\" y=\"3\" rx=\"1\" /><rect width=\"5\" height=\"5\" x=\"16\" y=\"3\" rx=\"1\" /><rect width=\"5\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\" /><path d=\"M21 16h-3a2 2 0 0 0-2 2v3\" /><path d=\"M21 21v.01\" /><path d=\"M12 7v3a2 2 0 0 1-2 2H7\" /><path d=\"M3 12h.01\" /><path d=\"M12 3h.01\" /><path d=\"M12 16v.01\" /><path d=\"M16 12h1\" /><path d=\"M21 12v.01\" /><path d=\"M12 21v-1\" />",
+    "mail": "<rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\" /><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\" />",
+    "type": "<polyline points=\"4 7 4 4 20 4 20 7\" /><line x1=\"9\" x2=\"15\" y1=\"20\" y2=\"20\" /><line x1=\"12\" x2=\"12\" y1=\"4\" y2=\"20\" />",
+    "calendar-days": "<path d=\"M8 2v4\" /><path d=\"M16 2v4\" /><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\" /><path d=\"M3 10h18\" /><path d=\"M8 14h.01\" /><path d=\"M12 14h.01\" /><path d=\"M16 14h.01\" /><path d=\"M8 18h.01\" /><path d=\"M12 18h.01\" /><path d=\"M16 18h.01\" />",
+    "image": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\" /><circle cx=\"9\" cy=\"9\" r=\"2\" /><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\" />",
+    "coins": "<circle cx=\"8\" cy=\"8\" r=\"6\" /><path d=\"M18.09 10.37A6 6 0 1 1 10.34 18\" /><path d=\"M7 6h1v4\" /><path d=\"m16.71 13.88.7.71-2.82 2.82\" />",
+    "piggy-bank": "<path d=\"M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z\" /><path d=\"M2 9v1c0 1.1.9 2 2 2h1\" /><path d=\"M16 11h.01\" />",
+    "store": "<path d=\"m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7\" /><path d=\"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8\" /><path d=\"M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4\" /><path d=\"M2 7h20\" /><path d=\"M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7\" />",
+    "alarm-clock": "<circle cx=\"12\" cy=\"13\" r=\"8\" /><path d=\"M12 9v4l2 2\" /><path d=\"M5 3 2 6\" /><path d=\"m22 6-3-3\" /><path d=\"M6.38 18.7 4 21\" /><path d=\"M17.64 18.67 20 21\" />",
+    "receipt": "<path d=\"M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z\" /><path d=\"M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8\" /><path d=\"M12 17.5v-11\" />",
+    "file-spreadsheet": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\" /><path d=\"M14 2v4a2 2 0 0 0 2 2h4\" /><path d=\"M8 13h2\" /><path d=\"M14 13h2\" /><path d=\"M8 17h2\" /><path d=\"M14 17h2\" />",
+    "key-round": "<path d=\"M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z\" /><circle cx=\"16.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\" />",
+    "calculator": "<rect width=\"16\" height=\"20\" x=\"4\" y=\"2\" rx=\"2\" /><line x1=\"8\" x2=\"16\" y1=\"6\" y2=\"6\" /><line x1=\"16\" x2=\"16\" y1=\"14\" y2=\"18\" /><path d=\"M16 10h.01\" /><path d=\"M12 10h.01\" /><path d=\"M8 10h.01\" /><path d=\"M12 14h.01\" /><path d=\"M8 14h.01\" /><path d=\"M12 18h.01\" /><path d=\"M8 18h.01\" />",
+    "folder-open": "<path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\" />",
+    "wallet": "<path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\" /><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\" />",
+    "shield-check": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\" /><path d=\"m9 12 2 2 4-4\" />",
+    "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\" /><path d=\"M7 11V7a5 5 0 0 1 10 0v4\" />",
+    "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\" /><path d=\"M2 12h20\" />",
+    "wifi-off": "<path d=\"M12 20h.01\" /><path d=\"M8.5 16.429a5 5 0 0 1 7 0\" /><path d=\"M5 12.859a10 10 0 0 1 5.17-2.69\" /><path d=\"M19 12.859a10 10 0 0 0-2.007-1.523\" /><path d=\"M2 8.82a15 15 0 0 1 4.177-2.643\" /><path d=\"M22 8.82a15 15 0 0 0-11.288-3.764\" /><path d=\"m2 2 20 20\" />",
+    "smartphone": "<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\" ry=\"2\" /><path d=\"M12 18h.01\" />",
+    "arrow-right": "<path d=\"M5 12h14\" /><path d=\"m12 5 7 7-7 7\" />",
+    "star": "<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\" />",
+    "sparkles": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\" /><path d=\"M20 3v4\" /><path d=\"M22 5h-4\" /><path d=\"M4 17v2\" /><path d=\"M5 18H3\" />",
+    "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\" />",
+    "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><polyline points=\"7 10 12 15 17 10\" /><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\" />"
+  };
+
+  function icon(name, extraClass) {
+    const inner = ICONS[name];
+    if (!inner) return '';
+    return '<svg class="ico' + (extraClass ? ' ' + extraClass : '') + '" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + inner + '</svg>';
+  }
+
+  function hydrateIcons(rootEl) {
+    (rootEl || document).querySelectorAll('[data-icon]').forEach(function (el) {
+      if (el.getAttribute('data-icon-done') === '1') return;
+      el.innerHTML = icon(el.getAttribute('data-icon'));
+      el.setAttribute('data-icon-done', '1');
+    });
+  }
+
   const TOOLS_CATALOG = [
-    { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'Ⴀა', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
-    { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: '🏠', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
+    { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'languages', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
+    { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: 'house', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
     { id: 'pdf-tools',
-     title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, შეკუმშვა, გვერდების ამოღება/გადალაგება, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
-    { id: 'djvu-to-pdf', title: 'DjVu → PDF კონვერტერი', shortTitle: 'DjVu → PDF', url: 'djvu-to-pdf.html', category: 'მედია', icon: '📕', description: 'DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.' },
-    { id: 'number-to-words', title: 'თანხის და რიცხვის სიტყვიერად ჩაწერა', shortTitle: 'თანხა სიტყვიერად', url: 'number-to-words.html', category: 'ფინანსები', icon: '№', description: 'თანხისა და რიცხვების უშეცდომო სიტყვიერი ჩაწერა ქართულად (ლარი და თეთრი, დოლარი, ევრო) ხელშეკრულებებისა და ინვოისებისთვის.' },
-    { id: 'salary-calculator', title: 'ხელფასის კალკულატორი (Net ⇄ Gross)', shortTitle: 'ხელფასი', url: 'salary-calculator.html', category: 'ფინანსები', icon: '💼', description: 'დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასის ზუსტი კალკულატორი საშემოსავლო გადასახადისა (20% / 5%) და საპენსიო შენატანის (2%) დათვლით.' },
-    { id: 'iban-validator', title: 'ქართული IBAN შემმოწმებელი', shortTitle: 'IBAN შემოწმება', url: 'iban-validator.html', category: 'ფინანსები', icon: '🏦', description: 'საბანკო ანგარიშის (IBAN) ვალიდაცია MOD-97 სტანდარტით, ქართული ბანკისა და SWIFT კოდის ავტომატური ამოცნობით.' },
-    { id: 'vat-calculator', title: 'დღგ-ის კალკულატორი (18%)', shortTitle: 'დღგ 18%', url: 'vat-calculator.html', category: 'ფინანსები', icon: '₾', description: '18%-იანი დღგ-ის დამატება თანხაზე და დღგ-ის შემცველი თანხიდან დღგ-ის ნაწილის ზუსტი გამოყოფა ფორმულებითა და შუალედური შედეგებით.' },
-    { id: 'qr-generator', title: 'QR კოდის გენერატორი', shortTitle: 'QR კოდი', url: 'qr-generator.html', category: 'მედია', icon: '▣', description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში - PNG და SVG ჩამოტვირთვით.' },
-    { id: 'postal-codes', title: 'საქართველოს საფოსტო ინდექსები', shortTitle: 'საფოსტო კოდები', url: 'postal-codes.html', category: 'მონაცემები', icon: '📮', description: 'თბილისის ყველა ქუჩის, ჩიხისა და საქართველოს ქალაქების/სოფლების საფოსტო კოდების (7,000+ მისამართი) სწრაფი საძიებო.' },
-    { id: 'text-tools', title: 'ტექსტის დამმუშავებელი', shortTitle: 'ტექსტის ანალიზი', url: 'text-tools.html', category: 'ტექსტი', icon: 'T', description: 'სიტყვებისა და სიმბოლოების დათვლა, ზედმეტი გამოტოვებებისა და ცარიელი ხაზების მოცილება, მხედრული/მთავრული რეგისტრის შეცვლა.' },
-    { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: '📅', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების (აღდგომის ჩათვლით) გათვალისწინებით.' },
-    { id: 'currency-converter', title: 'ვალუტის კონვერტერი (სებ-ის კურსით)', shortTitle: 'ვალუტის კონვერტერი', url: 'currency-converter.html', category: 'ფინანსები', icon: '💱', description: 'ვალუტების გადაყვანა საქართველოს ეროვნული ბანკის ოფიციალური კურსით, ნებისმიერი თარიღისთვის და ყველა ვალუტის კურსის ცხრილით.' },
-    { id: 'deposit-calculator', title: 'ანაბრის (დეპოზიტის) კალკულატორი', shortTitle: 'ანაბარი', url: 'deposit-calculator.html', category: 'ფინანსები', icon: '💰', description: 'ანაბრის შემოსავლის გამოთვლა რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებითა და პროცენტზე გადასახადის გათვალისწინებით.' },
-    { id: 'business-tax-calculator', title: 'მცირე ბიზნესის (1%) / ინდ. მეწარმის გადასახადი', shortTitle: 'მცირე ბიზნესი 1%', url: 'business-tax-calculator.html', category: 'ფინანსები', icon: '📊', description: 'ინდ. მეწარმის საშემოსავლო გადასახადი მცირე ბიზნესის (1% / 3%), მიკრო ბიზნესის ან ჩვეულებრივი (20%) რეჟიმით.' },
-    { id: 'tax-penalty-calculator', title: 'საურავის კალკულატორი', shortTitle: 'საურავი', url: 'tax-penalty-calculator.html', category: 'ფინანსები', icon: '⏰', description: 'ვადაგადაცილებულ გადასახადზე დარიცხული საურავის გამოთვლა გადახდის ვადისა და ფაქტობრივი გადახდის თარიღის მიხედვით.' },
-    { id: 'invoice-generator', title: 'ინვოისის გენერატორი', shortTitle: 'ინვოისი', url: 'invoice-generator.html', category: 'ფინანსები', icon: '🧾', description: 'ინვოისის შექმნა გამყიდველისა და მყიდველის მონაცემებით, პოზიციებით, დღგ-ით, თანხით სიტყვიერად და PDF-ად შენახვით.' },
-    { id: 'data-converter', title: 'CSV / Excel ⇄ JSON კონვერტერი', shortTitle: 'CSV / Excel ⇄ JSON', url: 'data-converter.html', category: 'მონაცემები', icon: '⇄', description: 'CSV და Excel (XLSX) ცხრილების გადაყვანა JSON-ად და პირიქით, ცხრილის წინასწარი ნახვით, პირდაპირ ბრაუზერში.' },
-    { id: 'password-generator', title: 'პაროლის გენერატორი', shortTitle: 'პაროლი', url: 'password-generator.html', category: 'მონაცემები', icon: '🔐', description: 'ძლიერი, შემთხვევითი პაროლის შექმნა კრიპტოგრაფიულად უსაფრთხო გენერატორით და სიძლიერის შეფასებით.' },
-    { id: 'image-tools', title: 'სურათის ხელსაწყო', shortTitle: 'სურათის შეკუმშვა', url: 'image-tools.html', category: 'მედია', icon: '🖼️', description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, WebP, PNG) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' }
+     title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: 'file-text', description: 'PDF ფაილების გაერთიანება, შეკუმშვა, გვერდების ამოღება/გადალაგება, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
+    { id: 'djvu-to-pdf', title: 'DjVu → PDF კონვერტერი', shortTitle: 'DjVu → PDF', url: 'djvu-to-pdf.html', category: 'მედია', icon: 'book-open', description: 'DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.' },
+    { id: 'number-to-words', title: 'თანხის და რიცხვის სიტყვიერად ჩაწერა', shortTitle: 'თანხა სიტყვიერად', url: 'number-to-words.html', category: 'ფინანსები', icon: 'text-cursor-input', description: 'თანხისა და რიცხვების უშეცდომო სიტყვიერი ჩაწერა ქართულად (ლარი და თეთრი, დოლარი, ევრო) ხელშეკრულებებისა და ინვოისებისთვის.' },
+    { id: 'salary-calculator', title: 'ხელფასის კალკულატორი (Net ⇄ Gross)', shortTitle: 'ხელფასი', url: 'salary-calculator.html', category: 'ფინანსები', icon: 'briefcase', description: 'დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასის ზუსტი კალკულატორი საშემოსავლო გადასახადისა (20% / 5%) და საპენსიო შენატანის (2%) დათვლით.' },
+    { id: 'iban-validator', title: 'ქართული IBAN შემმოწმებელი', shortTitle: 'IBAN შემოწმება', url: 'iban-validator.html', category: 'ფინანსები', icon: 'landmark', description: 'საბანკო ანგარიშის (IBAN) ვალიდაცია MOD-97 სტანდარტით, ქართული ბანკისა და SWIFT კოდის ავტომატური ამოცნობით.' },
+    { id: 'vat-calculator', title: 'დღგ-ის კალკულატორი (18%)', shortTitle: 'დღგ 18%', url: 'vat-calculator.html', category: 'ფინანსები', icon: 'percent', description: '18%-იანი დღგ-ის დამატება თანხაზე და დღგ-ის შემცველი თანხიდან დღგ-ის ნაწილის ზუსტი გამოყოფა ფორმულებითა და შუალედური შედეგებით.' },
+    { id: 'qr-generator', title: 'QR კოდის გენერატორი', shortTitle: 'QR კოდი', url: 'qr-generator.html', category: 'მედია', icon: 'qr-code', description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში - PNG და SVG ჩამოტვირთვით.' },
+    { id: 'postal-codes', title: 'საქართველოს საფოსტო ინდექსები', shortTitle: 'საფოსტო კოდები', url: 'postal-codes.html', category: 'მონაცემები', icon: 'mail', description: 'თბილისის ყველა ქუჩის, ჩიხისა და საქართველოს ქალაქების/სოფლების საფოსტო კოდების (7,000+ მისამართი) სწრაფი საძიებო.' },
+    { id: 'text-tools', title: 'ტექსტის დამმუშავებელი', shortTitle: 'ტექსტის ანალიზი', url: 'text-tools.html', category: 'ტექსტი', icon: 'type', description: 'სიტყვებისა და სიმბოლოების დათვლა, ზედმეტი გამოტოვებებისა და ცარიელი ხაზების მოცილება, მხედრული/მთავრული რეგისტრის შეცვლა.' },
+    { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: 'calendar-days', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების (აღდგომის ჩათვლით) გათვალისწინებით.' },
+    { id: 'currency-converter', title: 'ვალუტის კონვერტერი (სებ-ის კურსით)', shortTitle: 'ვალუტის კონვერტერი', url: 'currency-converter.html', category: 'ფინანსები', icon: 'coins', description: 'ვალუტების გადაყვანა საქართველოს ეროვნული ბანკის ოფიციალური კურსით, ნებისმიერი თარიღისთვის და ყველა ვალუტის კურსის ცხრილით.' },
+    { id: 'deposit-calculator', title: 'ანაბრის (დეპოზიტის) კალკულატორი', shortTitle: 'ანაბარი', url: 'deposit-calculator.html', category: 'ფინანსები', icon: 'piggy-bank', description: 'ანაბრის შემოსავლის გამოთვლა რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებითა და პროცენტზე გადასახადის გათვალისწინებით.' },
+    { id: 'business-tax-calculator', title: 'მცირე ბიზნესის (1%) / ინდ. მეწარმის გადასახადი', shortTitle: 'მცირე ბიზნესი 1%', url: 'business-tax-calculator.html', category: 'ფინანსები', icon: 'store', description: 'ინდ. მეწარმის საშემოსავლო გადასახადი მცირე ბიზნესის (1% / 3%), მიკრო ბიზნესის ან ჩვეულებრივი (20%) რეჟიმით.' },
+    { id: 'tax-penalty-calculator', title: 'საურავის კალკულატორი', shortTitle: 'საურავი', url: 'tax-penalty-calculator.html', category: 'ფინანსები', icon: 'alarm-clock', description: 'ვადაგადაცილებულ გადასახადზე დარიცხული საურავის გამოთვლა გადახდის ვადისა და ფაქტობრივი გადახდის თარიღის მიხედვით.' },
+    { id: 'invoice-generator', title: 'ინვოისის გენერატორი', shortTitle: 'ინვოისი', url: 'invoice-generator.html', category: 'ფინანსები', icon: 'receipt', description: 'ინვოისის შექმნა გამყიდველისა და მყიდველის მონაცემებით, პოზიციებით, დღგ-ით, თანხით სიტყვიერად და PDF-ად შენახვით.' },
+    { id: 'data-converter', title: 'CSV / Excel ⇄ JSON კონვერტერი', shortTitle: 'CSV / Excel ⇄ JSON', url: 'data-converter.html', category: 'მონაცემები', icon: 'file-spreadsheet', description: 'CSV და Excel (XLSX) ცხრილების გადაყვანა JSON-ად და პირიქით, ცხრილის წინასწარი ნახვით, პირდაპირ ბრაუზერში.' },
+    { id: 'password-generator', title: 'პაროლის გენერატორი', shortTitle: 'პაროლი', url: 'password-generator.html', category: 'მონაცემები', icon: 'key-round', description: 'ძლიერი, შემთხვევითი პაროლის შექმნა კრიპტოგრაფიულად უსაფრთხო გენერატორით და სიძლიერის შეფასებით.' },
+    { id: 'image-tools', title: 'სურათის ხელსაწყო', shortTitle: 'სურათის შეკუმშვა', url: 'image-tools.html', category: 'მედია', icon: 'image', description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, WebP, PNG) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' }
   ];
 
   const NAV_GROUPS = [
@@ -504,7 +555,7 @@
         const hasActive = groupTools.some(function (t) { return t.id === currentId; });
         const itemsHtml = groupTools.map(function (t) {
           return '<a href="' + t.url + '" class="nav-drop-item ' + (currentId === t.id ? 'active' : '') + '">' +
-            '<span class="nav-drop-icon">' + escapeHtml(t.icon) + '</span>' +
+            '<span class="nav-drop-icon">' + icon(t.icon) + '</span>' +
             '<span>' + escapeHtml(t.title) + '</span>' +
           '</a>';
         }).join('');
@@ -582,7 +633,7 @@
               '<img src="assets/logo-dark.png" alt="Mokled" class="logo-dark" loading="lazy" />' +
             '</a>' +
             '<p>უფასო საოფისე, ბიზნეს და ფინანსური ხელსაწყოები ქართულად - მოკლედ და მარტივად.</p>' +
-            '<span class="footer-badge">🔒 მონაცემები არ ტოვებს თქვენს ბრაუზერს</span>' +
+            '<span class="footer-badge">' + icon('shield-check') + 'მონაცემები არ ტოვებს თქვენს ბრაუზერს</span>' +
           '</div>' +
           footerCols +
         '</div>' +
@@ -598,6 +649,7 @@
         '</div>';
     }
 
+    hydrateIcons(document);
     if (currentId && currentId !== 'home') { recordToolUsage(currentId); }
     enableNumericInputMasking();
     if (currentId === 'loan-calculator') { setupLoanExcelExportButton(); }
@@ -721,6 +773,8 @@
 
   root.GeoCommon = {
     TOOLS_CATALOG: TOOLS_CATALOG,
+    icon: icon,
+    hydrateIcons: hydrateIcons,
     escapeHtml: escapeHtml,
     recordToolUsage: recordToolUsage,
     getUsageCounts: getUsageCounts,

@@ -15,6 +15,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
   <meta name="theme-color" content="#2563eb" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
   <script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"AboutPage","name":"ჩვენ შესახებ - Mokled","url":"https://mokled.pages.dev/about.html","inLanguage":"ka","isPartOf":{"@type":"WebSite","@id":"https://mokled.pages.dev/#website","name":"Mokled - მოკლედ","url":"https://mokled.pages.dev/","inLanguage":"ka"},"about":{"@type":"Thing","name":"უფასო ბრაუზერული ბიზნეს და ფინანსური ხელსაწყოები"}}</script>
 </head>
@@ -49,10 +50,10 @@
         <p>ხელსაწყოები შეიქმნა მათთვის, ვისაც ყოველდღიურად უწევს ციფრებთან, დოკუმენტებთან და რეკვიზიტებთან მუშაობა.</p>
       </div>
       <div class="audience-grid">
-        <div class="audience-card"><span class="audience-icon" aria-hidden="true">🧮</span><strong>ბუღალტრები</strong><span>ხელფასი, დღგ, საურავი, თანხა სიტყვიერად</span></div>
-        <div class="audience-card"><span class="audience-icon" aria-hidden="true">🏦</span><strong>ბანკის თანამშრომლები</strong><span>IBAN, სესხი, ანაბარი, სებ-ის კურსი</span></div>
-        <div class="audience-card"><span class="audience-icon" aria-hidden="true">🏪</span><strong>მცირე ბიზნესი</strong><span>1%-იანი გადასახადი და ინვოისები</span></div>
-        <div class="audience-card"><span class="audience-icon" aria-hidden="true">🗂️</span><strong>ოფისი</strong><span>PDF, Excel, ქართული ფონტები</span></div>
+        <div class="audience-card"><span class="audience-icon fi-blue" data-icon="calculator" aria-hidden="true"></span><strong>ბუღალტრები</strong><span>ხელფასი, დღგ, საურავი, თანხა სიტყვიერად</span></div>
+        <div class="audience-card"><span class="audience-icon fi-green" data-icon="landmark" aria-hidden="true"></span><strong>ბანკის თანამშრომლები</strong><span>IBAN, სესხი, ანაბარი, სებ-ის კურსი</span></div>
+        <div class="audience-card"><span class="audience-icon fi-violet" data-icon="store" aria-hidden="true"></span><strong>მცირე ბიზნესი</strong><span>1%-იანი გადასახადი და ინვოისები</span></div>
+        <div class="audience-card"><span class="audience-icon fi-red" data-icon="folder-open" aria-hidden="true"></span><strong>ოფისი</strong><span>PDF, Excel, ქართული ფონტები</span></div>
       </div>
     </section>
 
@@ -63,7 +64,7 @@
       </div>
       <div class="feature-grid">
         <article class="feature-card">
-          <div class="feature-icon fi-blue" aria-hidden="true">₾</div>
+          <div class="feature-icon fi-blue" data-icon="wallet" aria-hidden="true"></div>
           <h3>ფინანსები და გადასახადები</h3>
           <p>ხელფასი (Net ⇄ Gross), დღგ, მცირე ბიზნესის გადასახადი, საურავი, ინვოისი და თანხის სიტყვიერად ჩაწერა.</p>
           <div class="feature-links">
@@ -71,7 +72,7 @@
           </div>
         </article>
         <article class="feature-card">
-          <div class="feature-icon fi-green" aria-hidden="true">🏦</div>
+          <div class="feature-icon fi-green" data-icon="landmark" aria-hidden="true"></div>
           <h3>საბანკო</h3>
           <p>IBAN-ის შემოწმება ბანკისა და SWIFT-ის ამოცნობით, სესხისა და ანაბრის კალკულატორები, ეროვნული ბანკის ოფიციალური კურსი.</p>
           <div class="feature-links">
@@ -79,7 +80,7 @@
           </div>
         </article>
         <article class="feature-card">
-          <div class="feature-icon fi-red" aria-hidden="true">📄</div>
+          <div class="feature-icon fi-red" data-icon="file-text" aria-hidden="true"></div>
           <h3>დოკუმენტები</h3>
           <p>PDF-ების გაერთიანება, შეკუმშვა, გვერდების ამოღება და გადალაგება, DjVu → PDF და სურათების შეკუმშვა.</p>
           <div class="feature-links">
@@ -87,7 +88,7 @@
           </div>
         </article>
         <article class="feature-card">
-          <div class="feature-icon fi-violet" aria-hidden="true">Ⴀა</div>
+          <div class="feature-icon fi-violet" data-icon="languages" aria-hidden="true"></div>
           <h3>ტექსტი და მონაცემები</h3>
           <p>ქართული ფონტების კონვერტერი, CSV / Excel ⇄ JSON, საფოსტო ინდექსები და სამუშაო დღეები საქართველოს უქმეებით.</p>
           <div class="feature-links">
@@ -99,7 +100,7 @@
 
     <section class="about-section privacy-block" id="privacy">
       <div class="privacy-intro">
-        <span class="privacy-shield" aria-hidden="true">🛡️</span>
+        <span class="privacy-shield" data-icon="shield-check" aria-hidden="true"></span>
         <h2>თქვენი მონაცემები თქვენთანვე რჩება</h2>
         <p>Mokled აგებულია პრინციპით: რაც არ იგზავნება, ვერც გაჟონავს. ყველა გამოთვლა და ფაილის დამუშავება ხდება მხოლოდ თქვენს მოწყობილობაზე.</p>
       </div>
@@ -117,11 +118,11 @@
         <h2>ტექნიკური ინფორმაცია</h2>
       </div>
       <div class="tech-pills">
-        <span>🌐 სტატიკური საიტი (HTML / CSS / JS)</span>
-        <span>🔒 HTTPS · Cloudflare Pages</span>
-        <span>📴 მუშაობს ოფლაინ (PWA)</span>
-        <span>📱 დაყენება აპლიკაციად</span>
-        <span>📚 pdf-lib (MIT) · pdf.js (Apache-2.0) · djvu.js</span>
+        <span><i data-icon="globe"></i>სტატიკური საიტი (HTML / CSS / JS)</span>
+        <span><i data-icon="lock"></i>HTTPS · Cloudflare Pages</span>
+        <span><i data-icon="wifi-off"></i>მუშაობს ოფლაინ (PWA)</span>
+        <span><i data-icon="smartphone"></i>დაყენება აპლიკაციად</span>
+        <span><i data-icon="book-open"></i>pdf-lib (MIT) · pdf.js (Apache-2.0) · djvu.js · Noto Sans Georgian (OFL) · Lucide (ISC)</span>
       </div>
     </section>
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v53';
+const CACHE_NAME = 'mokled-cache-v54';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -30,6 +30,9 @@ const CORE_ASSETS = [
   '/js/djvu.min.js',
   '/js/postal-data.js',
   '/js/vendor/pdf-lib.min.js',
+  '/assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2',
+  '/assets/fonts/noto-sans-georgian-latin-wght-normal.woff2',
+  '/assets/fonts/noto-sans-georgian-latin-ext-wght-normal.woff2',
   '/manifest.json'
 ];
 

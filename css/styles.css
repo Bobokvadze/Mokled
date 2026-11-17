@@ -1,3 +1,29 @@
+/* Noto Sans Georgian (variable, SIL OFL 1.1) - ლოკალურად, assets/fonts */
+@font-face {
+  font-family: 'Mokled Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2') format('woff2-variations'), url('../assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2') format('woff2');
+  unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
+}
+@font-face {
+  font-family: 'Mokled Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../assets/fonts/noto-sans-georgian-latin-wght-normal.woff2') format('woff2-variations'), url('../assets/fonts/noto-sans-georgian-latin-wght-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Mokled Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../assets/fonts/noto-sans-georgian-latin-ext-wght-normal.woff2') format('woff2-variations'), url('../assets/fonts/noto-sans-georgian-latin-ext-wght-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   --bg-page: #f8fafc;
   --bg-surface: #ffffff;
@@ -48,7 +74,7 @@
 }
 
 body {
-  font-family: "Noto Sans Georgian", "FiraGO", "Sylfaen", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Mokled Sans", "Noto Sans Georgian", "FiraGO", "Sylfaen", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-page);
   color: var(--text-main);
   line-height: 1.6;
@@ -1789,4 +1815,93 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
 @media (max-width: 520px) {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; padding-top: 2rem !important; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ===== SVG ხატულები (Lucide) ===== */
+.ico { width: 1.15em; height: 1.15em; display: inline-block; vertical-align: -0.18em; flex-shrink: 0; }
+.tool-icon .ico { width: 22px; height: 22px; }
+.nav-drop-icon { color: var(--primary); }
+.nav-drop-icon .ico { width: 15px; height: 15px; }
+.audience-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.audience-icon .ico, .feature-icon .ico { width: 22px; height: 22px; }
+.privacy-shield { width: 52px; height: 52px; border-radius: 14px; background: var(--success-bg); color: var(--success); display: inline-flex !important; align-items: center; justify-content: center; }
+.privacy-shield .ico { width: 28px; height: 28px; }
+.tech-pills span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.tech-pills i, .home-quick i, .home-trust i { display: inline-flex; color: var(--primary); font-style: normal; }
+.footer-badge .ico { width: 14px; height: 14px; }
+
+/* ===== მთავარი გვერდის ჰერო ===== */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 2.6rem 2.4rem 2rem;
+  background:
+    radial-gradient(circle at 95% 0%, rgba(37, 99, 235, 0.16), transparent 45%),
+    radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.12), transparent 42%),
+    var(--bg-surface);
+  box-shadow: var(--shadow-md);
+}
+.home-hero h1 { font-size: 2.3rem; line-height: 1.2; margin-bottom: 0.8rem; }
+.home-hero h1 span {
+  background: linear-gradient(90deg, var(--primary), #10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.home-lead { font-size: 1.05rem; color: var(--text-muted); max-width: 760px; margin-bottom: 1.4rem !important; }
+.home-search { position: relative; max-width: 640px; margin-bottom: 1rem; }
+.home-search .input {
+  width: 100%;
+  min-height: 52px;
+  padding-left: 2.9rem;
+  font-size: 1rem;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.home-search-icon {
+  position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+  color: var(--primary); display: inline-flex; pointer-events: none;
+}
+.home-search-icon .ico { width: 20px; height: 20px; }
+.home-quick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-bottom: 1.3rem; }
+.home-quick-label { font-size: 0.85rem; color: var(--text-muted); margin-right: 0.2rem; }
+.home-quick a {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.85rem; font-weight: 600;
+  padding: 0.38rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+.home-quick a:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+.home-trust {
+  display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem;
+  font-size: 0.86rem; color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+.home-trust span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.home-trust i { color: var(--success); }
+#search-empty { margin-top: -1rem; }
+
+@media (max-width: 640px) {
+  .home-hero { padding: 1.6rem 1.15rem 1.3rem; border-radius: 16px; }
+  .home-hero h1 { font-size: 1.6rem; }
+  .home-lead { font-size: 0.95rem; }
+  .home-quick-label { width: 100%; }
+  .home-trust { flex-direction: column; gap: 0.45rem; }
+}
+
+@media (max-width: 640px) {
+  .about-eyebrow { border-radius: 10px; line-height: 1.45; }
 }

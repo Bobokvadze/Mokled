@@ -16,6 +16,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
   <meta name="theme-color" content="#2563eb" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
   <script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://mokled.pages.dev/#website","name":"Mokled - მოკლედ","url":"https://mokled.pages.dev/","inLanguage":"ka","description":"უფასო ქართული საოფისე, ბიზნეს და ფინანსური ხელსაწყოები: ხელფასი, დღგ, მცირე ბიზნესის გადასახადი, ინვოისი, IBAN, სესხი, ანაბარი, ვალუტის კურსი და PDF. ყველა გამოთვლა სრულდება ბრაუზერში.","keywords":"ბიზნესი, ფინანსები, ბუღალტერია, გადასახადები, ხელფასი, დღგ, IBAN, ინვოისი, სესხი, PDF"},{"@type":"ItemList","name":"Mokled ხელსაწყოები","itemListElement":[{"@type":"ListItem","position":1,"name":"ქართული ტექსტის კონვერტერი","url":"https://mokled.pages.dev/georgian-converter.html"},{"@type":"ListItem","position":2,"name":"სესხის კალკულატორი","url":"https://mokled.pages.dev/loan-calculator.html"},{"@type":"ListItem","position":3,"name":"PDF ხელსაწყოების ნაკრები","url":"https://mokled.pages.dev/pdf-tools.html"},{"@type":"ListItem","position":4,"name":"DjVu → PDF კონვერტერი","url":"https://mokled.pages.dev/djvu-to-pdf.html"},{"@type":"ListItem","position":5,"name":"თანხის და რიცხვის სიტყვიერად ჩაწერა","url":"https://mokled.pages.dev/number-to-words.html"},{"@type":"ListItem","position":6,"name":"ხელფასის კალკულატორი (Net ⇄ Gross)","url":"https://mokled.pages.dev/salary-calculator.html"},{"@type":"ListItem","position":7,"name":"ქართული IBAN შემმოწმებელი","url":"https://mokled.pages.dev/iban-validator.html"},{"@type":"ListItem","position":8,"name":"დღგ-ის კალკულატორი (18%)","url":"https://mokled.pages.dev/vat-calculator.html"},{"@type":"ListItem","position":9,"name":"QR კოდის გენერატორი","url":"https://mokled.pages.dev/qr-generator.html"},{"@type":"ListItem","position":10,"name":"საქართველოს საფოსტო ინდექსები","url":"https://mokled.pages.dev/postal-codes.html"},{"@type":"ListItem","position":11,"name":"ტექსტის დამმუშავებელი","url":"https://mokled.pages.dev/text-tools.html"},{"@type":"ListItem","position":12,"name":"თარიღების კალკულატორი","url":"https://mokled.pages.dev/date-calculator.html"},{"@type":"ListItem","position":13,"name":"ვალუტის კონვერტერი (სებ-ის კურსით)","url":"https://mokled.pages.dev/currency-converter.html"},{"@type":"ListItem","position":14,"name":"ანაბრის (დეპოზიტის) კალკულატორი","url":"https://mokled.pages.dev/deposit-calculator.html"},{"@type":"ListItem","position":15,"name":"მცირე ბიზნესის (1%) / ინდ. მეწარმის გადასახადი","url":"https://mokled.pages.dev/business-tax-calculator.html"},{"@type":"ListItem","position":16,"name":"საურავის კალკულატორი","url":"https://mokled.pages.dev/tax-penalty-calculator.html"},{"@type":"ListItem","position":17,"name":"ინვოისის გენერატორი","url":"https://mokled.pages.dev/invoice-generator.html"},{"@type":"ListItem","position":18,"name":"CSV / Excel ⇄ JSON კონვერტერი","url":"https://mokled.pages.dev/data-converter.html"},{"@type":"ListItem","position":19,"name":"პაროლის გენერატორი","url":"https://mokled.pages.dev/password-generator.html"},{"@type":"ListItem","position":20,"name":"სურათის ხელსაწყო","url":"https://mokled.pages.dev/image-tools.html"}]}]}</script>
 </head>
@@ -23,12 +24,31 @@
   <header class="site-header" id="site-header"></header>
 
   <main class="container">
-    <section class="hero">
-      <h1>Mokled - მოკლედ</h1>
-      <p>
-        ქართული ციფრული ხელსაწყოების პორტალი ყოველდღიური ტექსტური, ფინანსური, საოფისე და PDF/მედია ამოცანების სწრაფად გადასაჭრელად.
-        რეგისტრაციის გარეშე - მუშაობს პირდაპირ თქვენს ბრაუზერში.
+    <section class="hero home-hero">
+      <span class="about-eyebrow">20 უფასო ხელსაწყო · რეგისტრაციის გარეშე</span>
+      <h1>სამუშაო ამოცანები — <span>მოკლედ</span></h1>
+      <p class="home-lead">
+        ხელფასი, დღგ, გადასახადები, ინვოისი, IBAN, სესხი, ვალუტის კურსი, PDF და ქართული ტექსტი — ყველაფერი ერთ სივრცეში.
+        მუშაობს პირდაპირ თქვენს ბრაუზერში, ფაილები არსად იგზავნება.
       </p>
+      <div class="home-search">
+        <span class="home-search-icon" data-icon="sparkles" aria-hidden="true"></span>
+        <input type="search" id="tool-search" class="input" placeholder="მოძებნეთ ხელსაწყო: ხელფასი, IBAN, PDF, ინვოისი..." aria-label="ხელსაწყოს ძიება" autocomplete="off" />
+      </div>
+      <div class="home-quick" aria-label="პოპულარული ხელსაწყოები">
+        <span class="home-quick-label">პოპულარული:</span>
+        <a href="salary-calculator.html"><i data-icon="briefcase"></i>ხელფასი</a>
+        <a href="vat-calculator.html"><i data-icon="percent"></i>დღგ</a>
+        <a href="currency-converter.html"><i data-icon="coins"></i>ვალუტა</a>
+        <a href="iban-validator.html"><i data-icon="landmark"></i>IBAN</a>
+        <a href="invoice-generator.html"><i data-icon="receipt"></i>ინვოისი</a>
+        <a href="pdf-tools.html"><i data-icon="file-text"></i>PDF</a>
+      </div>
+      <div class="home-trust">
+        <span><i data-icon="shield-check"></i>მონაცემები რჩება ბრაუზერში</span>
+        <span><i data-icon="zap"></i>მყისიერი გამოთვლა</span>
+        <span><i data-icon="wifi-off"></i>მუშაობს ოფლაინაც</span>
+      </div>
       <div class="filter-bar">
         <div class="category-pills" id="category-pills" role="group" aria-label="კატეგორიები"></div>
       </div>
@@ -37,7 +57,7 @@
     <!-- რჩეული ხელსაწყოები (⭐ ვარსკვლავით მონიშნული) -->
     <section id="favorites-section" class="hidden">
       <div class="section-header">
-        <h2 class="section-title">⭐ რჩეული ხელსაწყოები</h2>
+        <h2 class="section-title">რჩეული ხელსაწყოები</h2>
       </div>
       <div class="cards-grid" id="favorites-grid"></div>
     </section>
@@ -55,9 +75,10 @@
     <section>
       <div class="section-header">
         <h2 class="section-title">ყველა ხელსაწყო</h2>
-        <span id="tools-count" class="badge">13 ხელსაწყო</span>
+        <span id="tools-count" class="badge">20 ხელსაწყო</span>
       </div>
       <div class="cards-grid" id="catalog-grid"></div>
+      <p id="search-empty" class="alert alert-info hidden">ასეთი ხელსაწყო ვერ მოიძებნა. სცადეთ სხვა სიტყვა ან აირჩიეთ კატეგორია.</p>
     </section>
   </main>
 
@@ -75,7 +96,8 @@
         getFavorites,
         toggleFavorite,
         escapeHtml,
-        showToast
+        showToast,
+        icon
       } = window.GeoCommon;
 
       initLayout('home');
@@ -88,6 +110,8 @@
       const frequentSection = document.getElementById('frequent-section');
       const frequentGrid = document.getElementById('frequent-grid');
       const resetFrequentBtn = document.getElementById('reset-frequent-btn');
+      const searchInput = document.getElementById('tool-search');
+      const searchEmpty = document.getElementById('search-empty');
 
       let activeCategory = 'ყველა';
       const categories = ['ყველა'].concat(Array.from(new Set(TOOLS_CATALOG.map(function (t) { return t.category; }))));
@@ -106,6 +130,8 @@
         });
       }
 
+      const CATEGORY_TONE = { 'ფინანსები': 'fi-blue', 'მედია': 'fi-red', 'ტექსტი': 'fi-violet', 'მონაცემები': 'fi-green', 'დრო და თარიღი': 'fi-green' };
+
       function createCardHtml(tool, usageCount, favList) {
         const count = usageCount || 0;
         const isFav = favList.indexOf(tool.id) >= 0;
@@ -117,7 +143,7 @@
           '<a href="' + tool.url + '" class="tool-card">' +
             '<div>' +
               '<div class="card-top">' +
-                '<span class="tool-icon" aria-hidden="true">' + escapeHtml(tool.icon) + '</span>' +
+                '<span class="tool-icon ' + (CATEGORY_TONE[tool.category] || 'fi-blue') + '" aria-hidden="true">' + icon(tool.icon) + '</span>' +
                 '<div class="card-badges">' +
                   usageBadge +
                   '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-id="' + escapeHtml(tool.id) + '" title="რჩეულებში დამატება / მოხსნა" aria-label="რჩეულებში დამატება">' +
@@ -172,9 +198,13 @@
           bindFavButtons(frequentGrid);
         }
 
+        const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
         const filtered = TOOLS_CATALOG.filter(function (tool) {
-          return activeCategory === 'ყველა' || tool.category === activeCategory;
+          if (activeCategory !== 'ყველა' && tool.category !== activeCategory) return false;
+          if (!q) return true;
+          return (tool.title + ' ' + tool.shortTitle + ' ' + tool.description + ' ' + tool.category).toLowerCase().indexOf(q) !== -1;
         });
+        if (searchEmpty) searchEmpty.classList.toggle('hidden', filtered.length > 0);
 
         toolsCount.textContent = filtered.length + ' ხელსაწყო';
         catalogGrid.innerHTML = filtered.map(function (t) { return createCardHtml(t, 0, favList); }).join('');
@@ -186,6 +216,16 @@
         renderAllSections();
         showToast('ხშირად გამოყენებული ხელსაწყოების ისტორია გასუფთავდა.');
       });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', renderAllSections);
+        searchInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            const first = catalogGrid.querySelector('a.tool-card');
+            if (first) window.location.href = first.getAttribute('href');
+          }
+        });
+      }
 
       renderCategories();
       renderAllSections();
