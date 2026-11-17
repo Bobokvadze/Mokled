@@ -542,10 +542,17 @@
     { mmdd: '04-09', name: 'ეროვნული ერთიანობის დღე' },
     { mmdd: '05-09', name: 'ფაშიზმზე გამარჯვების დღე' },
     { mmdd: '05-12', name: 'წმ. ანდრია პირველწოდებულის დღე' },
+    // შრომის კოდექსის 30-ე მუხლის „ი1“ ქვეპუნქტი (ორგანული კანონი №4455, 17.09.2024) - მოქმედებს 2025 წლიდან
+    { mmdd: '05-17', name: 'ოჯახის სიწმინდისა და მშობლების პატივისცემის დღე', fromYear: 2025 },
     { mmdd: '05-26', name: 'დამოუკიდებლობის დღე' },
     { mmdd: '08-28', name: 'მარიამობა' },
     { mmdd: '10-14', name: 'სვეტიცხოვლობა' },
     { mmdd: '11-23', name: 'გიორგობა' }
+  ];
+
+  const GEORGIAN_ONE_OFF_HOLIDAYS = [
+    // მთავრობის დადგენილება №167, 15.05.2024
+    { date: '2024-05-17', name: 'ოჯახის სიწმინდისა და მშობლების პატივისცემის დღე (მთავრობის დადგენილებით)' }
   ];
 
   function parseIsoDateUTC(dateStr) {
@@ -617,15 +624,25 @@
 
   function getGeorgianHolidaysForYear(year) {
     const y = Number(year);
-    const list = GEORGIAN_PUBLIC_HOLIDAYS_MMDD.map(function (h) {
+    const list = GEORGIAN_PUBLIC_HOLIDAYS_MMDD.filter(function (h) {
+      return !h.fromYear || y >= h.fromYear;
+    }).map(function (h) {
       return { date: y + '-' + h.mmdd, name: h.name, movable: false };
     });
+    // მთავრობის დადგენილებით ცალკე წლებში გამოცხადებული დამატებითი უქმე დღეები (შრომის კოდექსი, მუხ. 30, პ. 3)
+    for (let i = 0; i < GEORGIAN_ONE_OFF_HOLIDAYS.length; i++) {
+      const extra = GEORGIAN_ONE_OFF_HOLIDAYS[i];
+      if (extra.date.slice(0, 4) === String(y)) {
+        list.push({ date: extra.date, name: extra.name, movable: false, oneOff: true });
+      }
+    }
+    // შრომის კოდექსის 30-ე მუხლის „ზ“ ქვეპუნქტი - სააღდგომო დღეები
     const easter = getOrthodoxEaster(y);
     const easterDays = [
-      [-2, 'წითელი პარასკევი'],
+      [-2, 'დიდი პარასკევი'],
       [-1, 'დიდი შაბათი'],
       [0, 'აღდგომა'],
-      [1, 'აღდგომის ორშაბათი (მიცვალებულთა მოხსენიება)']
+      [1, 'აღდგომის ორშაბათი (მიცვალებულთა მოხსენიების დღე)']
     ];
     for (let i = 0; i < easterDays.length; i++) {
       const dt = new Date(easter.getTime() + easterDays[i][0] * 86400000);

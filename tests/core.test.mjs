@@ -101,3 +101,14 @@ test('8. პაროლის გენერატორი', () => {
   assert.equal(GeoCore.generatePassword({ length: 8, upper: false, digits: false, symbols: false }).password.match(/[a-z]/g).length, 8);
   assert.throws(() => GeoCore.generatePassword({ lower: false, upper: false, digits: false, symbols: false }));
 });
+
+test('9. 17 მაისი (შრომის კოდექსი, მუხ. 30 „ი1“) და სრული უქმეების სია', () => {
+  const dates = (y) => GeoCore.getGeorgianHolidaysForYear(y).map((h) => h.date);
+  assert.ok(dates(2025).includes('2025-05-17'));
+  assert.ok(dates(2026).includes('2026-05-17'));
+  assert.ok(dates(2024).includes('2024-05-17')); // მთავრობის დადგენილება №167
+  assert.ok(!dates(2023).includes('2023-05-17'));
+  // 2026: 14 ფიქსირებული დღე (1-2 იანვრისა და 17 მაისის ჩათვლით) + 4 სააღდგომო დღე = 18
+  assert.equal(dates(2026).length, 18);
+  assert.equal(new Set(dates(2026)).size, 18);
+});
