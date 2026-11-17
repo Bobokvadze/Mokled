@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CSV / Excel (XLSX) ⇄ JSON კონვერტერი | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ CSV და Excel (XLSX) ცხრილები JSON-ად და პირიქით, პირდაპირ ბრაუზერში, ფაილის სერვერზე ატვირთვის გარეშე." />
+  <link rel="canonical" href="https://mokled.pages.dev/data-converter.html" />
+  <meta property="og:title" content="CSV / Excel ⇄ JSON კონვერტერი | Mokled - მოკლედ" />
+  <meta property="og:description" content="CSV, XLSX და JSON ფორმატებს შორის კონვერტაცია ბრაუზერში." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/data-converter.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / მონაცემები</div>
+      <h1>CSV / Excel (XLSX) ⇄ JSON კონვერტერი</h1>
+      <p>
+        ჩასვით CSV ან JSON ტექსტი, ან ატვირთეთ CSV / XLSX ფაილი და მიიღეთ შედეგი JSON, CSV ან Excel ფორმატში. ფაილები მუშავდება მხოლოდ თქვენს ბრაუზერში.
+      </p>
+    </div>
+
+    <section class="panel">
+      <div id="dc-error" class="alert alert-error hidden" role="alert"></div>
+      <div id="dc-info" class="alert alert-success hidden" role="status"></div>
+
+      <div class="grid-4">
+        <div class="form-group">
+          <label class="form-label" for="dc-source">საწყისი ფორმატი:</label>
+          <select id="dc-source" class="input">
+            <option value="csv" selected>CSV / ცხრილი (ტექსტი)</option>
+            <option value="json">JSON</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dc-delim">CSV გამყოფი:</label>
+          <select id="dc-delim" class="input">
+            <option value="," selected>მძიმე ( , )</option>
+            <option value=";">წერტილმძიმე ( ; )</option>
+            <option value="tab">ტაბი (Excel-იდან ჩასმული)</option>
+          </select>
+        </div>
+        <label class="checkbox-label"><input type="checkbox" id="dc-headers" checked /> <span>პირველი სტრიქონი სათაურია</span></label>
+        <div class="form-group">
+          <label class="form-label" for="dc-file">ან ატვირთეთ ფაილი (.csv, .xlsx, .json):</label>
+          <input type="file" id="dc-file" class="input" accept=".csv,.tsv,.txt,.json,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+        </div>
+      </div>
+      <div class="form-group hidden" id="dc-sheet-group">
+        <label class="form-label" for="dc-sheet">Excel-ის ფურცელი:</label>
+        <select id="dc-sheet" class="input"></select>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="dc-input">შესატანი მონაცემები:</label>
+          <textarea id="dc-input" style="min-height: 260px; font-family: monospace;">სახელი,ქალაქი,ასაკი
+გიორგი,თბილისი,32
+ნინო,ბათუმი,27</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dc-output">შედეგი (<span id="dc-output-label">JSON</span>):</label>
+          <textarea id="dc-output" style="min-height: 260px; font-family: monospace;" readonly></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-dc-copy" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" id="btn-dc-dl-json" class="btn btn-secondary">⬇ JSON</button>
+        <button type="button" id="btn-dc-dl-csv" class="btn btn-secondary">⬇ CSV</button>
+        <button type="button" id="btn-dc-dl-xlsx" class="btn btn-secondary">⬇ Excel (.xlsx)</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="panel-title">ცხრილის წინასწარი ნახვა</h2>
+        <span class="badge" id="dc-count">0 სტრიქონი</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="dc-thead"></thead>
+          <tbody id="dc-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { parseCSV, jsonToCsv } = window.GeoCore;
+      const { initLayout, copyToClipboard, downloadTextFile, downloadExcelXlsx, escapeHtml, showToast } = window.GeoCommon;
+
+      initLayout('data-converter');
+
+      const sourceSel = document.getElementById('dc-source');
+      const delimSel = document.getElementById('dc-delim');
+      const headersCheck = document.getElementById('dc-headers');
+      const fileInput = document.getElementById('dc-file');
+      const sheetGroup = document.getElementById('dc-sheet-group');
+      const sheetSel = document.getElementById('dc-sheet');
+      const input = document.getElementById('dc-input');
+      const output = document.getElementById('dc-output');
+      const outputLabel = document.getElementById('dc-output-label');
+      const errorBox = document.getElementById('dc-error');
+      const infoBox = document.getElementById('dc-info');
+      const thead = document.getElementById('dc-thead');
+      const tbody = document.getElementById('dc-tbody');
+      const countEl = document.getElementById('dc-count');
+
+      // მიმდინარე ცხრილი: headers + rows (მასივების მასივი)
+      let table = { headers: [], rows: [] };
+      let xlsxSheets = null;
+
+      function delim() { return delimSel.value === 'tab' ? '\t' : delimSel.value; }
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('hidden');
+      }
+
+      function autoValue(v) {
+        if (typeof v !== 'string') return v;
+        const t = v.trim();
+        if (/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(t)) return Number(t);
+        return v;
+      }
+
+      function tableFromRows(rows) {
+        if (!rows.length) return { headers: [], rows: [] };
+        const width = rows.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
+        const norm = rows.map(function (r) {
+          const copy = r.slice();
+          while (copy.length < width) copy.push('');
+          return copy;
+        });
+        if (headersCheck.checked) {
+          const seen = {};
+          const headers = norm[0].map(function (h, i) {
+            let name = String(h).trim() || ('სვეტი_' + (i + 1));
+            if (seen[name]) { seen[name]++; name = name + '_' + seen[name]; } else { seen[name] = 1; }
+            return name;
+          });
+          return { headers: headers, rows: norm.slice(1) };
+        }
+        return { headers: norm[0].map(function (_, i) { return 'სვეტი_' + (i + 1); }), rows: norm };
+      }
+
+      function tableToJson() {
+        return table.rows.map(function (r) {
+          const obj = {};
+          table.headers.forEach(function (h, i) { obj[h] = autoValue(r[i] === undefined ? '' : r[i]); });
+          return obj;
+        });
+      }
+
+      function tableToCsv() {
+        const d = delim();
+        function esc(v) {
+          const s = v === null || v === undefined ? '' : String(v);
+          return (s.includes('"') || s.includes(d) || s.includes('\n') || s.includes('\r')) ? '"' + s.replace(/"/g, '""') + '"' : s;
+        }
+        return [table.headers].concat(table.rows).map(function (r) { return r.map(esc).join(d); }).join('\r\n');
+      }
+
+      function renderPreview() {
+        const limit = 200;
+        thead.innerHTML = '<tr>' + table.headers.map(function (h) { return '<th>' + escapeHtml(h) + '</th>'; }).join('') + '</tr>';
+        tbody.innerHTML = table.rows.slice(0, limit).map(function (r) {
+          return '<tr>' + table.headers.map(function (_, i) { return '<td>' + escapeHtml(r[i] === undefined ? '' : r[i]) + '</td>'; }).join('') + '</tr>';
+        }).join('');
+        countEl.textContent = table.rows.length + ' სტრიქონი' + (table.rows.length > limit ? ' (ნაჩვენებია ' + limit + ')' : '');
+      }
+
+      function convert() {
+        errorBox.classList.add('hidden');
+        try {
+          if (xlsxSheets) {
+            const sheet = xlsxSheets[Number(sheetSel.value) || 0];
+            table = tableFromRows(sheet.rows);
+          } else if (sourceSel.value === 'csv') {
+            table = input.value.trim() === '' ? { headers: [], rows: [] } : tableFromRows(parseCSV(input.value, delim()));
+          } else {
+            if (input.value.trim() === '') {
+              table = { headers: [], rows: [] };
+            } else {
+              const res = jsonToCsv(input.value, delim());
+              table = { headers: res.headers, rows: res.rows.map(function (r) { return r.map(function (v) { return v === null || v === undefined ? '' : (typeof v === 'object' ? JSON.stringify(v) : String(v)); }); }) };
+            }
+          }
+          if (sourceSel.value === 'json' && !xlsxSheets) {
+            outputLabel.textContent = 'CSV';
+            output.value = table.headers.length ? tableToCsv() : '';
+          } else {
+            outputLabel.textContent = 'JSON';
+            output.value = table.headers.length ? JSON.stringify(tableToJson(), null, 2) : '';
+          }
+          renderPreview();
+        } catch (err) {
+          output.value = '';
+          table = { headers: [], rows: [] };
+          renderPreview();
+          showError(err.message);
+        }
+      }
+
+      /* ---------- მინიმალური XLSX წამკითხველი (ZIP + XML) ---------- */
+      async function inflateRaw(u8) {
+        if (typeof DecompressionStream === 'undefined') {
+          throw new Error('თქვენი ბრაუზერი ვერ ხსნის XLSX ფაილს. განაახლეთ ბრაუზერი ან შეინახეთ ფაილი CSV ფორმატში.');
+        }
+        const stream = new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+        return new Uint8Array(await new Response(stream).arrayBuffer());
+      }
+
+      async function readZipEntries(buf) {
+        const u8 = new Uint8Array(buf);
+        const dv = new DataView(buf);
+        let eocd = -1;
+        for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65558); i--) {
+          if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+        }
+        if (eocd < 0) throw new Error('ფაილი არ არის სწორი XLSX (ZIP) ფორმატის.');
+        const count = dv.getUint16(eocd + 10, true);
+        let ptr = dv.getUint32(eocd + 16, true);
+        const dec = new TextDecoder();
+        const entries = {};
+        for (let n = 0; n < count; n++) {
+          if (dv.getUint32(ptr, true) !== 0x02014b50) throw new Error('XLSX ფაილის სტრუქტურა დაზიანებულია.');
+          const method = dv.getUint16(ptr + 10, true);
+          const compSize = dv.getUint32(ptr + 20, true);
+          const nameLen = dv.getUint16(ptr + 28, true);
+          const extraLen = dv.getUint16(ptr + 30, true);
+          const commentLen = dv.getUint16(ptr + 32, true);
+          const localOff = dv.getUint32(ptr + 42, true);
+          const name = dec.decode(u8.subarray(ptr + 46, ptr + 46 + nameLen));
+          entries[name] = { method: method, compSize: compSize, localOff: localOff };
+          ptr += 46 + nameLen + extraLen + commentLen;
+        }
+        return {
+          has: function (name) { return Boolean(entries[name]); },
+          text: async function (name) {
+            const e = entries[name];
+            if (!e) return null;
+            const ln = dv.getUint16(e.localOff + 26, true);
+            const le = dv.getUint16(e.localOff + 28, true);
+            const start = e.localOff + 30 + ln + le;
+            const raw = u8.subarray(start, start + e.compSize);
+            const data = e.method === 0 ? raw : (e.method === 8 ? await inflateRaw(raw) : null);
+            if (!data) throw new Error('XLSX ფაილის შეკუმშვის მეთოდი არ არის მხარდაჭერილი.');
+            return dec.decode(data);
+          }
+        };
+      }
+
+      function colToIndex(ref) {
+        const letters = (ref.match(/^[A-Z]+/) || ['A'])[0];
+        let idx = 0;
+        for (let i = 0; i < letters.length; i++) idx = idx * 26 + (letters.charCodeAt(i) - 64);
+        return idx - 1;
+      }
+
+      function textOf(node) {
+        // <si> / <is>: ყველა <t> ელემენტის ტექსტი (rich text run-ების ჩათვლით), ფონეტიკური <rPh> გარეშე
+        let s = '';
+        const ts = node.getElementsByTagNameNS('*', 't');
+        for (let i = 0; i < ts.length; i++) {
+          if (ts[i].parentNode && ts[i].parentNode.localName === 'rPh') continue;
+          s += ts[i].textContent;
+        }
+        return s;
+      }
+
+      async function parseXlsx(buf) {
+        const zip = await readZipEntries(buf);
+        const parser = new DOMParser();
+        const xml = function (s) { return parser.parseFromString(s, 'application/xml'); };
+        const wbText = await zip.text('xl/workbook.xml');
+        if (!wbText) throw new Error('XLSX ფაილში workbook ვერ მოიძებნა.');
+        const wb = xml(wbText);
+        const relsText = await zip.text('xl/_rels/workbook.xml.rels');
+        const rels = {};
+        if (relsText) {
+          const relNodes = xml(relsText).getElementsByTagNameNS('*', 'Relationship');
+          for (let i = 0; i < relNodes.length; i++) rels[relNodes[i].getAttribute('Id')] = relNodes[i].getAttribute('Target');
+        }
+        const shared = [];
+        const ssText = await zip.text('xl/sharedStrings.xml');
+        if (ssText) {
+          const sis = xml(ssText).getElementsByTagNameNS('*', 'si');
+          for (let i = 0; i < sis.length; i++) shared.push(textOf(sis[i]));
+        }
+        const sheetNodes = wb.getElementsByTagNameNS('*', 'sheet');
+        const sheets = [];
+        for (let i = 0; i < sheetNodes.length; i++) {
+          const node = sheetNodes[i];
+          const rid = node.getAttribute('r:id') || node.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id');
+          let target = rels[rid] || ('worksheets/sheet' + (i + 1) + '.xml');
+          target = target.replace(/^\/?xl\//, '').replace(/^\//, '');
+          const sheetText = await zip.text('xl/' + target);
+          if (!sheetText) continue;
+          const rowNodes = xml(sheetText).getElementsByTagNameNS('*', 'row');
+          const rows = [];
+          for (let r = 0; r < rowNodes.length; r++) {
+            const rowIdx = Number(rowNodes[r].getAttribute('r')) - 1;
+            const arr = [];
+            const cells = rowNodes[r].getElementsByTagNameNS('*', 'c');
+            for (let c = 0; c < cells.length; c++) {
+              const cell = cells[c];
+              const ref = cell.getAttribute('r');
+              const colIdx = ref ? colToIndex(ref) : arr.length;
+              const type = cell.getAttribute('t');
+              const vNode = cell.getElementsByTagNameNS('*', 'v')[0];
+              const v = vNode ? vNode.textContent : '';
+              let val;
+              if (type === 's') val = shared[Number(v)] !== undefined ? shared[Number(v)] : '';
+              else if (type === 'inlineStr') { const isN = cell.getElementsByTagNameNS('*', 'is')[0]; val = isN ? textOf(isN) : ''; }
+              else if (type === 'b') val = v === '1' ? 'TRUE' : 'FALSE';
+              else val = v;
+              while (arr.length < colIdx) arr.push('');
+              arr[colIdx] = val;
+            }
+            const target2 = Number.isFinite(rowIdx) && rowIdx >= 0 ? rowIdx : rows.length;
+            while (rows.length < target2) rows.push([]);
+            rows[target2] = arr;
+          }
+          // ბოლო ცარიელი სტრიქონების მოშორება
+          while (rows.length && rows[rows.length - 1].every(function (x) { return String(x).trim() === ''; })) rows.pop();
+          sheets.push({ name: node.getAttribute('name') || ('Sheet' + (i + 1)), rows: rows });
+        }
+        if (!sheets.length) throw new Error('XLSX ფაილში ფურცლები ვერ მოიძებნა.');
+        return sheets;
+      }
+
+      fileInput.addEventListener('change', async function () {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        errorBox.classList.add('hidden');
+        infoBox.classList.add('hidden');
+        try {
+          if (/\.xlsx$/i.test(file.name)) {
+            xlsxSheets = await parseXlsx(await file.arrayBuffer());
+            sheetSel.innerHTML = xlsxSheets.map(function (s, i) {
+              return '<option value="' + i + '">' + escapeHtml(s.name) + ' (' + s.rows.length + ' სტრ.)</option>';
+            }).join('');
+            sheetGroup.classList.toggle('hidden', xlsxSheets.length < 2);
+            sourceSel.value = 'csv';
+            input.value = '';
+            input.placeholder = 'ჩატვირთულია Excel ფაილი: ' + file.name;
+            infoBox.textContent = 'Excel ფაილი ჩაიტვირთა: ' + file.name + '. შენიშვნა: თარიღები შეიძლება გამოჩნდეს Excel-ის რიცხვითი ფორმით.';
+            infoBox.classList.remove('hidden');
+          } else {
+            xlsxSheets = null;
+            sheetGroup.classList.add('hidden');
+            const text = await file.text();
+            input.value = text;
+            sourceSel.value = /\.json$/i.test(file.name) || /^\s*[\[{]/.test(text) ? 'json' : 'csv';
+            if (/\.tsv$/i.test(file.name) || (sourceSel.value === 'csv' && text.split('\n')[0].includes('\t'))) delimSel.value = 'tab';
+            else if (sourceSel.value === 'csv' && (text.split('\n')[0].match(/;/g) || []).length > (text.split('\n')[0].match(/,/g) || []).length) delimSel.value = ';';
+          }
+          convert();
+        } catch (err) {
+          xlsxSheets = null;
+          showError(err.message);
+        } finally {
+          fileInput.value = '';
+        }
+      });
+
+      input.addEventListener('input', function () {
+        if (xlsxSheets) { xlsxSheets = null; sheetGroup.classList.add('hidden'); input.placeholder = ''; infoBox.classList.add('hidden'); }
+        convert();
+      });
+      [sourceSel, delimSel, headersCheck, sheetSel].forEach(function (el) { el.addEventListener('change', convert); });
+
+      function requireData() {
+        if (!table.headers.length) { showToast('ჯერ შეიყვანეთ ან ატვირთეთ მონაცემები.'); return false; }
+        return true;
+      }
+      document.getElementById('btn-dc-copy').addEventListener('click', function () {
+        copyToClipboard(output.value, 'შედეგი დაკოპირდა!');
+      });
+      document.getElementById('btn-dc-dl-json').addEventListener('click', function () {
+        if (!requireData()) return;
+        downloadTextFile('mokled-data.json', JSON.stringify(tableToJson(), null, 2), 'application/json;charset=utf-8', false);
+      });
+      document.getElementById('btn-dc-dl-csv').addEventListener('click', function () {
+        if (!requireData()) return;
+        // UTF-8 BOM, რომ Excel-მა ქართული ტექსტი სწორად გახსნას
+        downloadTextFile('mokled-data.csv', tableToCsv(), 'text/csv;charset=utf-8', true);
+      });
+      document.getElementById('btn-dc-dl-xlsx').addEventListener('click', function () {
+        if (!requireData()) return;
+        const rows = [{ type: 'header', cells: table.headers }].concat(table.rows.map(function (r) {
+          return { type: 'data', cells: table.headers.map(function (_, i) { return autoValue(r[i] === undefined ? '' : r[i]); }) };
+        }));
+        downloadExcelXlsx('mokled-data.xlsx', 'მონაცემები', rows);
+        showToast('Excel ფაილი ჩამოიტვირთა!');
+      });
+
+      convert();
+    })();
+  </script>
+</body>
+</html>

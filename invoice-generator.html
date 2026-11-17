@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ინვოისის გენერატორი - ანგარიშ-ფაქტურა PDF-ად | Mokled - მოკლედ</title>
+  <meta name="description" content="შექმენით ინვოისი (ანგარიში) უფასოდ: გამყიდველი და მყიდველი, პოზიციები, დღგ, თანხა სიტყვიერად და PDF-ად შენახვა პირდაპირ ბრაუზერში." />
+  <link rel="canonical" href="https://mokled.pages.dev/invoice-generator.html" />
+  <meta property="og:title" content="ინვოისის გენერატორი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ინვოისის შექმნა დღგ-ით, თანხით სიტყვიერად და PDF ექსპორტით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/invoice-generator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header no-print">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ინვოისის გენერატორი</h1>
+      <p>
+        შეავსეთ გამყიდველის, მყიდველისა და პოზიციების მონაცემები - ინვოისი ავტომატურად დაითვლის დღგ-ს, ჯამს და თანხას სიტყვიერად. „PDF-ად შენახვა“ ღილაკით შეინახეთ ან ამობეჭდეთ. გამყიდველის მონაცემები ინახება მხოლოდ თქვენს ბრაუზერში.
+      </p>
+    </div>
+
+    <section class="panel no-print">
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="inv-number">ინვოისის ნომერი:</label>
+          <input type="text" id="inv-number" class="input" value="INV-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-date">თარიღი:</label>
+          <input type="date" id="inv-date" class="input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-due">გადახდის ვადა:</label>
+          <input type="date" id="inv-due" class="input" />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h2 class="panel-title">გამყიდველი</h2>
+          <div class="form-group"><label class="form-label" for="seller-name">დასახელება / სახელი:</label><input type="text" id="seller-name" class="input" placeholder="შპს „მაგალითი“" /></div>
+          <div class="form-group"><label class="form-label" for="seller-id">საიდენტიფიკაციო / პირადი ნომერი:</label><input type="text" id="seller-id" class="input" /></div>
+          <div class="form-group"><label class="form-label" for="seller-address">მისამართი:</label><input type="text" id="seller-address" class="input" /></div>
+          <div class="form-group"><label class="form-label" for="seller-bank">ბანკი და IBAN:</label><input type="text" id="seller-bank" class="input" placeholder="თიბისი ბანკი, GE00TB0000000000000000" /></div>
+        </div>
+        <div>
+          <h2 class="panel-title">მყიდველი</h2>
+          <div class="form-group"><label class="form-label" for="buyer-name">დასახელება / სახელი:</label><input type="text" id="buyer-name" class="input" /></div>
+          <div class="form-group"><label class="form-label" for="buyer-id">საიდენტიფიკაციო / პირადი ნომერი:</label><input type="text" id="buyer-id" class="input" /></div>
+          <div class="form-group"><label class="form-label" for="buyer-address">მისამართი:</label><input type="text" id="buyer-address" class="input" /></div>
+        </div>
+      </div>
+
+      <h2 class="panel-title">პოზიციები</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>დასახელება</th><th>ერთეული</th><th>რაოდენობა</th><th>ფასი</th><th>ჯამი</th><th></th></tr></thead>
+          <tbody id="inv-items"></tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-add-item" class="btn btn-secondary btn-sm">+ პოზიციის დამატება</button>
+      </div>
+
+      <div class="grid-4" style="margin-top: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="inv-currency">ვალუტა:</label>
+          <select id="inv-currency" class="input">
+            <option value="GEL" selected>₾ ლარი</option>
+            <option value="USD">$ აშშ დოლარი</option>
+            <option value="EUR">€ ევრო</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-vat-rate">დღგ-ის განაკვეთი (%):</label>
+          <input type="number" id="inv-vat-rate" class="input" value="18" min="0" max="100" step="0.1" />
+        </div>
+        <label class="checkbox-label"><input type="checkbox" id="inv-vat" checked /> <span>დღგ-ის გადამხდელი</span></label>
+        <label class="checkbox-label"><input type="checkbox" id="inv-incl" /> <span>ფასები შეიცავს დღგ-ს</span></label>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inv-note">შენიშვნა (არასავალდებულო):</label>
+        <textarea id="inv-note" style="min-height: 60px;" placeholder="მაგ.: გადახდის დანიშნულებაში მიუთითეთ ინვოისის ნომერი."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-inv-print" class="btn btn-primary">📄 PDF-ად შენახვა / ამობეჭდვა</button>
+        <button type="button" id="btn-inv-next" class="btn btn-secondary">შემდეგი ნომერი</button>
+        <button type="button" id="btn-inv-clear" class="btn btn-danger">გასუფთავება</button>
+      </div>
+      <p class="no-print" style="color: var(--text-muted); font-size: 0.85rem;">PDF-ისთვის ბეჭდვის ფანჯარაში აირჩიეთ „Save as PDF“ / „PDF-ად შენახვა“.</p>
+    </section>
+
+    <section class="panel invoice-sheet" id="invoice-sheet" aria-label="ინვოისის წინასწარი ნახვა"></section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateInvoiceTotals, amountToGeorgianWords, formatMoney } = window.GeoCore;
+      const { initLayout, escapeHtml, showToast } = window.GeoCommon;
+
+      initLayout('invoice-generator');
+
+      const STORE_KEY = 'mokled_invoice_draft_v1';
+      const SYMBOLS = { GEL: '₾', USD: '$', EUR: '€' };
+      const fieldIds = ['inv-number', 'inv-date', 'inv-due', 'seller-name', 'seller-id', 'seller-address', 'seller-bank',
+        'buyer-name', 'buyer-id', 'buyer-address', 'inv-currency', 'inv-vat-rate', 'inv-note'];
+      const fields = {};
+      fieldIds.forEach(function (id) { fields[id] = document.getElementById(id); });
+      const vatCheck = document.getElementById('inv-vat');
+      const inclCheck = document.getElementById('inv-incl');
+      const itemsBody = document.getElementById('inv-items');
+      const sheet = document.getElementById('invoice-sheet');
+
+      let items = [{ name: 'მომსახურება', unit: 'ცალი', qty: 1, price: 100 }];
+
+      function iso(d) {
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+
+      function loadDraft() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+          if (!raw) return false;
+          fieldIds.forEach(function (id) { if (raw.fields && raw.fields[id] !== undefined) fields[id].value = raw.fields[id]; });
+          vatCheck.checked = raw.vat !== false;
+          inclCheck.checked = Boolean(raw.incl);
+          if (Array.isArray(raw.items) && raw.items.length) items = raw.items;
+          return true;
+        } catch (_) { return false; }
+      }
+
+      function saveDraft() {
+        const data = { fields: {}, vat: vatCheck.checked, incl: inclCheck.checked, items: items };
+        fieldIds.forEach(function (id) { data.fields[id] = fields[id].value; });
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (_) {}
+      }
+
+      function renderItemsEditor() {
+        itemsBody.innerHTML = items.map(function (it, idx) {
+          return '<tr data-idx="' + idx + '">' +
+            '<td><input type="text" class="input" data-k="name" value="' + escapeHtml(it.name) + '" /></td>' +
+            '<td><input type="text" class="input" data-k="unit" value="' + escapeHtml(it.unit) + '" style="min-width:70px" /></td>' +
+            '<td><input type="number" class="input" data-k="qty" value="' + escapeHtml(it.qty) + '" min="0" step="any" style="min-width:80px" /></td>' +
+            '<td><input type="number" class="input" data-k="price" value="' + escapeHtml(it.price) + '" min="0" step="0.01" style="min-width:90px" /></td>' +
+            '<td class="inv-line-total">-</td>' +
+            '<td><button type="button" class="btn btn-danger btn-sm" data-rm="' + idx + '" aria-label="წაშლა">✕</button></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function row(label, value) {
+        return value ? '<div><span class="inv-muted">' + label + ':</span> ' + escapeHtml(value) + '</div>' : '';
+      }
+
+      function renderSheet() {
+        const cur = fields['inv-currency'].value;
+        const sym = SYMBOLS[cur] || '₾';
+        const vatRate = Number(fields['inv-vat-rate'].value) || 0;
+        const totals = calculateInvoiceTotals(items, { vatEnabled: vatCheck.checked, vatRate: vatRate, pricesIncludeVat: inclCheck.checked });
+
+        itemsBody.querySelectorAll('.inv-line-total').forEach(function (td, i) {
+          td.textContent = formatMoney(totals.rows[i] ? totals.rows[i].lineTotal : 0) + ' ' + sym;
+        });
+
+        let words = '';
+        try { words = amountToGeorgianWords(totals.gross, { currency: cur }).wordsText; } catch (_) { words = ''; }
+
+        const rowsHtml = totals.rows.map(function (r, i) {
+          return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.unit) + '</td><td>' + r.qty +
+            '</td><td>' + formatMoney(r.price) + '</td><td>' + formatMoney(r.lineTotal) + '</td></tr>';
+        }).join('');
+
+        sheet.innerHTML =
+          '<div class="inv-head">' +
+            '<div><h2 class="inv-title">ინვოისი № ' + escapeHtml(fields['inv-number'].value || '-') + '</h2>' +
+              row('თარიღი', fields['inv-date'].value) + row('გადახდის ვადა', fields['inv-due'].value) + '</div>' +
+          '</div>' +
+          '<div class="inv-parties">' +
+            '<div><strong>გამყიდველი</strong>' + row('დასახელება', fields['seller-name'].value) + row('ს/კ', fields['seller-id'].value) +
+              row('მისამართი', fields['seller-address'].value) + row('ბანკი / IBAN', fields['seller-bank'].value) + '</div>' +
+            '<div><strong>მყიდველი</strong>' + row('დასახელება', fields['buyer-name'].value) + row('ს/კ', fields['buyer-id'].value) +
+              row('მისამართი', fields['buyer-address'].value) + '</div>' +
+          '</div>' +
+          '<table class="inv-table"><thead><tr><th>#</th><th>დასახელება</th><th>ერთ.</th><th>რაოდ.</th><th>ფასი (' + sym + ')</th><th>ჯამი (' + sym + ')</th></tr></thead>' +
+            '<tbody>' + rowsHtml + '</tbody></table>' +
+          '<div class="inv-totals">' +
+            (vatCheck.checked
+              ? '<div><span>ჯამი დღგ-ის გარეშე:</span><strong>' + formatMoney(totals.net) + ' ' + sym + '</strong></div>' +
+                '<div><span>დღგ (' + vatRate + '%):</span><strong>' + formatMoney(totals.vat) + ' ' + sym + '</strong></div>'
+              : '<div><span>დღგ:</span><strong>არ იბეგრება</strong></div>') +
+            '<div class="inv-grand"><span>სულ გადასახდელი:</span><strong>' + formatMoney(totals.gross) + ' ' + sym + '</strong></div>' +
+          '</div>' +
+          (words ? '<p class="inv-words"><strong>სიტყვიერად:</strong> ' + escapeHtml(words) + '</p>' : '') +
+          (fields['inv-note'].value.trim() ? '<p class="inv-note">' + escapeHtml(fields['inv-note'].value) + '</p>' : '') +
+          '<div class="inv-sign"><div>გამყიდველი: ____________________</div><div>მყიდველი: ____________________</div></div>';
+        saveDraft();
+      }
+
+      itemsBody.addEventListener('input', function (e) {
+        const tr = e.target.closest('tr');
+        const k = e.target.getAttribute('data-k');
+        if (!tr || !k) return;
+        items[Number(tr.getAttribute('data-idx'))][k] = e.target.value;
+        renderSheet();
+      });
+      itemsBody.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-rm]');
+        if (!btn) return;
+        items.splice(Number(btn.getAttribute('data-rm')), 1);
+        if (items.length === 0) items.push({ name: '', unit: 'ცალი', qty: 1, price: 0 });
+        renderItemsEditor();
+        renderSheet();
+      });
+      document.getElementById('btn-add-item').addEventListener('click', function () {
+        items.push({ name: '', unit: 'ცალი', qty: 1, price: 0 });
+        renderItemsEditor();
+        renderSheet();
+      });
+
+      fieldIds.forEach(function (id) {
+        fields[id].addEventListener('input', renderSheet);
+        fields[id].addEventListener('change', renderSheet);
+      });
+      vatCheck.addEventListener('change', renderSheet);
+      inclCheck.addEventListener('change', renderSheet);
+
+      document.getElementById('btn-inv-print').addEventListener('click', function () { window.print(); });
+      document.getElementById('btn-inv-next').addEventListener('click', function () {
+        const v = fields['inv-number'].value;
+        const m = v.match(/^(.*?)(\d+)$/);
+        fields['inv-number'].value = m ? m[1] + String(Number(m[2]) + 1).padStart(m[2].length, '0') : v + '-2';
+        fields['inv-date'].value = iso(new Date());
+        ['buyer-name', 'buyer-id', 'buyer-address'].forEach(function (id) { fields[id].value = ''; });
+        renderSheet();
+        showToast('შეიქმნა ახალი ინვოისი (გამყიდველის მონაცემები შენარჩუნდა).');
+      });
+      document.getElementById('btn-inv-clear').addEventListener('click', function () {
+        try { localStorage.removeItem(STORE_KEY); } catch (_) {}
+        fieldIds.forEach(function (id) { if (fields[id].tagName !== 'SELECT') fields[id].value = ''; });
+        fields['inv-number'].value = 'INV-001';
+        fields['inv-vat-rate'].value = '18';
+        fields['inv-date'].value = iso(new Date());
+        items = [{ name: '', unit: 'ცალი', qty: 1, price: 0 }];
+        renderItemsEditor();
+        renderSheet();
+      });
+
+      if (!loadDraft()) {
+        const now = new Date();
+        fields['inv-date'].value = iso(now);
+        fields['inv-due'].value = iso(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 10));
+      }
+      renderItemsEditor();
+      renderSheet();
+    })();
+  </script>
+</body>
+</html>

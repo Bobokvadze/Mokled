@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>მცირე ბიზნესის (1%) და ინდ. მეწარმის გადასახადის კალკულატორი | Mokled - მოკლედ</title>
+  <meta name="description" content="გამოთვალეთ ინდივიდუალური მეწარმის საშემოსავლო გადასახადი: მცირე ბიზნესის სტატუსი (1% / 3%), მიკრო ბიზნესი და ჩვეულებრივი რეჟიმი (20% მოგებიდან)." />
+  <link rel="canonical" href="https://mokled.pages.dev/business-tax-calculator.html" />
+  <meta property="og:title" content="მცირე ბიზნესის (1%) გადასახადის კალკულატორი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ინდ. მეწარმის გადასახადი მცირე/მიკრო ბიზნესის სტატუსით ან ჩვეულებრივ რეჟიმში." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/business-tax-calculator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>მცირე ბიზნესის / ინდ. მეწარმის გადასახადი</h1>
+      <p>
+        გამოთვალეთ ინდივიდუალური მეწარმის საშემოსავლო გადასახადი: მცირე ბიზნესის სტატუსით (1%, ზღვრის ზემოთ 3%), მიკრო ბიზნესის სტატუსით ან ჩვეულებრივ რეჟიმში (20% შემოსავალს გამოკლებული ხარჯიდან).
+      </p>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>სამართლებრივი შენიშვნა:</strong> განაკვეთები და ზღვრები (500,000 ₾ მცირე ბიზნესისთვის, 30,000 ₾ მიკრო ბიზნესისთვის) მითითებულია ზოგადი წესით და შესაძლოა შეიცვალოს. სტატუსის მინიჭების პირობები (საქმიანობის სახეები, დაქირავებულები) გადაამოწმეთ rs.ge-ზე. დღგ-ის ვალდებულება ცალკე განიხილება.
+    </div>
+
+    <section class="panel">
+      <div id="bt-error" class="alert alert-error hidden" role="alert"></div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="bt-mode">დაბეგვრის რეჟიმი:</label>
+          <select id="bt-mode" class="input">
+            <option value="small" selected>მცირე ბიზნესის სტატუსი (1%)</option>
+            <option value="micro">მიკრო ბიზნესის სტატუსი (0%)</option>
+            <option value="standard">ჩვეულებრივი ინდ. მეწარმე (20% მოგებიდან)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bt-income">შემოსავალი (₾):</label>
+          <input type="text" id="bt-income" class="input" data-mask="money" value="5,000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bt-period">პერიოდი:</label>
+          <select id="bt-period" class="input">
+            <option value="month" selected>თვე (ყოველთვიური დეკლარაცია)</option>
+            <option value="year">კალენდარული წელი</option>
+          </select>
+        </div>
+        <div class="form-group hidden" id="bt-expenses-group">
+          <label class="form-label" for="bt-expenses">დოკუმენტურად დადასტურებული ხარჯი (₾):</label>
+          <input type="text" id="bt-expenses" class="input" data-mask="money" value="0" />
+        </div>
+        <div class="form-group" id="bt-ytd-group">
+          <label class="form-label" for="bt-ytd">წლის დასაწყისიდან უკვე მიღებული შემოსავალი (₾):</label>
+          <input type="text" id="bt-ytd" class="input" data-mask="money" value="0" />
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">გადასახდელი გადასახადი</span>
+          <span class="stat-value" id="bt-tax">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დარჩენილი შემოსავალი</span>
+          <span class="stat-value" id="bt-net">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">ეფექტური განაკვეთი</span>
+          <span class="stat-value" id="bt-eff">-</span>
+        </div>
+      </div>
+      <div class="alert alert-info" style="margin-top: 1rem;" id="bt-formula">-</div>
+      <div class="alert alert-warning hidden" id="bt-warnings"></div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-bt-copy" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateBusinessTax, formatMoney } = window.GeoCore;
+      const { initLayout, copyToClipboard, parseMaskedNumber, escapeHtml } = window.GeoCommon;
+
+      initLayout('business-tax-calculator');
+
+      const modeSel = document.getElementById('bt-mode');
+      const incomeInput = document.getElementById('bt-income');
+      const periodSel = document.getElementById('bt-period');
+      const expensesInput = document.getElementById('bt-expenses');
+      const expensesGroup = document.getElementById('bt-expenses-group');
+      const ytdInput = document.getElementById('bt-ytd');
+      const ytdGroup = document.getElementById('bt-ytd-group');
+      const errorBox = document.getElementById('bt-error');
+      const formulaBox = document.getElementById('bt-formula');
+      const warnBox = document.getElementById('bt-warnings');
+      const outTax = document.getElementById('bt-tax');
+      const outNet = document.getElementById('bt-net');
+      const outEff = document.getElementById('bt-eff');
+      let lastText = '';
+
+      function syncUi() {
+        expensesGroup.classList.toggle('hidden', modeSel.value !== 'standard');
+        // წლის დასაწყისიდან შემოსავალი მნიშვნელოვანია ზღვრის (500,000 / 30,000) შესამოწმებლად თვიურ რეჟიმში
+        ytdGroup.classList.toggle('hidden', modeSel.value === 'standard' || periodSel.value === 'year');
+      }
+
+      function run() {
+        syncUi();
+        errorBox.classList.add('hidden');
+        try {
+          const income = parseMaskedNumber(incomeInput.value);
+          const ytd = (modeSel.value !== 'standard' && periodSel.value === 'month') ? parseMaskedNumber(ytdInput.value) : 0;
+          const opts = { mode: modeSel.value, expenses: parseMaskedNumber(expensesInput.value) };
+          if (ytd > 0 && modeSel.value === 'small') {
+            // თვიური გადასახადი = (წლიური ჯამის გადასახადი ამ თვის ჩათვლით) - (უკვე დარიცხული)
+            const before = calculateBusinessTax(ytd, opts);
+            const after = calculateBusinessTax(ytd + income, opts);
+            const tax = Math.round((after.tax - before.tax) * 100) / 100;
+            render({
+              tax: tax,
+              netIncome: income - tax,
+              effectiveRate: income > 0 ? Math.round(tax / income * 10000) / 100 : 0,
+              formula: 'წლიური შემოსავალი ' + formatMoney(ytd + income) + ' ₾ → გადასახადი ' + formatMoney(after.tax) + ' ₾, აქედან ამ თვეზე: ' + formatMoney(after.tax) + ' - ' + formatMoney(before.tax) + ' = ' + formatMoney(tax) + ' ₾',
+              warnings: after.warnings
+            }, income);
+          } else if (ytd > 0 && modeSel.value === 'micro') {
+            // ზღვარს ვამოწმებთ წლის ჯამურ შემოსავალზე, გადასახადი კი 0-ია
+            const yearRes = calculateBusinessTax(ytd + income, opts);
+            render(Object.assign({}, yearRes, { netIncome: income, effectiveRate: 0 }), income);
+          } else {
+            render(calculateBusinessTax(income, opts), income);
+          }
+        } catch (err) {
+          outTax.textContent = '-';
+          outNet.textContent = '-';
+          outEff.textContent = '-';
+          formulaBox.textContent = '-';
+          warnBox.classList.add('hidden');
+          lastText = '';
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      function render(res, income) {
+        outTax.textContent = formatMoney(res.tax) + ' ₾';
+        outNet.textContent = formatMoney(res.netIncome) + ' ₾';
+        outEff.textContent = res.effectiveRate + '%';
+        formulaBox.textContent = res.formula;
+        if (res.warnings && res.warnings.length) {
+          warnBox.innerHTML = res.warnings.map(function (w) { return '<div>• ' + escapeHtml(w) + '</div>'; }).join('');
+          warnBox.classList.remove('hidden');
+        } else {
+          warnBox.classList.add('hidden');
+        }
+        lastText = 'რეჟიმი: ' + modeSel.options[modeSel.selectedIndex].text + '\nშემოსავალი: ' + formatMoney(income) + ' ₾\nგადასახადი: ' +
+          formatMoney(res.tax) + ' ₾\nეფექტური განაკვეთი: ' + res.effectiveRate + '%';
+      }
+
+      [modeSel, incomeInput, periodSel, expensesInput, ytdInput].forEach(function (el) {
+        el.addEventListener('input', run);
+        el.addEventListener('change', run);
+      });
+      document.getElementById('btn-bt-copy').addEventListener('click', function () {
+        copyToClipboard(lastText, 'გაანგარიშება დაკოპირდა!');
+      });
+      run();
+    })();
+  </script>
+</body>
+</html>

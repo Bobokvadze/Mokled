@@ -1529,3 +1529,39 @@ button, a, input, select, textarea, label, .btn, .zip-pill, .pill-btn, .tab-btn,
     height: 34px !important;
   }
 }
+
+/* ===== ინვოისის გენერატორი ===== */
+.invoice-sheet { background: #ffffff; color: #0f172a; }
+.invoice-sheet .inv-title { margin: 0 0 0.4rem; font-size: 1.45rem; }
+.invoice-sheet .inv-muted { color: #64748b; }
+.invoice-sheet .inv-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.1rem 0; }
+.invoice-sheet .inv-parties > div { border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.75rem 0.9rem; line-height: 1.6; }
+.invoice-sheet .inv-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+.invoice-sheet .inv-table th, .invoice-sheet .inv-table td { border: 1px solid #cbd5e1; padding: 0.4rem 0.55rem; text-align: left; color: #0f172a; background: #ffffff; position: static; }
+.invoice-sheet .inv-table th { background: #f1f5f9; }
+.invoice-sheet .inv-totals { margin: 0.9rem 0 0 auto; max-width: 340px; display: grid; gap: 0.3rem; }
+.invoice-sheet .inv-totals > div { display: flex; justify-content: space-between; gap: 1rem; }
+.invoice-sheet .inv-grand { border-top: 2px solid #0f172a; padding-top: 0.35rem; font-size: 1.08rem; }
+.invoice-sheet .inv-words, .invoice-sheet .inv-note { margin-top: 0.9rem; }
+.invoice-sheet .inv-sign { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.2rem; flex-wrap: wrap; }
+@media (max-width: 640px) { .invoice-sheet .inv-parties { grid-template-columns: 1fr; } }
+
+/* ===== PDF გვერდების გადალაგება ===== */
+.pdf-thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem; margin-top: 1rem; }
+.pdf-thumb { position: relative; border: 2px solid var(--border); border-radius: 10px; padding: 0.4rem; background: var(--bg-subtle, #f8fafc); cursor: grab; text-align: center; user-select: none; }
+.pdf-thumb.dragging { opacity: 0.4; }
+.pdf-thumb.drop-target { border-color: var(--primary); }
+.pdf-thumb canvas { width: 100%; height: auto; display: block; background: #fff; border-radius: 4px; }
+.pdf-thumb .pdf-thumb-label { font-size: 0.8rem; margin-top: 0.3rem; color: var(--text-muted); }
+.pdf-thumb .pdf-thumb-actions { display: flex; justify-content: center; gap: 0.25rem; margin-top: 0.3rem; }
+.pdf-thumb .pdf-thumb-actions button { padding: 0.15rem 0.45rem; font-size: 0.8rem; }
+
+/* ===== პაროლის გენერატორი ===== */
+.password-output { font-family: monospace; font-size: 1.25rem; word-break: break-all; letter-spacing: 0.03em; }
+.strength-bar { height: 8px; border-radius: 6px; background: var(--border); overflow: hidden; margin-top: 0.5rem; }
+.strength-bar > span { display: block; height: 100%; width: 0; transition: width 0.2s, background 0.2s; }
+
+@media print {
+  .no-print { display: none !important; }
+  .invoice-sheet { border: none !important; padding: 0 !important; }
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v49';
+const CACHE_NAME = 'mokled-cache-v50';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -15,12 +15,20 @@ const CORE_ASSETS = [
   '/text-tools.html',
   '/date-calculator.html',
   '/image-tools.html',
+  '/currency-converter.html',
+  '/deposit-calculator.html',
+  '/business-tax-calculator.html',
+  '/tax-penalty-calculator.html',
+  '/invoice-generator.html',
+  '/data-converter.html',
+  '/password-generator.html',
   '/404.html',
   '/css/styles.css',
   '/js/core.js',
   '/js/common.js',
   '/js/djvu.min.js',
   '/js/postal-data.js',
+  '/js/vendor/pdf-lib.min.js',
   '/manifest.json'
 ];
 

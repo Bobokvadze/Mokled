@@ -5,7 +5,7 @@
     { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'Ⴀა', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
     { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: '🏠', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
     { id: 'pdf-tools',
-     title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, გვერდების ამოღება/დაყოფა, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
+     title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: '📄', description: 'PDF ფაილების გაერთიანება, შეკუმშვა, გვერდების ამოღება/გადალაგება, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
     { id: 'djvu-to-pdf', title: 'DjVu → PDF კონვერტერი', shortTitle: 'DjVu → PDF', url: 'djvu-to-pdf.html', category: 'მედია', icon: '📕', description: 'DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.' },
     { id: 'number-to-words', title: 'თანხის და რიცხვის სიტყვიერად ჩაწერა', shortTitle: 'თანხა სიტყვიერად', url: 'number-to-words.html', category: 'ფინანსები', icon: '№', description: 'თანხისა და რიცხვების უშეცდომო სიტყვიერი ჩაწერა ქართულად (ლარი და თეთრი, დოლარი, ევრო) ხელშეკრულებებისა და ინვოისებისთვის.' },
     { id: 'salary-calculator', title: 'ხელფასის კალკულატორი (Net ⇄ Gross)', shortTitle: 'ხელფასი', url: 'salary-calculator.html', category: 'ფინანსები', icon: '💼', description: 'დარიცხული (Gross) და ხელზე ასაღები (Net) ხელფასის ზუსტი კალკულატორი საშემოსავლო გადასახადისა (20% / 5%) და საპენსიო შენატანის (2%) დათვლით.' },
@@ -14,15 +14,22 @@
     { id: 'qr-generator', title: 'QR კოდის გენერატორი', shortTitle: 'QR კოდი', url: 'qr-generator.html', category: 'მედია', icon: '▣', description: 'უფასო, უვადო QR კოდის შექმნა ბმულისთვის, ქართული ტექსტისთვის ან Wi-Fi-სთვის პირდაპირ ბრაუზერში - PNG და SVG ჩამოტვირთვით.' },
     { id: 'postal-codes', title: 'საქართველოს საფოსტო ინდექსები', shortTitle: 'საფოსტო კოდები', url: 'postal-codes.html', category: 'მონაცემები', icon: '📮', description: 'თბილისის ყველა ქუჩის, ჩიხისა და საქართველოს ქალაქების/სოფლების საფოსტო კოდების (7,000+ მისამართი) სწრაფი საძიებო.' },
     { id: 'text-tools', title: 'ტექსტის დამმუშავებელი', shortTitle: 'ტექსტის ანალიზი', url: 'text-tools.html', category: 'ტექსტი', icon: 'T', description: 'სიტყვებისა და სიმბოლოების დათვლა, ზედმეტი გამოტოვებებისა და ცარიელი ხაზების მოცილება, მხედრული/მთავრული რეგისტრის შეცვლა.' },
-    { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: '📅', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების გათვალისწინებით.' },
+    { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: '📅', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების (აღდგომის ჩათვლით) გათვალისწინებით.' },
+    { id: 'currency-converter', title: 'ვალუტის კონვერტერი (სებ-ის კურსით)', shortTitle: 'ვალუტის კონვერტერი', url: 'currency-converter.html', category: 'ფინანსები', icon: '💱', description: 'ვალუტების გადაყვანა საქართველოს ეროვნული ბანკის ოფიციალური კურსით, ნებისმიერი თარიღისთვის და ყველა ვალუტის კურსის ცხრილით.' },
+    { id: 'deposit-calculator', title: 'ანაბრის (დეპოზიტის) კალკულატორი', shortTitle: 'ანაბარი', url: 'deposit-calculator.html', category: 'ფინანსები', icon: '💰', description: 'ანაბრის შემოსავლის გამოთვლა რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებითა და პროცენტზე გადასახადის გათვალისწინებით.' },
+    { id: 'business-tax-calculator', title: 'მცირე ბიზნესის (1%) / ინდ. მეწარმის გადასახადი', shortTitle: 'მცირე ბიზნესი 1%', url: 'business-tax-calculator.html', category: 'ფინანსები', icon: '📊', description: 'ინდ. მეწარმის საშემოსავლო გადასახადი მცირე ბიზნესის (1% / 3%), მიკრო ბიზნესის ან ჩვეულებრივი (20%) რეჟიმით.' },
+    { id: 'tax-penalty-calculator', title: 'საურავის კალკულატორი', shortTitle: 'საურავი', url: 'tax-penalty-calculator.html', category: 'ფინანსები', icon: '⏰', description: 'ვადაგადაცილებულ გადასახადზე დარიცხული საურავის გამოთვლა გადახდის ვადისა და ფაქტობრივი გადახდის თარიღის მიხედვით.' },
+    { id: 'invoice-generator', title: 'ინვოისის გენერატორი', shortTitle: 'ინვოისი', url: 'invoice-generator.html', category: 'ფინანსები', icon: '🧾', description: 'ინვოისის შექმნა გამყიდველისა და მყიდველის მონაცემებით, პოზიციებით, დღგ-ით, თანხით სიტყვიერად და PDF-ად შენახვით.' },
+    { id: 'data-converter', title: 'CSV / Excel ⇄ JSON კონვერტერი', shortTitle: 'CSV / Excel ⇄ JSON', url: 'data-converter.html', category: 'მონაცემები', icon: '⇄', description: 'CSV და Excel (XLSX) ცხრილების გადაყვანა JSON-ად და პირიქით, ცხრილის წინასწარი ნახვით, პირდაპირ ბრაუზერში.' },
+    { id: 'password-generator', title: 'პაროლის გენერატორი', shortTitle: 'პაროლი', url: 'password-generator.html', category: 'მონაცემები', icon: '🔐', description: 'ძლიერი, შემთხვევითი პაროლის შექმნა კრიპტოგრაფიულად უსაფრთხო გენერატორით და სიძლიერის შეფასებით.' },
     { id: 'image-tools', title: 'სურათის ხელსაწყო', shortTitle: 'სურათის შეკუმშვა', url: 'image-tools.html', category: 'მედია', icon: '🖼️', description: 'სურათის შეკუმშვა, ზომების შეცვლა და ფორმატის გადაყვანა (JPEG, WebP, PNG) პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' }
   ];
 
   const NAV_GROUPS = [
-    { label: 'ფინანსები', ids: ['loan-calculator', 'salary-calculator', 'number-to-words', 'iban-validator', 'vat-calculator'] },
+    { label: 'ფინანსები', ids: ['loan-calculator', 'deposit-calculator', 'currency-converter', 'salary-calculator', 'vat-calculator', 'business-tax-calculator', 'tax-penalty-calculator', 'invoice-generator', 'number-to-words', 'iban-validator'] },
     { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
     { label: 'PDF და მედია', ids: ['pdf-tools', 'djvu-to-pdf', 'image-tools', 'qr-generator'] },
-    { label: 'მონაცემები და დრო', ids: ['postal-codes', 'date-calculator'] }
+    { label: 'მონაცემები და სხვა', ids: ['postal-codes', 'date-calculator', 'data-converter', 'password-generator'] }
   ];
 
   const USAGE_STORAGE_KEY = 'geotools_usage_counts_v1';

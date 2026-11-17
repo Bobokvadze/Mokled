@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ანაბრის (დეპოზიტის) კალკულატორი - რთული პროცენტით | Mokled - მოკლედ</title>
+  <meta name="description" content="გამოთვალეთ ანაბრის შემოსავალი რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებითა და პროცენტზე საშემოსავლო გადასახადის გათვალისწინებით." />
+  <link rel="canonical" href="https://mokled.pages.dev/deposit-calculator.html" />
+  <meta property="og:title" content="ანაბრის (დეპოზიტის) კალკულატორი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ანაბრის შემოსავლის გამოთვლა კაპიტალიზაციით, შევსებითა და გადასახადით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/deposit-calculator.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ანაბრის (დეპოზიტის) კალკულატორი</h1>
+      <p>
+        გამოთვალეთ, რამდენს გამოიმუშავებს ანაბარი რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებით და პროცენტიდან დაკავებული საშემოსავლო გადასახადის გათვალისწინებით.
+      </p>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>შენიშვნა:</strong> ფიზიკური პირის საპროცენტო შემოსავალი საქართველოში, როგორც წესი, წყაროსთან იბეგრება (ნაგულისხმევად მითითებულია 5%). ზუსტი პირობები და განაკვეთი გადაამოწმეთ ბანკთან და მოქმედ საგადასახადო კოდექსთან.
+    </div>
+
+    <section class="panel">
+      <div id="dep-error" class="alert alert-error hidden" role="alert"></div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="dep-amount">საწყისი თანხა:</label>
+          <input type="text" id="dep-amount" class="input" data-mask="money" value="10,000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dep-rate">წლიური საპროცენტო განაკვეთი (%):</label>
+          <input type="number" id="dep-rate" class="input" value="10" min="0" max="100" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dep-months">ვადა (თვე):</label>
+          <input type="number" id="dep-months" class="input" value="12" min="1" max="600" step="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dep-cap">პროცენტის კაპიტალიზაცია:</label>
+          <select id="dep-cap" class="input">
+            <option value="monthly" selected>ყოველთვიური (რთული პროცენტი)</option>
+            <option value="quarterly">კვარტალური</option>
+            <option value="yearly">წლიური</option>
+            <option value="end">ვადის ბოლოს (მარტივი პროცენტი)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dep-contrib">ყოველთვიური შევსება:</label>
+          <input type="text" id="dep-contrib" class="input" data-mask="money" value="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dep-tax">პროცენტზე გადასახადი (%):</label>
+          <input type="number" id="dep-tax" class="input" value="5" min="0" max="99" step="0.1" />
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">საბოლოო თანხა</span>
+          <span class="stat-value" id="dep-final">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">წმინდა მოგება (გადასახადის შემდეგ)</span>
+          <span class="stat-value" id="dep-net">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">დარიცხული პროცენტი / გადასახადი</span>
+          <span class="stat-value" id="dep-gross">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">შეტანილი თანხა სულ</span>
+          <span class="stat-value" id="dep-invested">-</span>
+        </div>
+      </div>
+      <div class="alert alert-info hidden" id="dep-effective" style="margin-top: 1rem;"></div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-dep-copy" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="panel-title">თვიური გრაფიკი</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>თვე</th><th>დარიცხული %</th><th>ჩარიცხული % (წმინდა)</th><th>გადასახადი</th><th>შევსება</th><th>ნაშთი</th></tr>
+          </thead>
+          <tbody id="dep-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { calculateDeposit, formatMoney } = window.GeoCore;
+      const { initLayout, copyToClipboard, parseMaskedNumber } = window.GeoCommon;
+
+      initLayout('deposit-calculator');
+
+      const inputs = {
+        amount: document.getElementById('dep-amount'),
+        rate: document.getElementById('dep-rate'),
+        months: document.getElementById('dep-months'),
+        cap: document.getElementById('dep-cap'),
+        contrib: document.getElementById('dep-contrib'),
+        tax: document.getElementById('dep-tax')
+      };
+      const errorBox = document.getElementById('dep-error');
+      const effBox = document.getElementById('dep-effective');
+      const out = {
+        final: document.getElementById('dep-final'),
+        net: document.getElementById('dep-net'),
+        gross: document.getElementById('dep-gross'),
+        invested: document.getElementById('dep-invested')
+      };
+      const tbody = document.getElementById('dep-tbody');
+      let lastText = '';
+
+      function run() {
+        errorBox.classList.add('hidden');
+        try {
+          const res = calculateDeposit(parseMaskedNumber(inputs.amount.value), inputs.rate.value, inputs.months.value, {
+            capitalization: inputs.cap.value,
+            taxRate: inputs.tax.value === '' ? 0 : Number(inputs.tax.value),
+            monthlyContribution: parseMaskedNumber(inputs.contrib.value)
+          });
+          out.final.textContent = formatMoney(res.finalBalance);
+          out.net.textContent = '+' + formatMoney(res.netInterest);
+          out.gross.textContent = formatMoney(res.grossInterest) + ' / ' + formatMoney(res.tax);
+          out.invested.textContent = formatMoney(res.invested);
+          if (res.effectiveAnnualNetRate !== null) {
+            effBox.textContent = 'ეფექტური წლიური შემოსავლიანობა (გადასახადის შემდეგ): ' + res.effectiveAnnualNetRate.toFixed(2) + '%';
+            effBox.classList.remove('hidden');
+          } else {
+            effBox.classList.add('hidden');
+          }
+          tbody.innerHTML = res.schedule.map(function (r) {
+            return '<tr><td>' + r.month + '</td><td>' + formatMoney(r.interest) + '</td><td>' + (r.credited > 0 ? '<strong>+' + formatMoney(r.credited) + '</strong>' : '-') +
+              '</td><td>' + (r.tax > 0 ? formatMoney(r.tax) : '-') + '</td><td>' + (r.contribution > 0 ? formatMoney(r.contribution) : '-') + '</td><td>' + formatMoney(r.balance) + '</td></tr>';
+          }).join('');
+          lastText = 'საბოლოო თანხა: ' + formatMoney(res.finalBalance) + '\nწმინდა მოგება: ' + formatMoney(res.netInterest) +
+            '\nდარიცხული პროცენტი: ' + formatMoney(res.grossInterest) + '\nგადასახადი: ' + formatMoney(res.tax) + '\nშეტანილი თანხა: ' + formatMoney(res.invested);
+        } catch (err) {
+          Object.keys(out).forEach(function (k) { out[k].textContent = '-'; });
+          effBox.classList.add('hidden');
+          tbody.innerHTML = '';
+          lastText = '';
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      Object.keys(inputs).forEach(function (k) {
+        inputs[k].addEventListener('input', run);
+        inputs[k].addEventListener('change', run);
+      });
+      document.getElementById('btn-dep-copy').addEventListener('click', function () {
+        copyToClipboard(lastText, 'ანაბრის გაანგარიშება დაკოპირდა!');
+      });
+      run();
+    })();
+  </script>
+</body>
+</html>

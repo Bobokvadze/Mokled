@@ -589,13 +589,50 @@
     if (includeGeorgianHolidays) {
       const targetYears = Array.isArray(years) && years.length > 0 ? years : [new Date().getFullYear()];
       for (let y = 0; y < targetYears.length; y++) {
-        const yr = targetYears[y];
-        for (let h = 0; h < GEORGIAN_PUBLIC_HOLIDAYS_MMDD.length; h++) {
-          set.add(yr + '-' + GEORGIAN_PUBLIC_HOLIDAYS_MMDD[h].mmdd);
+        const list = getGeorgianHolidaysForYear(targetYears[y]);
+        for (let h = 0; h < list.length; h++) {
+          set.add(list[h].date);
         }
       }
     }
     return set;
+  }
+
+  // მართლმადიდებლური აღდგომა (იულიუსის კალენდრის გამოთვლა + გადაყვანა გრიგორიანულში)
+  function getOrthodoxEaster(year) {
+    const y = Number(year);
+    if (!Number.isInteger(y) || y < 1583 || y > 4099) {
+      throw new Error('აღდგომის გამოსათვლელად წელი უნდა იყოს 1583-დან 4099-მდე.');
+    }
+    const a = y % 4;
+    const b = y % 7;
+    const c = y % 19;
+    const d = (19 * c + 15) % 30;
+    const e = (2 * a + 4 * b - d + 34) % 7;
+    const month = Math.floor((d + e + 114) / 31);
+    const day = ((d + e + 114) % 31) + 1;
+    const julianToGregorianOffset = Math.floor(y / 100) - Math.floor(y / 400) - 2;
+    return new Date(Date.UTC(y, month - 1, day + julianToGregorianOffset, 12, 0, 0));
+  }
+
+  function getGeorgianHolidaysForYear(year) {
+    const y = Number(year);
+    const list = GEORGIAN_PUBLIC_HOLIDAYS_MMDD.map(function (h) {
+      return { date: y + '-' + h.mmdd, name: h.name, movable: false };
+    });
+    const easter = getOrthodoxEaster(y);
+    const easterDays = [
+      [-2, 'წითელი პარასკევი'],
+      [-1, 'დიდი შაბათი'],
+      [0, 'აღდგომა'],
+      [1, 'აღდგომის ორშაბათი (მიცვალებულთა მოხსენიება)']
+    ];
+    for (let i = 0; i < easterDays.length; i++) {
+      const dt = new Date(easter.getTime() + easterDays[i][0] * 86400000);
+      list.push({ date: formatIsoDateUTC(dt), name: easterDays[i][1], movable: true });
+    }
+    list.sort(function (p, q) { return p.date < q.date ? -1 : (p.date > q.date ? 1 : 0); });
+    return list;
   }
 
   function calculateDateDifference(startStr, endStr, options) {
@@ -1787,7 +1824,256 @@
     };
   }
 
+  /* 13. ვალუტის კონვერტაცია (ეროვნული ბანკის კურსით) */
+  // rates: { USD: { rate: 2.7, quantity: 1 }, JPY: { rate: 1.8, quantity: 100 }, ... } - ლარი quantity ერთეულზე
+  function convertCurrency(amountInput, fromCode, toCode, rates) {
+    const amount = typeof amountInput === 'number' ? amountInput : Number(String(amountInput).trim().replace(/,/g, ''));
+    if (String(amountInput).trim() === '' || !Number.isFinite(amount) || amount < 0) {
+      throw new Error('გთხოვთ შეიყვანოთ სწორი, დადებითი თანხა.');
+    }
+    function gelPerUnit(code) {
+      if (code === 'GEL') return 1;
+      const r = rates && rates[code];
+      if (!r || !Number.isFinite(Number(r.rate)) || Number(r.rate) <= 0) {
+        throw new Error('ვალუტის კურსი ვერ მოიძებნა: ' + code);
+      }
+      return Number(r.rate) / (Number(r.quantity) || 1);
+    }
+    const fromGel = gelPerUnit(fromCode);
+    const toGel = gelPerUnit(toCode);
+    const result = amount * fromGel / toGel;
+    return {
+      amount: amount,
+      result: result,
+      gelAmount: amount * fromGel,
+      crossRate: fromGel / toGel,
+      inverseRate: toGel / fromGel
+    };
+  }
+
+  /* 14. ანაბრის (დეპოზიტის) კალკულატორი */
+  function calculateDeposit(principalInput, annualRateInput, monthsInput, options) {
+    const opts = options || {};
+    const principal = Number(String(principalInput).trim().replace(/,/g, ''));
+    const annualRate = Number(String(annualRateInput).trim().replace(/,/g, ''));
+    const months = Math.round(Number(monthsInput));
+    const capitalization = opts.capitalization || 'monthly'; // monthly | quarterly | yearly | end
+    const taxRate = opts.taxRate !== undefined ? Number(opts.taxRate) : 5;
+    const monthlyContribution = Math.max(0, Number(String(opts.monthlyContribution || 0).replace(/,/g, '')) || 0);
+
+    if (!Number.isFinite(principal) || principal < 0) throw new Error('გთხოვთ შეიყვანოთ ანაბრის დადებითი თანხა.');
+    if (!Number.isFinite(annualRate) || annualRate < 0 || annualRate > 100) throw new Error('წლიური განაკვეთი უნდა იყოს 0-დან 100%-მდე.');
+    if (!Number.isInteger(months) || months < 1 || months > 600) throw new Error('ვადა უნდა იყოს 1-დან 600 თვემდე.');
+    if (!Number.isFinite(taxRate) || taxRate < 0 || taxRate >= 100) throw new Error('საშემოსავლო განაკვეთი უნდა იყოს 0-დან 99%-მდე.');
+
+    const periodMonths = { monthly: 1, quarterly: 3, yearly: 12, end: months }[capitalization] || 1;
+    const monthlyRate = annualRate / 100 / 12;
+    let balance = principal;
+    let accrued = 0;
+    let totalGrossInterest = 0;
+    let totalTax = 0;
+    let totalContributions = 0;
+    const schedule = [];
+
+    for (let m = 1; m <= months; m++) {
+      const interest = balance * monthlyRate;
+      accrued += interest;
+      let credited = 0;
+      let tax = 0;
+      if (m % periodMonths === 0 || m === months) {
+        tax = accrued * taxRate / 100;
+        credited = accrued - tax;
+        totalGrossInterest += accrued;
+        totalTax += tax;
+        balance += credited;
+        accrued = 0;
+      }
+      if (monthlyContribution > 0 && m < months) {
+        balance += monthlyContribution;
+        totalContributions += monthlyContribution;
+      }
+      schedule.push({
+        month: m,
+        interest: roundMoney(interest),
+        credited: roundMoney(credited),
+        tax: roundMoney(tax),
+        contribution: m < months ? roundMoney(monthlyContribution) : 0,
+        balance: roundMoney(balance)
+      });
+    }
+
+    const netInterest = totalGrossInterest - totalTax;
+    const invested = principal + totalContributions;
+    const years = months / 12;
+    const effectiveAnnualNet = principal > 0 && monthlyContribution === 0
+      ? (Math.pow(balance / principal, 1 / years) - 1) * 100
+      : null;
+
+    return {
+      principal: roundMoney(principal),
+      totalContributions: roundMoney(totalContributions),
+      invested: roundMoney(invested),
+      grossInterest: roundMoney(totalGrossInterest),
+      tax: roundMoney(totalTax),
+      netInterest: roundMoney(netInterest),
+      finalBalance: roundMoney(balance),
+      effectiveAnnualNetRate: effectiveAnnualNet === null ? null : Math.round(effectiveAnnualNet * 100) / 100,
+      schedule: schedule
+    };
+  }
+
+  /* 15. საურავის (ვადაგადაცილებული გადასახადის) კალკულატორი */
+  function calculateTaxPenalty(amountInput, dueDateStr, payDateStr, dailyRatePercent) {
+    const amount = Number(String(amountInput).trim().replace(/,/g, ''));
+    const rate = dailyRatePercent !== undefined ? Number(dailyRatePercent) : 0.05;
+    if (!Number.isFinite(amount) || amount <= 0) throw new Error('გთხოვთ შეიყვანოთ გადასახადის დადებითი თანხა.');
+    if (!Number.isFinite(rate) || rate < 0 || rate > 10) throw new Error('დღიური განაკვეთი უნდა იყოს 0-დან 10%-მდე.');
+    const due = parseIsoDateUTC(dueDateStr);
+    const pay = parseIsoDateUTC(payDateStr);
+    const days = Math.max(0, Math.round((pay.getTime() - due.getTime()) / 86400000));
+    const penalty = amount * (rate / 100) * days;
+    return {
+      days: days,
+      dailyAmount: roundMoney(amount * rate / 100),
+      penalty: roundMoney(penalty),
+      total: roundMoney(amount + penalty),
+      effectivePercent: Math.round(rate * days * 10000) / 10000
+    };
+  }
+
+  /* 16. მცირე ბიზნესის / ინდ. მეწარმის გადასახადი */
+  function calculateBusinessTax(incomeInput, options) {
+    const opts = options || {};
+    const mode = opts.mode || 'small';
+    const income = Number(String(incomeInput).trim().replace(/,/g, ''));
+    const expenses = Math.max(0, Number(String(opts.expenses || 0).replace(/,/g, '')) || 0);
+    if (!Number.isFinite(income) || income < 0) throw new Error('გთხოვთ შეიყვანოთ დადებითი შემოსავალი.');
+
+    const warnings = [];
+    let tax = 0;
+    let base = income;
+    let formula = '';
+
+    if (mode === 'small') {
+      const threshold = opts.threshold !== undefined ? Number(opts.threshold) : 500000;
+      const rate = opts.rate !== undefined ? Number(opts.rate) : 1;
+      const excessRate = opts.excessRate !== undefined ? Number(opts.excessRate) : 3;
+      const within = Math.min(income, threshold);
+      const excess = Math.max(0, income - threshold);
+      tax = within * rate / 100 + excess * excessRate / 100;
+      formula = formatMoney(within) + ' × ' + rate + '%' + (excess > 0 ? ' + ' + formatMoney(excess) + ' × ' + excessRate + '%' : '') + ' = ' + formatMoney(tax) + ' ₾';
+      if (excess > 0) {
+        warnings.push('შემოსავალმა გადააჭარბა ' + formatMoney(threshold, 0) + ' ₾-ს: ზღვრის ზემოთ თანხა იბეგრება ' + excessRate + '%-ით და მცირე ბიზნესის სტატუსი შესაძლოა შეწყდეს.');
+      }
+    } else if (mode === 'micro') {
+      const microThreshold = opts.microThreshold !== undefined ? Number(opts.microThreshold) : 30000;
+      tax = 0;
+      formula = 'მიკრო ბიზნესის შემოსავალი გათავისუფლებულია საშემოსავლო გადასახადისგან (0 ₾).';
+      if (income > microThreshold) {
+        warnings.push('შემოსავალი აღემატება მიკრო ბიზნესის ზღვარს (' + formatMoney(microThreshold, 0) + ' ₾) - ამ შემთხვევაში მიკრო ბიზნესის სტატუსი არ ვრცელდება.');
+      }
+    } else if (mode === 'standard') {
+      const rate = opts.rate !== undefined ? Number(opts.rate) : 20;
+      base = Math.max(0, income - expenses);
+      tax = base * rate / 100;
+      formula = '(' + formatMoney(income) + ' - ' + formatMoney(expenses) + ') × ' + rate + '% = ' + formatMoney(tax) + ' ₾';
+    } else {
+      throw new Error('უცნობი დაბეგვრის რეჟიმი.');
+    }
+
+    return {
+      mode: mode,
+      income: roundMoney(income),
+      taxableBase: roundMoney(base),
+      tax: roundMoney(tax),
+      netIncome: roundMoney(income - tax - (mode === 'standard' ? expenses : 0)),
+      effectiveRate: income > 0 ? Math.round(tax / income * 10000) / 100 : 0,
+      formula: formula,
+      warnings: warnings
+    };
+  }
+
+  /* 17. ინვოისის ჯამები */
+  function calculateInvoiceTotals(items, options) {
+    const opts = options || {};
+    const vatEnabled = opts.vatEnabled !== undefined ? Boolean(opts.vatEnabled) : true;
+    const vatRate = opts.vatRate !== undefined ? Number(opts.vatRate) : 18;
+    const pricesIncludeVat = Boolean(opts.pricesIncludeVat);
+    const rows = (Array.isArray(items) ? items : []).map(function (it) {
+      const qty = Number(String(it.qty).replace(/,/g, '')) || 0;
+      const price = Number(String(it.price).replace(/,/g, '')) || 0;
+      return { name: String(it.name || ''), unit: String(it.unit || ''), qty: qty, price: price, lineTotal: roundMoney(qty * price) };
+    });
+    const sum = rows.reduce(function (acc, r) { return acc + r.lineTotal; }, 0);
+    let net, vat, gross;
+    if (!vatEnabled) {
+      net = sum; vat = 0; gross = sum;
+    } else if (pricesIncludeVat) {
+      gross = sum; net = sum / (1 + vatRate / 100); vat = gross - net;
+    } else {
+      net = sum; vat = sum * vatRate / 100; gross = net + vat;
+    }
+    return { rows: rows, net: roundMoney(net), vat: roundMoney(vat), gross: roundMoney(gross) };
+  }
+
+  /* 18. პაროლის გენერატორი (კრიპტოგრაფიულად უსაფრთხო) */
+  const PASSWORD_SETS = {
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    digits: '0123456789',
+    symbols: '!@#$%^&*()-_=+[]{};:,.?/'
+  };
+  const AMBIGUOUS_CHARS = /[Il1O0o]/g;
+
+  function secureRandomInt(maxExclusive, randomFn) {
+    if (typeof randomFn === 'function') return randomFn(maxExclusive);
+    const cryptoObj = (typeof globalThis !== 'undefined' && globalThis.crypto) ? globalThis.crypto : null;
+    if (!cryptoObj || !cryptoObj.getRandomValues) throw new Error('ბრაუზერს არ აქვს უსაფრთხო შემთხვევითი რიცხვების გენერატორი.');
+    const limit = Math.floor(0x100000000 / maxExclusive) * maxExclusive;
+    const buf = new Uint32Array(1);
+    do { cryptoObj.getRandomValues(buf); } while (buf[0] >= limit);
+    return buf[0] % maxExclusive;
+  }
+
+  function generatePassword(options, randomFn) {
+    const opts = options || {};
+    const length = Math.round(Number(opts.length || 16));
+    if (!Number.isInteger(length) || length < 4 || length > 128) throw new Error('პაროლის სიგრძე უნდა იყოს 4-დან 128-მდე.');
+    const chosen = ['lower', 'upper', 'digits', 'symbols'].filter(function (k) { return opts[k] !== false; });
+    if (chosen.length === 0) throw new Error('აირჩიეთ სიმბოლოების მინიმუმ ერთი ჯგუფი.');
+    const sets = chosen.map(function (k) {
+      return opts.excludeAmbiguous ? PASSWORD_SETS[k].replace(AMBIGUOUS_CHARS, '') : PASSWORD_SETS[k];
+    });
+    const pool = sets.join('');
+    const chars = [];
+    // თითო არჩეული ჯგუფიდან მინიმუმ ერთი სიმბოლო
+    for (let i = 0; i < sets.length && chars.length < length; i++) {
+      chars.push(sets[i][secureRandomInt(sets[i].length, randomFn)]);
+    }
+    while (chars.length < length) {
+      chars.push(pool[secureRandomInt(pool.length, randomFn)]);
+    }
+    for (let i = chars.length - 1; i > 0; i--) {
+      const j = secureRandomInt(i + 1, randomFn);
+      const t = chars[i]; chars[i] = chars[j]; chars[j] = t;
+    }
+    const entropyBits = Math.round(length * Math.log2(pool.length));
+    let strength = 'სუსტი';
+    if (entropyBits >= 100) strength = 'ძალიან ძლიერი';
+    else if (entropyBits >= 75) strength = 'ძლიერი';
+    else if (entropyBits >= 50) strength = 'საშუალო';
+    return { password: chars.join(''), entropyBits: entropyBits, strength: strength, poolSize: pool.length };
+  }
+
   return {
+    getOrthodoxEaster: getOrthodoxEaster,
+    getGeorgianHolidaysForYear: getGeorgianHolidaysForYear,
+    convertCurrency: convertCurrency,
+    calculateDeposit: calculateDeposit,
+    calculateTaxPenalty: calculateTaxPenalty,
+    calculateBusinessTax: calculateBusinessTax,
+    calculateInvoiceTotals: calculateInvoiceTotals,
+    generatePassword: generatePassword,
     formatNumber: formatNumber,
     formatMoney: formatMoney,
     transliterateGeorgian: transliterateGeorgian,

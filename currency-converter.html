@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ვალუტის კონვერტერი - ეროვნული ბანკის ოფიციალური კურსი | Mokled - მოკლედ</title>
+  <meta name="description" content="გადაიყვანეთ ლარი, დოლარი, ევრო და სხვა ვალუტები საქართველოს ეროვნული ბანკის ოფიციალური კურსით, ნებისმიერი თარიღისთვის." />
+  <link rel="canonical" href="https://mokled.pages.dev/currency-converter.html" />
+  <meta property="og:title" content="ვალუტის კონვერტერი - ეროვნული ბანკის კურსი | Mokled - მოკლედ" />
+  <meta property="og:description" content="ვალუტების კონვერტაცია სებ-ის ოფიციალური კურსით, ისტორიული თარიღის არჩევით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/currency-converter.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>ვალუტის კონვერტერი (სებ-ის კურსით)</h1>
+      <p>
+        გადაიყვანეთ თანხა ნებისმიერ ვალუტებს შორის საქართველოს ეროვნული ბანკის ოფიციალური კურსით. შეგიძლიათ აირჩიოთ წარსული თარიღიც.
+      </p>
+    </div>
+
+    <section class="panel">
+      <div id="cur-error" class="alert alert-error hidden" role="alert"></div>
+      <div id="cur-status" class="alert alert-info">კურსები იტვირთება...</div>
+
+      <div class="grid-4">
+        <div class="form-group">
+          <label class="form-label" for="cur-amount">თანხა:</label>
+          <input type="text" id="cur-amount" class="input" data-mask="money" value="100" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cur-from">საიდან:</label>
+          <select id="cur-from" class="input"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cur-to">სად:</label>
+          <select id="cur-to" class="input"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cur-date">კურსის თარიღი:</label>
+          <input type="date" id="cur-date" class="input" />
+        </div>
+      </div>
+
+      <div class="stats-grid" aria-live="polite">
+        <div class="stat-box">
+          <span class="stat-label">შედეგი</span>
+          <span class="stat-value" id="cur-result">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">კროს-კურსი</span>
+          <span class="stat-value" id="cur-cross">-</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">შებრუნებული კურსი</span>
+          <span class="stat-value" id="cur-inverse">-</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-cur-swap" class="btn btn-secondary">⇄ ვალუტების გაცვლა</button>
+        <button type="button" id="btn-cur-copy" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" id="btn-cur-today" class="btn btn-secondary">დღევანდელი კურსი</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2 class="panel-title">ყველა ვალუტის კურსი</h2>
+        <span class="badge" id="cur-table-date">-</span>
+      </div>
+      <div class="form-group">
+        <input type="search" id="cur-search" class="input" placeholder="ძიება: კოდი ან დასახელება (მაგ.: USD, ევრო)" />
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>კოდი</th><th>ვალუტა</th><th>რაოდენობა</th><th>კურსი (₾)</th><th>ცვლილება</th></tr>
+          </thead>
+          <tbody id="cur-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { convertCurrency, formatNumber } = window.GeoCore;
+      const { initLayout, copyToClipboard, escapeHtml, parseMaskedNumber } = window.GeoCommon;
+
+      initLayout('currency-converter');
+
+      const CACHE_KEY = 'mokled_nbg_all_rates_v1';
+      const API = 'https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/ka/json';
+      const PREFERRED = ['GEL', 'USD', 'EUR', 'GBP', 'TRY', 'RUB', 'UAH', 'AMD', 'AZN', 'CHF', 'CNY', 'JPY'];
+
+      const amountInput = document.getElementById('cur-amount');
+      const fromSel = document.getElementById('cur-from');
+      const toSel = document.getElementById('cur-to');
+      const dateInput = document.getElementById('cur-date');
+      const errorBox = document.getElementById('cur-error');
+      const statusBox = document.getElementById('cur-status');
+      const resResult = document.getElementById('cur-result');
+      const resCross = document.getElementById('cur-cross');
+      const resInverse = document.getElementById('cur-inverse');
+      const tbody = document.getElementById('cur-tbody');
+      const tableDate = document.getElementById('cur-table-date');
+      const searchInput = document.getElementById('cur-search');
+
+      let rates = {};
+      let currencyList = [];
+      let lastText = '';
+      let loadToken = 0;
+
+      function todayIso() {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+
+      function fmtRate(n) {
+        return formatNumber(n, n >= 1 ? 4 : 6);
+      }
+
+      function fillSelects() {
+        const prevFrom = fromSel.value || 'USD';
+        const prevTo = toSel.value || 'GEL';
+        const sorted = currencyList.slice().sort(function (a, b) {
+          const ia = PREFERRED.indexOf(a.code), ib = PREFERRED.indexOf(b.code);
+          if (ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+          return a.code.localeCompare(b.code);
+        });
+        const opts = sorted.map(function (c) {
+          return '<option value="' + escapeHtml(c.code) + '">' + escapeHtml(c.code + ' - ' + c.name) + '</option>';
+        }).join('');
+        fromSel.innerHTML = opts;
+        toSel.innerHTML = opts;
+        fromSel.value = rates[prevFrom] || prevFrom === 'GEL' ? prevFrom : 'USD';
+        toSel.value = rates[prevTo] || prevTo === 'GEL' ? prevTo : 'GEL';
+      }
+
+      function renderTable() {
+        const q = searchInput.value.trim().toLowerCase();
+        tbody.innerHTML = currencyList.filter(function (c) {
+          return c.code !== 'GEL' && (!q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q));
+        }).map(function (c) {
+          const diff = Number(c.diff) || 0;
+          const diffHtml = Math.abs(diff) < 0.00005 ? '0' : (diff > 0
+            ? '<span class="nbg-up">▲ ' + diff.toFixed(4) + '</span>'
+            : '<span class="nbg-down">▼ ' + Math.abs(diff).toFixed(4) + '</span>');
+          return '<tr><td><strong>' + escapeHtml(c.code) + '</strong></td><td>' + escapeHtml(c.name) + '</td><td>' + c.quantity + '</td><td>' + Number(c.rate).toFixed(4) + '</td><td>' + diffHtml + '</td></tr>';
+        }).join('');
+      }
+
+      function applyPayload(payload) {
+        rates = {};
+        currencyList = [{ code: 'GEL', name: 'ქართული ლარი', quantity: 1, rate: 1, diff: 0 }];
+        payload.currencies.forEach(function (c) {
+          const item = { code: String(c.code), name: String(c.name || c.code), quantity: Number(c.quantity) || 1, rate: Number(c.rate), diff: Number(c.diff) || 0 };
+          if (!Number.isFinite(item.rate) || item.rate <= 0) return;
+          rates[item.code] = item;
+          currencyList.push(item);
+        });
+        tableDate.textContent = String(payload.date || '').slice(0, 10);
+        fillSelects();
+        renderTable();
+        runConvert();
+      }
+
+      async function loadRates(dateStr) {
+        const token = ++loadToken;
+        errorBox.classList.add('hidden');
+        statusBox.className = 'alert alert-info';
+        statusBox.textContent = 'კურსები იტვირთება...';
+        const isToday = !dateStr || dateStr === todayIso();
+        try {
+          const res = await fetch(API + (isToday ? '' : '?date=' + encodeURIComponent(dateStr)));
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const json = await res.json();
+          if (token !== loadToken) return;
+          if (!Array.isArray(json) || !json[0] || !Array.isArray(json[0].currencies) || json[0].currencies.length === 0) {
+            throw new Error('ამ თარიღისთვის კურსები ვერ მოიძებნა');
+          }
+          const payload = { date: json[0].date, currencies: json[0].currencies };
+          if (isToday) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify(payload)); } catch (_) {}
+          }
+          applyPayload(payload);
+          statusBox.className = 'alert alert-success';
+          statusBox.textContent = 'ეროვნული ბანკის ოფიციალური კურსი: ' + String(payload.date).slice(0, 10);
+        } catch (err) {
+          if (token !== loadToken) return;
+          let cached = null;
+          try { cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch (_) {}
+          if (cached && cached.currencies && isToday) {
+            applyPayload(cached);
+            statusBox.className = 'alert alert-warning';
+            statusBox.textContent = 'ინტერნეტთან კავშირი ვერ მოხერხდა - ნაჩვენებია ბოლოს შენახული კურსი (' + String(cached.date).slice(0, 10) + ').';
+          } else {
+            statusBox.className = 'alert alert-error';
+            statusBox.textContent = 'კურსების ჩატვირთვა ვერ მოხერხდა (' + err.message + '). სცადეთ მოგვიანებით.';
+          }
+        }
+      }
+
+      function runConvert() {
+        errorBox.classList.add('hidden');
+        if (currencyList.length <= 1) return;
+        try {
+          const amount = parseMaskedNumber(amountInput.value);
+          const res = convertCurrency(amount, fromSel.value, toSel.value, rates);
+          resResult.textContent = formatNumber(res.result, 2) + ' ' + toSel.value;
+          resCross.textContent = '1 ' + fromSel.value + ' = ' + fmtRate(res.crossRate) + ' ' + toSel.value;
+          resInverse.textContent = '1 ' + toSel.value + ' = ' + fmtRate(res.inverseRate) + ' ' + fromSel.value;
+          lastText = formatNumber(amount, 2) + ' ' + fromSel.value + ' = ' + formatNumber(res.result, 2) + ' ' + toSel.value +
+            ' (სებ-ის კურსი, ' + tableDate.textContent + ')';
+        } catch (err) {
+          resResult.textContent = '-';
+          resCross.textContent = '-';
+          resInverse.textContent = '-';
+          lastText = '';
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      amountInput.addEventListener('input', runConvert);
+      fromSel.addEventListener('change', runConvert);
+      toSel.addEventListener('change', runConvert);
+      searchInput.addEventListener('input', renderTable);
+      dateInput.addEventListener('change', function () {
+        if (dateInput.value) loadRates(dateInput.value);
+      });
+
+      document.getElementById('btn-cur-swap').addEventListener('click', function () {
+        const f = fromSel.value;
+        fromSel.value = toSel.value;
+        toSel.value = f;
+        runConvert();
+      });
+      document.getElementById('btn-cur-copy').addEventListener('click', function () {
+        copyToClipboard(lastText, 'კონვერტაციის შედეგი დაკოპირდა!');
+      });
+      document.getElementById('btn-cur-today').addEventListener('click', function () {
+        dateInput.value = todayIso();
+        loadRates(dateInput.value);
+      });
+
+      dateInput.max = todayIso();
+      dateInput.value = todayIso();
+      loadRates(dateInput.value);
+    })();
+  </script>
+</body>
+</html>

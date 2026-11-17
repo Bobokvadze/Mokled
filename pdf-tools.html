@@ -16,7 +16,7 @@
   <meta name="theme-color" content="#2563eb" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="js/vendor/pdf-lib.min.js"></script>
 </head>
 <body>
   <header class="site-header" id="site-header"></header>
@@ -41,6 +41,8 @@
         <button type="button" class="tab-btn" data-tab="split">2. გვერდების ამოღება / დაყოფა</button>
         <button type="button" class="tab-btn" data-tab="rotate">3. გვერდების შემობრუნება</button>
         <button type="button" class="tab-btn" data-tab="img2pdf">4. სურათები → PDF</button>
+        <button type="button" class="tab-btn" data-tab="compress">5. PDF-ის შეკუმშვა</button>
+        <button type="button" class="tab-btn" data-tab="reorder">6. გვერდების გადალაგება</button>
       </div>
 
       <!-- TAB 1: MERGE PDF -->
@@ -108,6 +110,55 @@
         <ul id="img2pdf-list" class="file-list"></ul>
         <div class="btn-row">
           <button type="button" id="btn-run-img2pdf" class="btn btn-primary">PDF-ის შექმნა და ჩამოტვირთვა</button>
+        </div>
+      </div>
+
+      <!-- TAB 5: COMPRESS PDF -->
+      <div id="tab-compress" class="pdf-tab-pane hidden">
+        <h2 class="panel-title">PDF ფაილის შეკუმშვა (Compress PDF)</h2>
+        <div class="alert alert-info">
+          შეკუმშვა ხდება გვერდების ხელახლა დარენდერებით JPEG სურათებად - ყველაზე ეფექტურია დასკანერებული დოკუმენტებისთვის.
+          შეკუმშული ფაილის ტექსტის მონიშვნა/ძიება აღარ იქნება შესაძლებელი.
+        </div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label" for="compress-input">აირჩიეთ PDF ფაილი:</label>
+            <input type="file" id="compress-input" accept="application/pdf" class="input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="compress-level">შეკუმშვის დონე:</label>
+            <select id="compress-level" class="input">
+              <option value="low">მსუბუქი (მაღალი ხარისხი, 150 DPI)</option>
+              <option value="medium" selected>საშუალო (110 DPI)</option>
+              <option value="high">ძლიერი (მცირე ზომა, 80 DPI)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="compress-color">ფერი:</label>
+            <select id="compress-color" class="input">
+              <option value="color" selected>ფერადი</option>
+              <option value="gray">შავ-თეთრი (უფრო მცირე ზომა)</option>
+            </select>
+          </div>
+        </div>
+        <div id="compress-progress" class="alert alert-info hidden"></div>
+        <div class="btn-row">
+          <button type="button" id="btn-run-compress" class="btn btn-primary">შეკუმშვა და ჩამოტვირთვა</button>
+        </div>
+      </div>
+
+      <!-- TAB 6: REORDER PAGES -->
+      <div id="tab-reorder" class="pdf-tab-pane hidden">
+        <h2 class="panel-title">გვერდების გადალაგება და წაშლა</h2>
+        <div class="form-group">
+          <label class="form-label" for="reorder-input">აირჩიეთ PDF ფაილი:</label>
+          <input type="file" id="reorder-input" accept="application/pdf" class="input" />
+          <small style="display: block; margin-top: 0.35rem; color: var(--text-muted);">გადაათრიეთ გვერდები სასურველ ადგილას (ან გამოიყენეთ ← → ღილაკები). ✕ ღილაკით გვერდი ამოიშლება.</small>
+        </div>
+        <div id="reorder-grid" class="pdf-thumb-grid"></div>
+        <div class="btn-row">
+          <button type="button" id="btn-run-reorder" class="btn btn-primary">ახალი თანმიმდევრობით ჩამოტვირთვა</button>
+          <button type="button" id="btn-reset-reorder" class="btn btn-secondary btn-sm">საწყის თანმიმდევრობაზე დაბრუნება</button>
         </div>
       </div>
     </section>
@@ -373,6 +424,249 @@
           showSuccess(imgFiles.length + ' სურათი წარმატებით შეიკრა ერთ PDF ფაილად!');
         } catch (err) {
           showError('სურათების PDF-ად გარდაქმნის შეცდომა: ' + err.message);
+        }
+      });
+
+      // pdf.js (გვერდების დასარენდერებლად) იტვირთება მხოლოდ საჭიროებისას
+      let pdfjsPromise = null;
+      function ensurePdfJs() {
+        if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+        if (!pdfjsPromise) {
+          pdfjsPromise = new Promise(function (resolve, reject) {
+            const s = document.createElement('script');
+            s.src = 'js/vendor/pdf.min.js';
+            s.onload = function () {
+              if (window.pdfjsLib) {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/vendor/pdf.worker.min.js';
+                resolve(window.pdfjsLib);
+              } else {
+                pdfjsPromise = null;
+                reject(new Error('PDF რენდერის ბიბლიოთეკა ვერ ჩაიტვირთა.'));
+              }
+            };
+            s.onerror = function () {
+              pdfjsPromise = null;
+              reject(new Error('PDF რენდერის ბიბლიოთეკა ვერ ჩაიტვირთა.'));
+            };
+            document.head.appendChild(s);
+          });
+        }
+        return pdfjsPromise;
+      }
+
+      function canvasToJpegBytes(canvas, quality) {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (blob) {
+            if (!blob) { reject(new Error('JPEG კოდირება ვერ მოხერხდა.')); return; }
+            blob.arrayBuffer().then(function (b) { resolve(new Uint8Array(b)); }, reject);
+          }, 'image/jpeg', quality);
+        });
+      }
+
+      // 5. COMPRESS PDF
+      const compressInput = document.getElementById('compress-input');
+      const compressLevel = document.getElementById('compress-level');
+      const compressColor = document.getElementById('compress-color');
+      const compressProgress = document.getElementById('compress-progress');
+      const compressBtn = document.getElementById('btn-run-compress');
+      const COMPRESS_PRESETS = { low: { dpi: 150, q: 0.8 }, medium: { dpi: 110, q: 0.65 }, high: { dpi: 80, q: 0.5 } };
+
+      compressBtn.addEventListener('click', async function () {
+        clearAlerts();
+        const file = compressInput.files && compressInput.files[0];
+        if (!file) { showError('ჯერ აირჩიეთ PDF ფაილი.'); return; }
+        compressBtn.disabled = true;
+        compressProgress.classList.remove('hidden');
+        compressProgress.textContent = 'მზადდება...';
+        try {
+          const pdfjs = await ensurePdfJs();
+          const buf = await file.arrayBuffer();
+          const src = await pdfjs.getDocument({ data: new Uint8Array(buf.slice(0)) }).promise;
+          const preset = COMPRESS_PRESETS[compressLevel.value] || COMPRESS_PRESETS.medium;
+          const gray = compressColor.value === 'gray';
+          const { PDFDocument } = window.PDFLib;
+          const out = await PDFDocument.create();
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d', { willReadFrequently: gray });
+
+          for (let p = 1; p <= src.numPages; p++) {
+            compressProgress.textContent = 'მუშავდება გვერდი ' + p + ' / ' + src.numPages + '...';
+            const page = await src.getPage(p);
+            const base = page.getViewport({ scale: 1 });
+            // ძალიან დიდი გვერდებისთვის კანვასის ზომას ვზღუდავთ
+            const scale = Math.min(preset.dpi / 72, 5000 / Math.max(base.width, base.height));
+            const vp = page.getViewport({ scale: scale });
+            canvas.width = Math.max(1, Math.floor(vp.width));
+            canvas.height = Math.max(1, Math.floor(vp.height));
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport: vp }).promise;
+            if (gray) {
+              const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const d = img.data;
+              for (let i = 0; i < d.length; i += 4) {
+                const l = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
+                d[i] = l; d[i + 1] = l; d[i + 2] = l;
+              }
+              ctx.putImageData(img, 0, 0);
+            }
+            const jpg = await out.embedJpg(await canvasToJpegBytes(canvas, preset.q));
+            const newPage = out.addPage([base.width, base.height]);
+            newPage.drawImage(jpg, { x: 0, y: 0, width: base.width, height: base.height });
+            page.cleanup();
+          }
+          await src.destroy();
+          const bytes = await out.save();
+          compressProgress.classList.add('hidden');
+          if (bytes.length >= file.size) {
+            showError('ფაილი უკვე ოპტიმიზებულია: შეკუმშვის შემდეგ ზომა არ შემცირდა (' + formatBytes(file.size) + ' → ' + formatBytes(bytes.length) + '). სცადეთ „ძლიერი“ დონე ან შავ-თეთრი რეჟიმი.');
+            return;
+          }
+          downloadPdfBytes(bytes, file.name.replace(/\.pdf$/i, '') + '-compressed.pdf');
+          const saved = ((1 - bytes.length / file.size) * 100).toFixed(1);
+          showSuccess('PDF შეიკუმშა: ' + formatBytes(file.size) + ' → ' + formatBytes(bytes.length) + ' (-' + saved + '%).');
+        } catch (err) {
+          compressProgress.classList.add('hidden');
+          showError('PDF შეკუმშვის შეცდომა: ' + err.message);
+        } finally {
+          compressBtn.disabled = false;
+        }
+      });
+
+      // 6. REORDER / DELETE PAGES
+      const reorderInput = document.getElementById('reorder-input');
+      const reorderGrid = document.getElementById('reorder-grid');
+      let reorderBytes = null;
+      let reorderOrder = [];
+      let reorderThumbs = [];
+      let reorderLoadToken = 0;
+      let dragFromPos = -1;
+
+      function renderReorderGrid() {
+        reorderGrid.innerHTML = '';
+        reorderOrder.forEach(function (origIdx, pos) {
+          const card = document.createElement('div');
+          card.className = 'pdf-thumb';
+          card.draggable = true;
+          card.setAttribute('data-pos', String(pos));
+          card.appendChild(reorderThumbs[origIdx]);
+          const label = document.createElement('div');
+          label.className = 'pdf-thumb-label';
+          label.textContent = (pos + 1) + ' (ორიგ. ' + (origIdx + 1) + ')';
+          card.appendChild(label);
+          const actions = document.createElement('div');
+          actions.className = 'pdf-thumb-actions';
+          actions.innerHTML =
+            '<button type="button" class="btn btn-secondary" data-act="left" aria-label="მარცხნივ">←</button>' +
+            '<button type="button" class="btn btn-danger" data-act="del" aria-label="წაშლა">✕</button>' +
+            '<button type="button" class="btn btn-secondary" data-act="right" aria-label="მარჯვნივ">→</button>';
+          card.appendChild(actions);
+          reorderGrid.appendChild(card);
+        });
+      }
+
+      function movePage(from, to) {
+        if (from === to || from < 0 || to < 0 || from >= reorderOrder.length || to >= reorderOrder.length) return;
+        const item = reorderOrder.splice(from, 1)[0];
+        reorderOrder.splice(to, 0, item);
+        renderReorderGrid();
+      }
+
+      reorderGrid.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-act]');
+        if (!btn) return;
+        const pos = Number(btn.closest('.pdf-thumb').getAttribute('data-pos'));
+        const act = btn.getAttribute('data-act');
+        if (act === 'left') movePage(pos, pos - 1);
+        else if (act === 'right') movePage(pos, pos + 1);
+        else if (act === 'del') {
+          if (reorderOrder.length <= 1) { showError('დოკუმენტში მინიმუმ ერთი გვერდი უნდა დარჩეს.'); return; }
+          reorderOrder.splice(pos, 1);
+          renderReorderGrid();
+        }
+      });
+      reorderGrid.addEventListener('dragstart', function (e) {
+        const card = e.target.closest('.pdf-thumb');
+        if (!card) return;
+        dragFromPos = Number(card.getAttribute('data-pos'));
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', String(dragFromPos)); } catch (_) {}
+      });
+      reorderGrid.addEventListener('dragover', function (e) {
+        const card = e.target.closest('.pdf-thumb');
+        if (!card) return;
+        e.preventDefault();
+        reorderGrid.querySelectorAll('.drop-target').forEach(function (c) { c.classList.remove('drop-target'); });
+        card.classList.add('drop-target');
+      });
+      reorderGrid.addEventListener('drop', function (e) {
+        const card = e.target.closest('.pdf-thumb');
+        if (!card) return;
+        e.preventDefault();
+        movePage(dragFromPos, Number(card.getAttribute('data-pos')));
+        dragFromPos = -1;
+      });
+      reorderGrid.addEventListener('dragend', function () {
+        dragFromPos = -1;
+        reorderGrid.querySelectorAll('.dragging, .drop-target').forEach(function (c) { c.classList.remove('dragging', 'drop-target'); });
+      });
+
+      reorderInput.addEventListener('change', async function () {
+        clearAlerts();
+        const file = reorderInput.files && reorderInput.files[0];
+        if (!file) return;
+        const token = ++reorderLoadToken;
+        reorderGrid.innerHTML = '<p style="color: var(--text-muted);">გვერდები იტვირთება...</p>';
+        try {
+          const pdfjs = await ensurePdfJs();
+          reorderBytes = await file.arrayBuffer();
+          const doc = await pdfjs.getDocument({ data: new Uint8Array(reorderBytes.slice(0)) }).promise;
+          const thumbs = [];
+          for (let p = 1; p <= doc.numPages; p++) {
+            if (token !== reorderLoadToken) { await doc.destroy(); return; }
+            const page = await doc.getPage(p);
+            const base = page.getViewport({ scale: 1 });
+            const vp = page.getViewport({ scale: 180 / base.width });
+            const c = document.createElement('canvas');
+            c.width = Math.floor(vp.width);
+            c.height = Math.floor(vp.height);
+            await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+            page.cleanup();
+            thumbs.push(c);
+          }
+          await doc.destroy();
+          if (token !== reorderLoadToken) return;
+          reorderThumbs = thumbs;
+          reorderOrder = thumbs.map(function (_, i) { return i; });
+          renderReorderGrid();
+        } catch (err) {
+          reorderBytes = null;
+          reorderOrder = [];
+          reorderGrid.innerHTML = '';
+          showError('PDF ფაილის წაკითხვა ვერ მოხერხდა: ' + err.message);
+        }
+      });
+
+      document.getElementById('btn-reset-reorder').addEventListener('click', function () {
+        if (!reorderThumbs.length) return;
+        reorderOrder = reorderThumbs.map(function (_, i) { return i; });
+        renderReorderGrid();
+      });
+
+      document.getElementById('btn-run-reorder').addEventListener('click', async function () {
+        clearAlerts();
+        if (!reorderBytes || reorderOrder.length === 0) { showError('ჯერ აირჩიეთ PDF ფაილი.'); return; }
+        try {
+          const { PDFDocument } = window.PDFLib;
+          const src = await PDFDocument.load(reorderBytes);
+          const out = await PDFDocument.create();
+          const pages = await out.copyPages(src, reorderOrder);
+          pages.forEach(function (p) { out.addPage(p); });
+          downloadPdfBytes(await out.save(), 'mokled-reordered.pdf');
+          showSuccess('PDF შეინახა ახალი თანმიმდევრობით (' + reorderOrder.length + ' გვერდი).');
+        } catch (err) {
+          showError('გვერდების გადალაგების შეცდომა: ' + err.message);
         }
       });
     })();
