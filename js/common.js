@@ -565,11 +565,35 @@
     }
 
     if (footerEl) {
+      const footerCols = NAV_GROUPS.map(function (grp) {
+        const links = grp.ids.map(function (id) {
+          return TOOLS_CATALOG.find(function (t) { return t.id === id; });
+        }).filter(Boolean).map(function (t) {
+          return '<li><a href="' + t.url + '">' + escapeHtml(t.shortTitle) + '</a></li>';
+        }).join('');
+        return '<div class="footer-col"><h4>' + escapeHtml(grp.label) + '</h4><ul>' + links + '</ul></div>';
+      }).join('');
+
       footerEl.innerHTML =
-        '<div class="container footer-inner">' +
-          '<div>' +
-            '<strong>Mokled - მოკლედ | ქართული ციფრული ხელსაწყოების პორტალი</strong>' +
-            '<p>ყველა გამოთვლა და ფაილის დამუშავება სრულდება ადგილობრივად, თქვენს ბრაუზერში.</p>' +
+        '<div class="container footer-grid">' +
+          '<div class="footer-brand">' +
+            '<a href="index.html" class="footer-logo" aria-label="Mokled - მთავარი გვერდი">' +
+              '<img src="assets/logo.png" alt="Mokled" class="logo-light" loading="lazy" />' +
+              '<img src="assets/logo-dark.png" alt="Mokled" class="logo-dark" loading="lazy" />' +
+            '</a>' +
+            '<p>უფასო საოფისე, ბიზნეს და ფინანსური ხელსაწყოები ქართულად - მოკლედ და მარტივად.</p>' +
+            '<span class="footer-badge">🔒 მონაცემები არ ტოვებს თქვენს ბრაუზერს</span>' +
+          '</div>' +
+          footerCols +
+        '</div>' +
+        '<div class="footer-bottom-wrap">' +
+          '<div class="container footer-bottom">' +
+            '<span>© ' + new Date().getFullYear() + ' Mokled - მოკლედ</span>' +
+            '<nav aria-label="დამატებითი ბმულები">' +
+              '<a href="about.html">ჩვენ შესახებ</a>' +
+              '<a href="about.html#privacy">კონფიდენციალურობა</a>' +
+              '<a href="index.html">ყველა ხელსაწყო</a>' +
+            '</nav>' +
           '</div>' +
         '</div>';
     }

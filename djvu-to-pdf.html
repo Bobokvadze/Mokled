@@ -17,6 +17,7 @@
   <meta name="theme-color" content="#2563eb" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
+  <script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"WebApplication","name":"DjVu → PDF კონვერტერი","description":"DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.","url":"https://mokled.pages.dev/djvu-to-pdf.html","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","browserRequirements":"Requires JavaScript","inLanguage":"ka","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"GEL"},"isPartOf":{"@type":"WebSite","@id":"https://mokled.pages.dev/#website","name":"Mokled - მოკლედ","url":"https://mokled.pages.dev/","inLanguage":"ka"}}</script>
 </head>
 <body>
   <header class="site-header" id="site-header"></header>
@@ -166,14 +167,8 @@
 
       function ensureDjvuLibraryLoaded() {
         if (window.DjVu && window.DjVu.Document) return Promise.resolve();
-        const urls = [
-          'js/djvu.min.js',
-          'https://djvu.js.org/assets/dist/djvu.js',
-          'https://djvu.js.org/assets/djvu.js',
-          'https://cdn.jsdelivr.net/npm/djvujs-dist/dist/djvu.js',
-          'https://cdn.jsdelivr.net/npm/djvujs-dist/djvu.js',
-          'https://unpkg.com/djvujs-dist/dist/djvu.js'
-        ];
+        // ბიბლიოთეკა ლოკალურადაა (js/djvu.min.js) - გარე CDN-ებიდან კოდს არ ვტვირთავთ
+        const urls = ['js/djvu.min.js'];
         let idx = 0;
         return new Promise(function (resolve, reject) {
           function tryNext() {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v51';
+const CACHE_NAME = 'mokled-cache-v53';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -22,6 +22,7 @@ const CORE_ASSETS = [
   '/invoice-generator.html',
   '/data-converter.html',
   '/password-generator.html',
+  '/about.html',
   '/404.html',
   '/css/styles.css',
   '/js/core.js',
