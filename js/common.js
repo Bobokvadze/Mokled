@@ -586,12 +586,9 @@
 
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
       window.addEventListener('load', function () {
+        // ძველი ქეშების წაშლას თავად sw.js-ის 'activate' ეტაპი აკეთებს (აქ ვერსიის მყარად ჩაწერა
+        // ახალ ქეშს წაშლიდა, თუ ეს ფაილი და sw.js სხვადასხვა ვერსიაზე აღმოჩნდებოდნენ).
         navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
-        if (window.caches) {
-          caches.keys().then(function (keys) {
-            keys.forEach(function (k) { if (k !== 'mokled-cache-v48') caches.delete(k); });
-          });
-        }
       });
     }
   }

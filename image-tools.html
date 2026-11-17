@@ -144,6 +144,7 @@
       let originalFile = null;
       let currentBlobUrl = null;
       let currentBlob = null;
+      let latestRequestId = 0;
 
       function showError(msg) {
         errorBox.textContent = msg;
@@ -264,8 +265,11 @@
 
         ctx.drawImage(loadedImage, 0, 0, targetW, targetH);
 
+        const requestId = ++latestRequestId;
         canvas.toBlob(
           function (blob) {
+            // სწრაფი ცვლილებისას ძველი (გვიან დასრულებული) შედეგი ახალს არ უნდა გადაეწეროს
+            if (requestId !== latestRequestId) return;
             if (!blob) {
               showError('სურათის კოდირება ვერ მოხერხდა.');
               return;

@@ -150,6 +150,7 @@
           resFormula.textContent = res.formula;
         } catch (err) {
           currentCalc = null;
+          [resNet, resGross, resTax, resEmpPen, resTotalCost, resFormula].forEach(function (el) { el.textContent = '-'; });
           errorBox.textContent = err.message;
           errorBox.classList.remove('hidden');
         }

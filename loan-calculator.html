@@ -217,7 +217,8 @@
         const pMonth = Math.max(1, Math.min(N, Math.round(Number(prepayMonth) || 1)));
         const pGoal = prepayGoal === 'reduce_payment' ? 'reduce_payment' : 'reduce_term';
 
-        const isGrace = mode === 'grace';
+        // 1-თვიან სესხს საშეღავათო პერიოდი ვერ ექნება (ძირი არასდროს დაიფარებოდა)
+        const isGrace = mode === 'grace' && N > 1;
         const isGuarantee = mode === 'guarantee';
         const G = isGrace ? Math.max(1, Math.min(N - 1, Math.round(Number(graceMonths) || 1))) : (isGuarantee ? N : 0);
 
@@ -370,7 +371,7 @@
         const prepayType = prepayTypeSelect.value;
         const prepayMonth = Math.max(1, Math.round(Number(prepayMonthInput.value) || 1));
         const prepayGoal = prepayGoalSelect.value;
-        const sym = currencySelect.value;
+        const sym = escapeHtml(currencySelect.value || '₾');
 
         const baseNoExtra = computeSchedule(P, rate, months, mode, graceMonths, 0, prepayType, prepayMonth, 'reduce_term');
         const resTerm = computeSchedule(P, rate, months, mode, graceMonths, extra, prepayType, prepayMonth, 'reduce_term');
@@ -508,7 +509,7 @@
       if (params.get('pt') && (params.get('pt') === 'onetime' || params.get('pt') === 'monthly')) prepayTypeSelect.value = params.get('pt');
       if (params.get('pm')) prepayMonthInput.value = params.get('pm');
       if (params.get('pg') && (params.get('pg') === 'reduce_term' || params.get('pg') === 'reduce_payment')) prepayGoalSelect.value = params.get('pg');
-      if (params.get('c')) currencySelect.value = params.get('c');
+      if (params.get('c') && ['₾', '$', '€'].indexOf(params.get('c')) !== -1) currencySelect.value = params.get('c');
 
       [principalInput, rateInput, monthsInput, typeSelect, graceInput, prepayInput, prepayTypeSelect, prepayMonthInput, prepayGoalSelect, currencySelect].forEach(function (el) {
         el.addEventListener('input', calculateAndRender);

@@ -196,6 +196,8 @@
         clearAlerts();
         const added = Array.from(e.target.files || []);
         mergeFiles = mergeFiles.concat(added);
+        // ველის გასუფთავება, რომ იგივე ფაილის ხელახლა არჩევამაც გამოიწვიოს 'change'
+        mergeInput.value = '';
         renderMergeList();
       });
 

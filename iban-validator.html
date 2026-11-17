@@ -37,8 +37,8 @@
           type="text"
           id="iban-input"
           class="input"
-          value="GE29TB7777777777777777"
-          placeholder="მაგ.: GE29TB7777777777777777"
+          value="GE61TB7777777777777777"
+          placeholder="მაგ.: GE61TB7777777777777777"
           style="font-family: monospace; font-size: 1.08rem;"
         />
       </div>
@@ -63,8 +63,8 @@
       <div class="btn-row">
         <button type="button" id="btn-copy-clean-iban" class="btn btn-primary btn-sm">უინტერვალო IBAN-ის კოპირება</button>
         <button type="button" id="btn-copy-fmt-iban" class="btn btn-secondary btn-sm">დაყოფილი IBAN-ის კოპირება</button>
-        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE60BG0000000123456789">საქართველოს ბანკის მაგალითი</button>
-        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE29TB7777777777777777">თიბისი ბანკის მაგალითი</button>
+        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE59BG0000000123456789">საქართველოს ბანკის მაგალითი</button>
+        <button type="button" class="btn btn-secondary btn-sm iban-sample" data-iban="GE61TB7777777777777777">თიბისი ბანკის მაგალითი</button>
       </div>
     </section>
 
@@ -141,6 +141,10 @@
           resSwift.textContent = res.bankCode ? (res.bankCode + ' / ' + res.swift) : '-';
           resFormatted.textContent = res.formatted || '-';
         } catch (err) {
+          lastResult = null;
+          resBank.textContent = '-';
+          resSwift.textContent = '-';
+          resFormatted.textContent = '-';
           statusBanner.className = 'alert alert-error';
           statusBanner.textContent = err.message;
         }

@@ -108,7 +108,7 @@
   <script src="js/common.js"></script>
   <script>
     (function () {
-      const { convertGeorgianText, transliterateLatinToGeorgian } = window.GeoCore;
+      const { convertGeorgianText, transliterateGeorgian } = window.GeoCore;
       const { initLayout, copyToClipboard, downloadTextFile, escapeHtml, showToast } = window.GeoCommon;
 
       initLayout('georgian-converter');
@@ -245,7 +245,7 @@
         }
         suggestionsWrap.classList.remove('hidden');
         suggestionsBox.innerHTML = validItems.map(function (item) {
-          const baseWord = item.converted || item.base || item.token || '';
+          const baseWord = item.current || item.converted || item.base || item.token || '';
           const list = (item.alternatives || item.variants || []).filter(function (w) { return w !== baseWord; }).slice(0, 4);
           if (list.length === 0) return '';
           const alts = list.map(function (alt) {
@@ -297,9 +297,14 @@
         let suggestions = [];
 
         if (src === 'translit') {
-          const trRes = transliterateLatinToGeorgian(raw);
+          const trRes = transliterateGeorgian(raw, 'smart');
           unicodeIntermediate = applySmartDictionary(trRes.output);
-          suggestions = trRes.suggestions || [];
+          suggestions = (trRes.ambiguities || []).map(function (item) {
+            return {
+              current: applySmartDictionary(item.current),
+              alternatives: (item.alternatives || []).map(applySmartDictionary)
+            };
+          });
         } else if (src === 'new') {
           unicodeIntermediate = newFontToUnicodeText(raw);
         } else {

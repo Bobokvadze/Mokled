@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mokled-cache-v48';
+const CACHE_NAME = 'mokled-cache-v49';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -48,10 +48,13 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
   if (event.request.method !== 'GET') return;
+  // გარე მოთხოვნებს (ეროვნული ბანკის API, CDN) SW არ ეხება - ოფლაინში მათ HTML პასუხი არ უნდა დაუბრუნდეთ
+  if (!event.request.url.startsWith(self.location.origin)) return;
+  const isNavigation = event.request.mode === 'navigate';
   event.respondWith(
     fetch(event.request)
       .then(function (networkResp) {
-        if (networkResp && networkResp.status === 200 && event.request.url.startsWith(self.location.origin)) {
+        if (networkResp && networkResp.status === 200) {
           const respClone = networkResp.clone();
           caches.open(CACHE_NAME).then(function (cache) {
             cache.put(event.request, respClone);
@@ -61,7 +64,8 @@ self.addEventListener('fetch', function (event) {
       })
       .catch(function () {
         return caches.match(event.request).then(function (cached) {
-          return cached || caches.match('/index.html');
+          if (cached) return cached;
+          return isNavigation ? caches.match('/index.html') : Response.error();
         });
       })
   );

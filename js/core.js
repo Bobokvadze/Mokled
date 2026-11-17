@@ -1557,6 +1557,22 @@
     }
     setFunctionModule(size - 8, 8, true);
 
+    // ვერსიის ინფორმაციის ბლოკები (სავალდებულოა ვერსია 7+ QR კოდებისთვის, ISO/IEC 18004 §7.10)
+    if (version >= 7) {
+      let rem = version;
+      for (let i = 0; i < 12; i++) {
+        rem = (rem << 1) ^ ((rem >>> 11) * 0x1f25);
+      }
+      const versionBits = (version << 12) | rem;
+      for (let i = 0; i < 18; i++) {
+        const bit = ((versionBits >>> i) & 1) === 1;
+        const a = size - 11 + (i % 3);
+        const b = Math.floor(i / 3);
+        setFunctionModule(a, b, bit);
+        setFunctionModule(b, a, bit);
+      }
+    }
+
     const allBits = [];
     for (let i = 0; i < interleaved.length; i++) {
       for (let b = 7; b >= 0; b--) {

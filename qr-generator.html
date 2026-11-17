@@ -134,7 +134,7 @@
           const ssid = wifiSsid.value.trim() || 'MyWiFi';
           const pass = wifiPass.value;
           const enc = wifiEnc.value;
-          return 'WIFI:T:' + enc + ';S:' + ssid.replace(/[;,:]/g, '\\$&') + ';P:' + pass.replace(/[;,:]/g, '\\$&') + ';;';
+          return 'WIFI:T:' + enc + ';S:' + ssid.replace(/[\\;,:"]/g, '\\$&') + ';P:' + pass.replace(/[\\;,:"]/g, '\\$&') + ';;';
         }
         return qrInput.value.trim();
       }
@@ -171,6 +171,11 @@
 
           qrMeta.textContent = 'QR ვერსია: ' + qr.version + ' (' + qr.size + '×' + qr.size + ' მოდული)';
         } catch (err) {
+          // ძველი QR კოდი აღარ უნდა დარჩეს ეკრანზე/ჩამოტვირთვაში, როცა ახალი ტექსტი არასწორია
+          currentPayload = '';
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          qrMeta.textContent = '';
           errorBox.textContent = err.message;
           errorBox.classList.remove('hidden');
         }
