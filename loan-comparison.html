@@ -167,6 +167,16 @@
               : 'შეთავაზებები ჯამური ღირებულებით თანაბარია.') + '</span></div>';
           verdict.classList.remove('hidden');
 
+          // ყველა შეთავაზების სვეტი ერთნაირი სიგანისაა (table-layout: fixed + colgroup)
+          const table = thead.parentNode;
+          let colgroup = table.querySelector('colgroup');
+          if (!colgroup) {
+            colgroup = document.createElement('colgroup');
+            table.insertBefore(colgroup, thead);
+          }
+          colgroup.innerHTML = '<col class="lc-col-label" />' + res.offers.map(function () { return '<col class="lc-col-offer" />'; }).join('');
+          table.style.minWidth = (150 + res.offers.length * 140) + 'px';
+
           thead.innerHTML = '<tr><th></th>' + res.offers.map(function (o, i) {
             return '<th class="' + (i === res.bestIndex ? 'lc-best' : '') + '">' + escapeHtml(o.name) + (i === res.bestIndex ? ' <span class="lc-best-badge">საუკეთესო</span>' : '') + '</th>';
           }).join('') + '</tr>';
