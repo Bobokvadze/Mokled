@@ -542,6 +542,49 @@
     }
   }
 
+  // კატეგორიის ფერი ხატულებისთვის (იგივე ფერები, რაც მთავარ გვერდზე)
+  const CATEGORY_TONE = { 'ფინანსები': 'fi-blue', 'მედია': 'fi-red', 'ტექსტი': 'fi-violet', 'მონაცემები': 'fi-green', 'დრო და თარიღი': 'fi-green' };
+
+  function toneFor(tool) {
+    return (tool && CATEGORY_TONE[tool.category]) || 'fi-blue';
+  }
+
+  // ხელსაწყოს გვერდზე: ხატულა სათაურში და „მსგავსი ხელსაწყოები“ ბოლოში
+  function enhanceToolPage(currentId) {
+    const tool = TOOLS_CATALOG.find(function (t) { return t.id === currentId; });
+    if (!tool) return;
+
+    const h1 = document.querySelector('.page-header h1');
+    if (h1 && !h1.querySelector('.page-icon')) {
+      const badge = document.createElement('span');
+      badge.className = 'page-icon ' + toneFor(tool);
+      badge.setAttribute('aria-hidden', 'true');
+      badge.innerHTML = icon(tool.icon);
+      h1.insertBefore(badge, h1.firstChild);
+    }
+
+    const main = document.querySelector('main');
+    if (!main || main.querySelector('.related-tools')) return;
+    const sameCategory = TOOLS_CATALOG.filter(function (t) { return t.id !== tool.id && t.category === tool.category; });
+    const others = TOOLS_CATALOG.filter(function (t) { return t.id !== tool.id && t.category !== tool.category; });
+    const picks = sameCategory.slice(0, 4);
+    for (let i = 0; picks.length < 4 && i < others.length; i++) picks.push(others[i]);
+
+    const section = document.createElement('section');
+    section.className = 'related-tools no-print';
+    section.setAttribute('aria-label', 'მსგავსი ხელსაწყოები');
+    section.innerHTML =
+      '<h2>' + icon('sparkles') + 'სხვა სასარგებლო ხელსაწყოები</h2>' +
+      '<div class="related-grid">' + picks.map(function (t) {
+        return '<a class="related-card" href="' + t.url + '">' +
+          '<span class="page-icon ' + toneFor(t) + '" aria-hidden="true">' + icon(t.icon) + '</span>' +
+          '<span><strong>' + escapeHtml(t.shortTitle) + '</strong><small>' + escapeHtml(t.category) + '</small></span>' +
+          '<span class="related-arrow" aria-hidden="true">' + icon('arrow-right') + '</span>' +
+        '</a>';
+      }).join('') + '</div>';
+    main.appendChild(section);
+  }
+
   function initLayout(activeToolId) {
     const currentId = activeToolId || 'home';
     const headerEl = document.getElementById('site-header');
@@ -564,7 +607,7 @@
           '<button type="button" class="nav-link nav-drop-btn ' + (hasActive ? 'active' : '') + '">' +
             escapeHtml(grp.label) + ' <span class="caret">▾</span>' +
           '</button>' +
-          '<div class="nav-drop-menu">' + itemsHtml + '</div>' +
+          '<div class="nav-drop-menu' + (groupTools.length > 6 ? ' wide' : '') + '">' + itemsHtml + '</div>' +
         '</div>';
       }).join('');
 
@@ -649,6 +692,7 @@
         '</div>';
     }
 
+    enhanceToolPage(currentId);
     hydrateIcons(document);
     if (currentId && currentId !== 'home') { recordToolUsage(currentId); }
     enableNumericInputMasking();
