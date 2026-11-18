@@ -224,10 +224,10 @@
         try {
           const amount = parseMaskedNumber(amountInput.value);
           const res = convertCurrency(amount, fromSel.value, toSel.value, rates);
-          resResult.textContent = formatNumber(res.result, 2) + ' ' + toSel.value;
-          resCross.textContent = '1 ' + fromSel.value + ' = ' + fmtRate(res.crossRate) + ' ' + toSel.value;
-          resInverse.textContent = '1 ' + toSel.value + ' = ' + fmtRate(res.inverseRate) + ' ' + fromSel.value;
-          lastText = formatNumber(amount, 2) + ' ' + fromSel.value + ' = ' + formatNumber(res.result, 2) + ' ' + toSel.value +
+          resResult.textContent = formatNumber(res.result, 2) + '\u00a0' + toSel.value;
+          resCross.textContent = '1 ' + fromSel.value + ' = ' + fmtRate(res.crossRate) + '\u00a0' + toSel.value;
+          resInverse.textContent = '1 ' + toSel.value + ' = ' + fmtRate(res.inverseRate) + '\u00a0' + fromSel.value;
+          lastText = formatNumber(amount, 2) + '\u00a0' + fromSel.value + ' = ' + formatNumber(res.result, 2) + '\u00a0' + toSel.value +
             ' (სებ-ის კურსი, ' + tableDate.textContent + ')';
         } catch (err) {
           resResult.textContent = '-';

@@ -24,83 +24,158 @@
   <header class="site-header" id="site-header"></header>
 
   <main class="container">
-    <div class="page-header">
+    <div class="page-header page-header--compact">
       <div class="breadcrumb"><a href="index.html">მთავარი</a> / ტექსტი</div>
       <h1>ქართული ტექსტის კონვერტერი</h1>
-      <p>ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.</p>
+      <p>ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის. შედეგი ჩნდება აკრეფისთანავე.</p>
     </div>
 
-    <div id="converter-warnings" class="alert alert-warning hidden" role="alert"></div>
-
-    <section class="panel">
-      <div class="grid-3" style="align-items: end;">
-        <div class="form-group">
-          <label class="form-label" for="source-format">საწყისი ფორმატი:</label>
-          <select id="source-format" class="input">
-            <option value="acadnusx" selected>ლათინური კლავიატურა / ძველი ფონტი (AcadNusx / LitNusx)</option>
-            <option value="translit">ლათინური ტრანსლიტერაცია / ჩატის სტილი (sh, ch, dz, kh...)</option>
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
-            <option value="new">New ფონტი (‹Œ•–—...¿)</option>
-            <option value="unicode">უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
-          </select>
+    <section class="panel conv-panel" id="conv-panel" aria-label="ტექსტის კონვერტერი">
+      <!-- ფორმატები: საიდან ⇄ სად -->
+      <div class="conv-formats">
+        <div class="conv-format">
+          <label class="conv-format-label" for="source-format">საიდან</label>
+          <div class="conv-select-wrap">
+            <select id="source-format" class="input conv-select">
+              <option value="acadnusx" selected>AcadNusx / ლათინური კლავიატურა</option>
+              <option value="translit">ჩატის ტრანსლიტერაცია (sh, ch, kh)</option>
+              <option value="parliament">პარლამენტის სტანდარტი (ÀÁÂ)</option>
+              <option value="new">New ფონტი (‹Œ•)</option>
+              <option value="unicode">უნიკოდი (Sylfaen)</option>
+              <option value="asomtavruli">მთავრული / ასომთავრული</option>
+            </select>
+            <span class="conv-select-icon" data-icon="chevron-down" aria-hidden="true"></span>
+          </div>
+          <span class="conv-sample" id="source-sample"></span>
         </div>
 
-        <div class="form-group" style="display: flex; justify-content: center; padding-bottom: 0.25rem;">
-          <button type="button" id="btn-swap-formats" class="btn btn-secondary" title="ფორმატებისა და ტექსტის გაცვლა">
-            ⇄ ფორმატების გაცვლა
-          </button>
-        </div>
+        <button type="button" id="btn-swap-formats" class="conv-swap" title="ფორმატებისა და ტექსტის გაცვლა" aria-label="ფორმატებისა და ტექსტის გაცვლა"><i data-icon="arrow-left-right"></i></button>
 
-        <div class="form-group">
-          <label class="form-label" for="target-format">სასურველი (საბოლოო) ფორმატი:</label>
-          <select id="target-format" class="input">
-            <option value="unicode" selected>უნიკოდი (UTF-8 / Sylfaen)</option>
-            <option value="acadnusx">ლათინური კლავიატურა / ძველი ფონტი (AcadNusx / LitNusx)</option>
-            <option value="translit">ლათინური ტრანსლიტერაცია / ჩატის სტილი (sh, ch, dz, kh...)</option>
-            <option value="parliament">ყოფილი პარლამენტის სტანდარტი (ÀÁÂÃ...ä)</option>
-            <option value="new">New ფონტი (‹Œ•–—...¿)</option>
-            <option value="asomtavruli">მთავრული / ასომთავრული (ႠႡႢ...)</option>
-          </select>
+        <div class="conv-format">
+          <label class="conv-format-label" for="target-format">სად</label>
+          <div class="conv-select-wrap">
+            <select id="target-format" class="input conv-select">
+              <option value="unicode" selected>უნიკოდი (Sylfaen)</option>
+              <option value="acadnusx">AcadNusx / ლათინური კლავიატურა</option>
+              <option value="translit">ჩატის ტრანსლიტერაცია (sh, ch, kh)</option>
+              <option value="parliament">პარლამენტის სტანდარტი (ÀÁÂ)</option>
+              <option value="new">New ფონტი (‹Œ•)</option>
+              <option value="asomtavruli">მთავრული / ასომთავრული</option>
+            </select>
+            <span class="conv-select-icon" data-icon="chevron-down" aria-hidden="true"></span>
+          </div>
+          <span class="conv-sample" id="target-sample"></span>
         </div>
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-sm);">
-        <label class="checkbox-label">
-          <input type="checkbox" id="toggle-autodetect" checked />
-          <span>საწყისი ფორმატის <strong>ავტომატური ამოცნობა</strong></span>
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" id="toggle-sylfaen" />
-          <span>შედეგის <strong>Sylfaen</strong> ფონტით ვიზუალურად ჩვენება</span>
-        </label>
-        <span id="detected-badge" class="badge hidden" style="margin-left: auto;"></span>
+      <!-- პარამეტრების ზოლი -->
+      <div class="conv-toolbar">
+        <div class="conv-chips" role="group" aria-label="პარამეტრები">
+          <label class="conv-chip" title="საწყისი ფორმატის ავტომატური ამოცნობა აკრეფისას">
+            <input type="checkbox" id="toggle-autodetect" checked />
+            <span class="conv-chip-mark" data-icon="check" aria-hidden="true"></span>
+            <span>ავტომატური ამოცნობა</span>
+          </label>
+          <label class="conv-chip" title="შედეგის Sylfaen ფონტით ჩვენება">
+            <input type="checkbox" id="toggle-sylfaen" />
+            <span class="conv-chip-mark" data-icon="check" aria-hidden="true"></span>
+            <span>Sylfaen ფონტი</span>
+          </label>
+          <label class="conv-chip" title="შედეგის ავტომატური კოპირება ბუფერში">
+            <input type="checkbox" id="toggle-autocopy" />
+            <span class="conv-chip-mark" data-icon="check" aria-hidden="true"></span>
+            <span>ავტოკოპირება</span>
+          </label>
+        </div>
+        <button type="button" id="btn-fullscreen" class="conv-icon-btn conv-fs-btn" title="სრული ეკრანი" aria-label="სრული ეკრანი" aria-pressed="false"><i data-icon="maximize-2"></i></button>
       </div>
 
-      <div class="grid-2">
-        <div>
-          <label class="form-label" for="conv-input">საწყისი ტექსტი:</label>
-          <textarea id="conv-input" placeholder="ჩასვით ან აკრიფეთ გარდასაქმნელი ტექსტი..."></textarea>
+      <!-- სამუშაო სივრცე -->
+      <div class="conv-workspace">
+        <div class="conv-editor is-empty" id="editor-in">
+          <div class="conv-editor-head">
+            <div class="conv-editor-heading">
+              <label class="conv-editor-title" for="conv-input">საწყისი ტექსტი</label>
+            </div>
+            <span class="conv-count" id="conv-input-count">0 სიმბოლო</span>
+            <div class="conv-actions">
+              <button type="button" id="btn-paste-conv" class="conv-text-btn" title="ბუფერიდან ჩასმა" aria-label="ბუფერიდან ჩასმა"><i data-icon="clipboard-paste"></i><span>ჩასმა</span></button>
+              <button type="button" id="btn-clear-conv" class="conv-icon-btn conv-danger-btn" title="გასუფთავება" aria-label="გასუფთავება"><i data-icon="eraser"></i></button>
+            </div>
+          </div>
+          <div class="conv-editor-body">
+            <textarea id="conv-input" spellcheck="false" autocomplete="off" placeholder="" aria-describedby="input-empty-hint"></textarea>
+            <div class="conv-empty" aria-hidden="false">
+              <span class="conv-empty-icon" data-icon="type" aria-hidden="true"></span>
+              <strong>ჩასვით ან აკრიფეთ ტექსტი</strong>
+              <span id="input-empty-hint">ფორმატი ამოიცნობა ავტომატურად - AcadNusx, ჩატის ლათინური, პარლამენტის სტანდარტი და სხვ.</span>
+              <div class="conv-empty-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-empty-paste"><i data-icon="clipboard-paste"></i>ბუფერიდან ჩასმა</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-try-sample"><i data-icon="wand-sparkles"></i>მაგალითის ცდა</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label class="form-label" for="conv-output">კონვერტირებული შედეგი:</label>
-          <textarea id="conv-output" placeholder="აქ გამოჩნდება კონვერტირებული ტექსტი..."></textarea>
-          <div class="btn-row">
-            <button type="button" id="btn-convert" class="btn btn-primary">კონვერტაცია</button>
-            <button type="button" id="btn-copy-res" class="btn btn-secondary">შედეგის კოპირება</button>
-            <button type="button" id="btn-download-txt" class="btn btn-secondary">TXT ჩამოტვირთვა</button>
-            <button type="button" id="btn-clear-conv" class="btn btn-danger">გასუფთავება</button>
+        <div class="conv-editor conv-editor-out is-empty" id="editor-out">
+          <div class="conv-editor-head">
+            <div class="conv-editor-heading">
+              <label class="conv-editor-title" for="conv-output">შედეგი</label>
+            </div>
+            <span class="conv-status" id="conv-status" role="status" aria-live="polite"></span>
+            <span class="conv-count" id="conv-output-count">0 სიმბოლო</span>
+            <div class="conv-actions">
+              <button type="button" id="btn-convert" class="conv-icon-btn" title="ხელახლა კონვერტაცია (Ctrl + Enter)" aria-label="ხელახლა კონვერტაცია"><i data-icon="rotate-cw"></i></button>
+              <div class="conv-menu-wrap">
+                <button type="button" id="btn-download" class="conv-icon-btn" title="ჩამოტვირთვა" aria-label="ჩამოტვირთვა" aria-haspopup="menu" aria-expanded="false"><i data-icon="download"></i></button>
+                <div class="conv-menu hidden" id="download-menu" role="menu">
+                  <button type="button" role="menuitem" data-format="txt"><i data-icon="file-text"></i><span><strong>TXT</strong><small>ტექსტური ფაილი (UTF-8)</small></span></button>
+                  <button type="button" role="menuitem" data-format="docx"><i data-icon="file-down"></i><span><strong>Word (DOCX)</strong><small>შესაბამისი ფონტით</small></span></button>
+                </div>
+              </div>
+              <button type="button" id="btn-copy-res" class="btn btn-primary btn-sm conv-copy-main" title="შედეგის კოპირება (Ctrl + Shift + C)"><i data-icon="copy"></i>კოპირება</button>
+            </div>
+          </div>
+          <div class="conv-editor-body">
+            <textarea id="conv-output" spellcheck="false" autocomplete="off" placeholder="" aria-describedby="output-empty-hint"></textarea>
+            <div class="conv-empty">
+              <span class="conv-empty-icon" data-icon="sparkles" aria-hidden="true"></span>
+              <strong>შედეგი აქ გამოჩნდება</strong>
+              <span id="output-empty-hint">კონვერტაცია ხდება აკრეფისთანავე.</span>
+              <div class="conv-kbd-hints" aria-label="კლავიატურის მალსახმობები">
+                <span><kbd data-mod>Ctrl</kbd> + <kbd>Enter</kbd> კონვერტაცია</span>
+                <span><kbd data-mod>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> კოპირება</span>
+                <span><kbd>Esc</kbd> სრული ეკრანიდან გასვლა</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="translit-suggestions-wrap" class="hidden" style="margin-top: 1.15rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-        <div style="font-size: 0.88rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">
-          💡 სადავო სიტყვების სწრაფი ჩანაცვლება (დააწკაპუნეთ სასურველ ვარიანტზე):
-        </div>
-        <div id="translit-suggestions" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+      <div id="converter-warnings" class="conv-notice hidden" role="alert"></div>
+
+      <div id="translit-suggestions-wrap" class="conv-suggest hidden">
+        <div class="conv-suggest-title"><i data-icon="lightbulb"></i>სადავო სიტყვები - დააწკაპუნეთ სწორ ვარიანტზე:</div>
+        <div id="translit-suggestions" class="conv-suggest-list"></div>
       </div>
+    </section>
+
+    <!-- ბოლო კონვერტაციები (ინახება მხოლოდ ამ ბრაუზერში) -->
+    <section class="panel conv-history" id="conv-history" aria-label="ბოლო კონვერტაციები">
+      <div class="conv-history-head">
+        <h2 class="conv-history-title"><i data-icon="history"></i>ბოლო კონვერტაციები <span class="conv-history-count" id="history-count">0</span></h2>
+        <div class="conv-history-controls">
+          <label class="conv-chip conv-chip-sm" title="კონვერტაციების შენახვა ამ ბრაუზერში">
+            <input type="checkbox" id="toggle-history" checked />
+            <span class="conv-chip-mark" data-icon="check" aria-hidden="true"></span>
+            <span>შენახვა</span>
+          </label>
+          <button type="button" id="btn-history-clear" class="conv-text-btn conv-danger-text" title="ისტორიის წაშლა"><i data-icon="trash-2"></i><span>გასუფთავება</span></button>
+        </div>
+      </div>
+      <p class="conv-history-note">ისტორია ინახება მხოლოდ თქვენს ბრაუზერში და არსად იგზავნება. ბოლო 10 კონვერტაცია.</p>
+      <ul class="conv-history-list" id="history-list"></ul>
+      <p class="conv-history-empty" id="history-empty">ჯერ არცერთი კონვერტაცია არ შენახულა.</p>
     </section>
   </main>
 
@@ -111,7 +186,7 @@
   <script>
     (function () {
       const { convertGeorgianText, transliterateGeorgian } = window.GeoCore;
-      const { initLayout, copyToClipboard, downloadTextFile, escapeHtml, showToast } = window.GeoCommon;
+      const { initLayout, copyToClipboard, downloadTextFile, escapeHtml } = window.GeoCommon;
 
       initLayout('georgian-converter');
 
@@ -120,7 +195,6 @@
       const swapBtn = document.getElementById('btn-swap-formats');
       const toggleSylfaen = document.getElementById('toggle-sylfaen');
       const toggleAutoDetect = document.getElementById('toggle-autodetect');
-      const detectedBadge = document.getElementById('detected-badge');
       const convInput = document.getElementById('conv-input');
       const convOutput = document.getElementById('conv-output');
       const warningsBox = document.getElementById('converter-warnings');
@@ -253,7 +327,7 @@
           const alts = list.map(function (alt) {
             return '<button type="button" class="btn btn-secondary btn-sm alt-word-btn" data-orig="' + escapeHtml(baseWord) + '" data-alt="' + escapeHtml(alt) + '">' + escapeHtml(alt) + '</button>';
           }).join(' ');
-          return '<div style="display:inline-flex;align-items:center;gap:0.35rem;background:var(--bg-subtle);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--border);font-size:0.84rem;">' +
+          return '<div class="sugg-chip">' +
             '<span>' + escapeHtml(baseWord) + ' →</span>' + alts + '</div>';
         }).filter(Boolean).join('');
 
@@ -268,13 +342,14 @@
             const alt = btn.getAttribute('data-alt');
             if (orig && alt) {
               convOutput.value = convOutput.value.split(orig).join(alt);
-              showToast('ჩანაცვლდა: ' + orig + ' → ' + alt);
+              setStatus('ok', 'ჩანაცვლდა: ' + alt);
+              updateMeta();
             }
           });
         });
       }
 
-      function runConversion() {
+      function runConversionCore() {
         syncUiState();
         const src = sourceFormat.value;
         const dst = targetFormat.value;
@@ -338,8 +413,109 @@
         renderSuggestions(suggestions);
       }
 
+      /* =================== ინტერფეისი =================== */
+      const panel = document.getElementById('conv-panel');
+      const editorIn = document.getElementById('editor-in');
+      const editorOut = document.getElementById('editor-out');
+      const sourceSample = document.getElementById('source-sample');
+      const targetSample = document.getElementById('target-sample');
+      const inputCount = document.getElementById('conv-input-count');
+      const outputCount = document.getElementById('conv-output-count');
+      const statusEl = document.getElementById('conv-status');
+      const copyBtn = document.getElementById('btn-copy-res');
+      const downloadBtn = document.getElementById('btn-download');
+      const downloadMenu = document.getElementById('download-menu');
+      const fsBtn = document.getElementById('btn-fullscreen');
+      const toggleAutoCopy = document.getElementById('toggle-autocopy');
+
+      const FORMAT_SHORT = {
+        acadnusx: 'AcadNusx', translit: 'ტრანსლიტერაცია', parliament: 'პარლამენტი',
+        'new': 'New ფონტი', unicode: 'უნიკოდი', asomtavruli: 'ასომთავრული'
+      };
+      // DOCX-ში ფონტი, რომლითაც ტექსტი სწორად გამოჩნდება
+      const DOCX_FONT = { acadnusx: 'AcadNusx', parliament: 'SPParliamentMedium' };
+      const SAMPLE_WORD = 'საქართველო';
+      const SAMPLE_TEXT = 'gamarjoba! es aris qarTuli teqstis konverteri. Zveli fontiT akrefili teqsti avtomaturad gadadis unikodSi.';
+      const LARGE_TEXT = 4000;
+      const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+      document.querySelectorAll('kbd[data-mod]').forEach(function (k) { k.textContent = isMac ? '⌘' : 'Ctrl'; });
+
+      function sampleFor(fmt) {
+        try {
+          if (fmt === 'unicode') return SAMPLE_WORD;
+          if (fmt === 'translit') return unicodeToTranslitText(SAMPLE_WORD);
+          if (fmt === 'new') return unicodeToNewFontText(SAMPLE_WORD);
+          return convertGeorgianText(SAMPLE_WORD, 'unicode', fmt).output;
+        } catch (_) { return ''; }
+      }
+
+      function countLabel(text) {
+        const chars = Array.from(text || '').length;
+        const trimmed = (text || '').trim();
+        const words = trimmed ? trimmed.split(/\s+/).length : 0;
+        return chars.toLocaleString('en-US') + ' სიმბოლო' + (words ? ' · ' + words.toLocaleString('en-US') + ' სიტყვა' : '');
+      }
+
+      function updateMeta() {
+        sourceSample.textContent = 'მაგ.: ' + sampleFor(sourceFormat.value);
+        targetSample.textContent = 'მაგ.: ' + sampleFor(targetFormat.value);
+        inputCount.textContent = countLabel(convInput.value);
+        outputCount.textContent = countLabel(convOutput.value);
+        editorIn.classList.toggle('is-empty', convInput.value === '');
+        editorOut.classList.toggle('is-empty', convOutput.value === '');
+        copyBtn.disabled = convOutput.value === '';
+      }
+
+      // სტატუსი: busy | ok | error - მოკლე, არაგამაღიზიანებელი შეტყობინება შედეგის ზოლში
+      let statusTimer = null;
+      function setStatus(type, text) {
+        clearTimeout(statusTimer);
+        const iconName = type === 'busy' ? 'loader-circle' : (type === 'error' ? 'circle-alert' : 'check');
+        statusEl.className = 'conv-status' + (type ? ' is-' + type + ' show' : '');
+        statusEl.innerHTML = type ? window.GeoCommon.icon(iconName) + '<span>' + escapeHtml(text) + '</span>' : '';
+        if (type === 'ok') {
+          statusTimer = setTimeout(function () { statusEl.classList.remove('show'); }, 1800);
+        }
+      }
+
+      function syncChips() {
+        document.querySelectorAll('.conv-chip').forEach(function (chip) {
+          const cb = chip.querySelector('input');
+          chip.classList.toggle('is-on', cb.checked);
+        });
+      }
+
+      /* ---------- კონვერტაცია (დიდ ტექსტზე - „მუშავდება“ მდგომარეობით) ---------- */
+      let pendingTimer = null;
+      function runConversion() {
+        clearTimeout(pendingTimer);
+        try {
+          runConversionCore();
+          if (statusEl.classList.contains('is-busy') || statusEl.classList.contains('is-error')) setStatus('', '');
+        } catch (err) {
+          setStatus('error', 'კონვერტაცია ვერ მოხერხდა: ' + (err && err.message ? err.message : 'უცნობი შეცდომა'));
+        }
+        updateMeta();
+        scheduleAutoCopy();
+        scheduleHistorySave();
+      }
+
+      function requestConversion() {
+        if (convInput.value.length > LARGE_TEXT) {
+          setStatus('busy', 'მუშავდება...');
+          editorOut.classList.add('is-busy');
+          clearTimeout(pendingTimer);
+          pendingTimer = setTimeout(function () {
+            runConversion();
+            editorOut.classList.remove('is-busy');
+          }, 180);
+        } else {
+          runConversion();
+        }
+      }
+
       convInput.addEventListener('input', function () {
-        if (toggleAutoDetect && toggleAutoDetect.checked) {
+        if (toggleAutoDetect.checked) {
           const det = detectSourceFormat(convInput.value);
           if (det) {
             sourceFormat.value = det;
@@ -348,25 +524,35 @@
             } else if (det === 'unicode' && targetFormat.value === 'unicode') {
               targetFormat.value = 'acadnusx';
             }
-            if (detectedBadge) {
-              detectedBadge.textContent = '✨ ამოცნობილია: ' + FORMAT_LABELS[det];
-              detectedBadge.classList.remove('hidden');
-            }
-          } else if (detectedBadge) {
-            detectedBadge.classList.add('hidden');
           }
         }
-        runConversion();
+        requestConversion();
       });
 
+      convOutput.addEventListener('input', updateMeta);
       sourceFormat.addEventListener('change', runConversion);
       targetFormat.addEventListener('change', runConversion);
-      toggleSylfaen.addEventListener('change', syncUiState);
+      toggleSylfaen.addEventListener('change', function () { syncUiState(); syncChips(); });
+      toggleAutoDetect.addEventListener('change', syncChips);
 
-      document.getElementById('btn-convert').addEventListener('click', function () {
+      function convertNow() {
         runConversion();
-        showToast('კონვერტაცია შესრულდა.');
-      });
+        if (convInput.value) setStatus('ok', 'კონვერტირებულია');
+      }
+      document.getElementById('btn-convert').addEventListener('click', convertNow);
+
+      // გაცვლის ხატულა: 180° შემობრუნება ~300ms - მხოლოდ ხატულა, ღილაკი უძრავია.
+      // Web Animations API: ყოველ დაჭერაზე (მათ შორის ზედიზედ) ანიმაცია თავიდან იწყება.
+      let swapAnimation = null;
+      function spinSwapIcon() {
+        const iconEl = swapBtn.querySelector('svg');
+        if (!iconEl || typeof iconEl.animate !== 'function') return;
+        if (swapAnimation) swapAnimation.cancel();
+        swapAnimation = iconEl.animate(
+          [{ transform: 'rotate(0deg)' }, { transform: 'rotate(180deg)' }],
+          { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' }
+        );
+      }
 
       swapBtn.addEventListener('click', function () {
         const oldSource = sourceFormat.value;
@@ -375,33 +561,279 @@
         if (convOutput.value.trim() !== '') {
           convInput.value = convOutput.value;
         }
+        spinSwapIcon();
         runConversion();
-        showToast('საწყისი და საბოლოო ფორმატები გაიცვალა.');
       });
 
-      document.getElementById('btn-copy-res').addEventListener('click', function () {
-        copyToClipboard(convOutput.value, 'კონვერტირებული ტექსტი დაკოპირდა!');
+      /* ---------- კოპირება ---------- */
+      function copyResult() {
+        if (!convOutput.value) { setStatus('error', 'კოპირებისთვის შედეგი ცარიელია'); return; }
+        copyToClipboard(convOutput.value, 'კონვერტირებული ტექსტი დაკოპირდა!', copyBtn);
+        saveHistoryNow();
+      }
+      copyBtn.addEventListener('click', copyResult);
+
+      // ავტომატური კოპირება: აკრეფის დასრულებიდან ცოტა ხანში, ჩუმად
+      const AUTOCOPY_KEY = 'mokled_conv_autocopy_v1';
+      let autoCopyTimer = null;
+      let lastAutoCopied = '';
+      try { toggleAutoCopy.checked = localStorage.getItem(AUTOCOPY_KEY) === '1'; } catch (_) {}
+
+      let copyFlashTimer = null;
+      function flashCopyButton() {
+        if (copyBtn.classList.contains('btn-copied')) return;
+        const original = copyBtn.innerHTML;
+        copyBtn.classList.add('btn-copied');
+        copyBtn.innerHTML = window.GeoCommon.icon('check') + 'დაკოპირდა';
+        clearTimeout(copyFlashTimer);
+        copyFlashTimer = setTimeout(function () {
+          copyBtn.innerHTML = original;
+          copyBtn.classList.remove('btn-copied');
+        }, 1300);
+      }
+
+      function scheduleAutoCopy() {
+        clearTimeout(autoCopyTimer);
+        if (!toggleAutoCopy.checked) return;
+        autoCopyTimer = setTimeout(function () {
+          const text = convOutput.value;
+          if (!text.trim() || text === lastAutoCopied) return;
+          if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+          navigator.clipboard.writeText(text).then(function () {
+            lastAutoCopied = text;
+            flashCopyButton();
+          }).catch(function () {});
+        }, 600);
+      }
+
+      toggleAutoCopy.addEventListener('change', function () {
+        try { localStorage.setItem(AUTOCOPY_KEY, toggleAutoCopy.checked ? '1' : '0'); } catch (_) {}
+        lastAutoCopied = '';
+        syncChips();
+        if (toggleAutoCopy.checked) {
+          scheduleAutoCopy();
+        }
       });
 
-      document.getElementById('btn-download-txt').addEventListener('click', function () {
-        if (!convOutput.value.trim()) {
-          showToast('ჩამოსატვირთი ტექსტი ცარიელია.');
+      /* ---------- ჩასმა, გასუფთავება, მაგალითი ---------- */
+      function pasteFromClipboard() {
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+          setStatus('error', 'ღილაკით ჩასმა მიუწვდომელია - გამოიყენეთ Ctrl+V');
+          convInput.focus();
           return;
         }
-        const filename = 'converted-' + sourceFormat.value + '-to-' + targetFormat.value + '.txt';
-        downloadTextFile(filename, convOutput.value, 'text/plain;charset=utf-8', true);
-        showToast('TXT ფაილი ჩამოიტვირთა (UTF-8).');
+        navigator.clipboard.readText().then(function (text) {
+          if (!text) { setStatus('error', 'ბუფერი ცარიელია'); convInput.focus(); return; }
+          convInput.value = text;
+          convInput.dispatchEvent(new Event('input'));
+          convInput.focus();
+        }).catch(function () {
+          setStatus('error', 'ბუფერზე წვდომა არ დაიშვა - გამოიყენეთ Ctrl+V');
+          convInput.focus();
+        });
+      }
+      document.getElementById('btn-paste-conv').addEventListener('click', pasteFromClipboard);
+      document.getElementById('btn-empty-paste').addEventListener('click', pasteFromClipboard);
+
+      document.getElementById('btn-try-sample').addEventListener('click', function () {
+        if (!toggleAutoDetect.checked) sourceFormat.value = 'acadnusx';
+        if (targetFormat.value === 'acadnusx') targetFormat.value = 'unicode';
+        convInput.value = SAMPLE_TEXT;
+        convInput.dispatchEvent(new Event('input'));
+        convInput.focus();
       });
 
       document.getElementById('btn-clear-conv').addEventListener('click', function () {
         convInput.value = '';
         convOutput.value = '';
         warningsBox.classList.add('hidden');
-        if (detectedBadge) detectedBadge.classList.add('hidden');
         renderSuggestions([]);
+        setStatus('', '');
+        updateMeta();
+        convInput.focus();
       });
 
+      /* ---------- ჩამოტვირთვა: TXT / DOCX ---------- */
+      function closeMenu() {
+        downloadMenu.classList.add('hidden');
+        downloadBtn.setAttribute('aria-expanded', 'false');
+      }
+      downloadBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const open = downloadMenu.classList.contains('hidden');
+        downloadMenu.classList.toggle('hidden', !open);
+        downloadBtn.setAttribute('aria-expanded', String(open));
+        if (open) { const first = downloadMenu.querySelector('button'); if (first) first.focus(); }
+      });
+      document.addEventListener('click', function (e) {
+        if (!downloadMenu.classList.contains('hidden') && !e.target.closest('.conv-menu-wrap')) closeMenu();
+      });
+      downloadMenu.addEventListener('click', function (e) {
+        const item = e.target.closest('[data-format]');
+        if (!item) return;
+        closeMenu();
+        if (!convOutput.value.trim()) { setStatus('error', 'ჩამოსატვირთი შედეგი ცარიელია'); return; }
+        const base = 'converted-' + sourceFormat.value + '-to-' + targetFormat.value;
+        if (item.getAttribute('data-format') === 'docx') {
+          window.GeoCommon.downloadDocx(base + '.docx', convOutput.value, DOCX_FONT[targetFormat.value] || 'Sylfaen');
+          setStatus('ok', 'Word ფაილი ჩამოიტვირთა');
+        } else {
+          downloadTextFile(base + '.txt', convOutput.value, 'text/plain;charset=utf-8', true);
+          setStatus('ok', 'TXT ფაილი ჩამოიტვირთა');
+        }
+        saveHistoryNow();
+      });
+
+      /* ---------- სრული ეკრანი ---------- */
+      function setFullscreen(on) {
+        panel.classList.toggle('is-fullscreen', on);
+        document.body.classList.toggle('conv-fs-open', on);
+        fsBtn.setAttribute('aria-pressed', String(on));
+        fsBtn.title = on ? 'სრული ეკრანიდან გასვლა (Esc)' : 'სრული ეკრანი';
+        fsBtn.setAttribute('aria-label', fsBtn.title);
+        fsBtn.innerHTML = window.GeoCommon.icon(on ? 'minimize-2' : 'maximize-2');
+        if (on) convInput.focus();
+      }
+      fsBtn.addEventListener('click', function () { setFullscreen(!panel.classList.contains('is-fullscreen')); });
+
+      /* ---------- კლავიატურა ---------- */
+      document.addEventListener('keydown', function (e) {
+        const mod = e.ctrlKey || e.metaKey;
+        if (mod && e.key === 'Enter') {
+          e.preventDefault();
+          convertNow();
+        } else if (mod && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.code === 'KeyC')) {
+          e.preventDefault();
+          copyResult();
+        } else if (e.key === 'Escape') {
+          if (!downloadMenu.classList.contains('hidden')) { closeMenu(); downloadBtn.focus(); }
+          else if (panel.classList.contains('is-fullscreen')) setFullscreen(false);
+        }
+      });
+
+      /* ---------- ბოლო კონვერტაციები (მხოლოდ localStorage-ში) ---------- */
+      const HISTORY_KEY = 'mokled_conv_history_v1';
+      const HISTORY_ON_KEY = 'mokled_conv_history_on_v1';
+      const HISTORY_MAX = 10;
+      const HISTORY_TEXT_MAX = 5000;
+      const historyList = document.getElementById('history-list');
+      const historyEmpty = document.getElementById('history-empty');
+      const historyCount = document.getElementById('history-count');
+      const toggleHistory = document.getElementById('toggle-history');
+      let historyTimer = null;
+
+      function loadHistory() {
+        try {
+          const arr = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+          return Array.isArray(arr) ? arr : [];
+        } catch (_) { return []; }
+      }
+      function storeHistory(arr) {
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(arr)); } catch (_) {}
+      }
+      try { toggleHistory.checked = localStorage.getItem(HISTORY_ON_KEY) !== '0'; } catch (_) {}
+
+      function timeAgo(ts) {
+        const s = Math.round((Date.now() - ts) / 1000);
+        if (s < 60) return 'ახლახან';
+        if (s < 3600) return Math.floor(s / 60) + ' წთ წინ';
+        if (s < 86400) return Math.floor(s / 3600) + ' სთ წინ';
+        const d = new Date(ts);
+        return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+      }
+
+      function preview(text) {
+        const t = String(text || '').replace(/\s+/g, ' ').trim();
+        return t.length > 90 ? t.slice(0, 90) + '…' : t;
+      }
+
+      function renderHistory() {
+        const items = loadHistory();
+        historyCount.textContent = String(items.length);
+        historyEmpty.classList.toggle('hidden', items.length > 0);
+        historyEmpty.textContent = toggleHistory.checked ? 'ჯერ არცერთი კონვერტაცია არ შენახულა.' : 'ისტორიის შენახვა გამორთულია.';
+        historyList.innerHTML = items.map(function (it) {
+          return '<li class="conv-history-item">' +
+            '<button type="button" class="conv-history-restore" data-id="' + escapeHtml(it.id) + '" title="აღდგენა">' +
+              '<span class="conv-history-meta"><span class="conv-history-formats">' + escapeHtml(FORMAT_SHORT[it.src] || it.src) + ' → ' + escapeHtml(FORMAT_SHORT[it.dst] || it.dst) + '</span>' +
+              '<span class="conv-history-time">' + escapeHtml(timeAgo(it.t)) + '</span></span>' +
+              '<span class="conv-history-text">' + escapeHtml(preview(it.input)) + '</span>' +
+              '<span class="conv-history-out">' + escapeHtml(preview(it.output)) + '</span>' +
+            '</button>' +
+            '<button type="button" class="conv-icon-btn conv-history-del" data-del="' + escapeHtml(it.id) + '" title="წაშლა" aria-label="ჩანაწერის წაშლა">' + window.GeoCommon.icon('x') + '</button>' +
+          '</li>';
+        }).join('');
+      }
+
+      function saveHistoryNow() {
+        clearTimeout(historyTimer);
+        if (!toggleHistory.checked) return;
+        const input = convInput.value;
+        const output = convOutput.value;
+        if (!input.trim() || !output.trim() || input === output) return;
+        const entry = {
+          id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
+          t: Date.now(),
+          src: sourceFormat.value,
+          dst: targetFormat.value,
+          input: input.slice(0, HISTORY_TEXT_MAX),
+          output: output.slice(0, HISTORY_TEXT_MAX)
+        };
+        let items = loadHistory();
+        // თუ იმავე ტექსტის გაგრძელებაა (ან იგივეა), ძველ ჩანაწერს ვანაცვლებთ - ისტორია ნაწილობრივი ვერსიებით არ ივსება
+        if (items[0] && items[0].src === entry.src && items[0].dst === entry.dst &&
+            (entry.input.indexOf(items[0].input) === 0 || items[0].input.indexOf(entry.input) === 0)) {
+          items.shift();
+        }
+        items = items.filter(function (it) { return !(it.input === entry.input && it.dst === entry.dst); });
+        items.unshift(entry);
+        storeHistory(items.slice(0, HISTORY_MAX));
+        renderHistory();
+      }
+
+      function scheduleHistorySave() {
+        clearTimeout(historyTimer);
+        if (!toggleHistory.checked) return;
+        historyTimer = setTimeout(saveHistoryNow, 2500);
+      }
+
+      historyList.addEventListener('click', function (e) {
+        const del = e.target.closest('[data-del]');
+        if (del) {
+          storeHistory(loadHistory().filter(function (it) { return it.id !== del.getAttribute('data-del'); }));
+          renderHistory();
+          return;
+        }
+        const restore = e.target.closest('[data-id]');
+        if (!restore) return;
+        const it = loadHistory().find(function (x) { return x.id === restore.getAttribute('data-id'); });
+        if (!it) return;
+        sourceFormat.value = it.src;
+        targetFormat.value = it.dst;
+        convInput.value = it.input;
+        runConversion();
+        setStatus('ok', 'აღდგენილია ისტორიიდან');
+        editorIn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+
+      document.getElementById('btn-history-clear').addEventListener('click', function () {
+        storeHistory([]);
+        renderHistory();
+        setStatus('ok', 'ისტორია გასუფთავდა');
+      });
+
+      toggleHistory.addEventListener('change', function () {
+        try { localStorage.setItem(HISTORY_ON_KEY, toggleHistory.checked ? '1' : '0'); } catch (_) {}
+        syncChips();
+        renderHistory();
+      });
+
+      /* ---------- საწყისი მდგომარეობა ---------- */
       syncUiState();
+      syncChips();
+      updateMeta();
+      renderHistory();
+      window.GeoCommon.hydrateIcons(document);
     })();
   </script>
 </body>

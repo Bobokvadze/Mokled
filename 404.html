@@ -16,17 +16,20 @@
   <header class="site-header" id="site-header"></header>
 
   <main class="container">
-    <section class="panel" style="text-align: center; padding: 3rem 1.5rem;">
-      <div style="font-size: 3.5rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 0.5rem;">404</div>
-      <h1 style="font-size: 1.6rem; margin-bottom: 0.6rem;">სამწუხაროდ, მითითებული გვერდი ვერ მოიძებნა</h1>
-      <p style="color: var(--text-muted); max-width: 540px; margin: 0 auto 1.5rem;">
-        შესაძლოა ბმული არასწორად არის აკრეფილი ან გვერდი სხვა მისამართზე გადავიდა. აირჩიეთ სასურველი ხელსაწყო ქვემოთ ან დაბრუნდით მთავარ გვერდზე.
-      </p>
-      <div class="btn-row" style="justify-content: center;">
-        <a href="index.html" class="btn btn-primary">მთავარ გვერდზე დაბრუნება</a>
-        <a href="georgian-converter.html" class="btn btn-secondary">ქართული კონვერტერი</a>
-        <a href="loan-calculator.html" class="btn btn-secondary">სესხის კალკულატორი</a>
-        <a href="postal-codes.html" class="btn btn-secondary">საფოსტო ინდექსები</a>
+    <section class="notfound">
+      <div class="notfound-code" aria-hidden="true">404</div>
+      <h1>გვერდი ვერ მოიძებნა</h1>
+      <p>შესაძლოა ბმული არასწორად არის აკრეფილი ან გვერდი სხვა მისამართზე გადავიდა. აირჩიეთ ხელსაწყო ქვემოთ ან დაბრუნდით მთავარ გვერდზე.</p>
+      <div class="btn-row notfound-actions">
+        <a href="index.html" class="btn btn-primary"><i data-icon="house"></i>მთავარ გვერდზე დაბრუნება</a>
+      </div>
+      <div class="popular-grid notfound-links">
+        <a class="popular-tile" href="georgian-converter.html"><span class="page-icon fi-violet" data-icon="languages" aria-hidden="true"></span><strong>კონვერტერი</strong><small>ქართული ფონტები</small></a>
+        <a class="popular-tile" href="loan-calculator.html"><span class="page-icon fi-blue" data-icon="house" aria-hidden="true"></span><strong>სესხი</strong><small>გრაფიკი და წინსწრება</small></a>
+        <a class="popular-tile" href="salary-calculator.html"><span class="page-icon fi-blue" data-icon="briefcase" aria-hidden="true"></span><strong>ხელფასი</strong><small>Net ⇄ Gross</small></a>
+        <a class="popular-tile" href="postal-codes.html"><span class="page-icon fi-green" data-icon="mail" aria-hidden="true"></span><strong>ინდექსები</strong><small>საფოსტო კოდები</small></a>
+        <a class="popular-tile" href="pdf-tools.html"><span class="page-icon fi-red" data-icon="file-text" aria-hidden="true"></span><strong>PDF</strong><small>გაერთიანება, შეკუმშვა</small></a>
+        <a class="popular-tile" href="currency-converter.html"><span class="page-icon fi-blue" data-icon="coins" aria-hidden="true"></span><strong>ვალუტა</strong><small>სებ-ის კურსით</small></a>
       </div>
     </section>
   </main>

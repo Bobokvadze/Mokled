@@ -37,6 +37,35 @@
     "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\" />",
     "scale": "<path d=\"m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\" /><path d=\"m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\" /><path d=\"M7 21h10\" /><path d=\"M12 3v18\" /><path d=\"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\" />",
     "trophy": "<path d=\"M6 9H4.5a2.5 2.5 0 0 1 0-5H6\" /><path d=\"M18 9h1.5a2.5 2.5 0 0 0 0-5H18\" /><path d=\"M4 22h16\" /><path d=\"M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22\" /><path d=\"M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22\" /><path d=\"M18 2H6v7a6 6 0 0 0 12 0V2Z\" />",
+    "printer": "<path d=\"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2\" /><path d=\"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6\" /><rect x=\"6\" y=\"14\" width=\"12\" height=\"8\" rx=\"1\" />",
+    "link": "<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\" /><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\" />",
+    "copy": "<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\" /><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\" />",
+    "refresh-cw": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\" /><path d=\"M21 3v5h-5\" /><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\" /><path d=\"M8 16H3v5\" />",
+    "square": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" />",
+    "chevron-left": "<path d=\"m15 18-6-6 6-6\" />",
+    "chevron-right": "<path d=\"m9 18 6-6-6-6\" />",
+    "lightbulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\" /><path d=\"M9 18h6\" /><path d=\"M10 22h4\" />",
+    "file-down": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\" /><path d=\"M14 2v4a2 2 0 0 0 2 2h4\" /><path d=\"M12 18v-6\" /><path d=\"m9 15 3 3 3-3\" />",
+    "timer": "<line x1=\"10\" x2=\"14\" y1=\"2\" y2=\"2\" /><line x1=\"12\" x2=\"15\" y1=\"14\" y2=\"11\" /><circle cx=\"12\" cy=\"14\" r=\"8\" />",
+    "trending-down": "<polyline points=\"22 17 13.5 8.5 8.5 13.5 2 7\" /><polyline points=\"16 17 22 17 22 11\" />",
+    "upload": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><polyline points=\"17 8 12 3 7 8\" /><line x1=\"12\" x2=\"12\" y1=\"3\" y2=\"15\" />",
+    "arrow-left-right": "<path d=\"M8 3 4 7l4 4\" /><path d=\"M4 7h16\" /><path d=\"m16 21 4-4-4-4\" /><path d=\"M20 17H4\" />",
+    "eraser": "<path d=\"m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21\" /><path d=\"M22 21H7\" /><path d=\"m5 11 9 9\" />",
+    "rotate-cw": "<path d=\"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8\" /><path d=\"M21 3v5h-5\" />",
+    "clipboard-paste": "<path d=\"M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z\" /><path d=\"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M16 4h2a2 2 0 0 1 2 2v2M11 14h10\" /><path d=\"m17 10 4 4-4 4\" />",
+    "clipboard-check": "<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\" /><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\" /><path d=\"m9 14 2 2 4-4\" />",
+    "maximize-2": "<polyline points=\"15 3 21 3 21 9\" /><polyline points=\"9 21 3 21 3 15\" /><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\" /><line x1=\"3\" x2=\"10\" y1=\"21\" y2=\"14\" />",
+    "minimize-2": "<polyline points=\"4 14 10 14 10 20\" /><polyline points=\"20 10 14 10 14 4\" /><line x1=\"14\" x2=\"21\" y1=\"10\" y2=\"3\" /><line x1=\"3\" x2=\"10\" y1=\"21\" y2=\"14\" />",
+    "check": "<path d=\"M20 6 9 17l-5-5\" />",
+    "history": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\" /><path d=\"M3 3v5h5\" /><path d=\"M12 7v5l4 2\" />",
+    "x": "<path d=\"M18 6 6 18\" /><path d=\"m6 6 12 12\" />",
+    "chevron-down": "<path d=\"m6 9 6 6 6-6\" />",
+    "loader-circle": "<path d=\"M21 12a9 9 0 1 1-6.219-8.56\" />",
+    "keyboard": "<path d=\"M10 8h.01\" /><path d=\"M12 12h.01\" /><path d=\"M14 8h.01\" /><path d=\"M16 12h.01\" /><path d=\"M18 8h.01\" /><path d=\"M6 8h.01\" /><path d=\"M7 16h10\" /><path d=\"M8 12h.01\" /><rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\" />",
+    "circle-alert": "<circle cx=\"12\" cy=\"12\" r=\"10\" /><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"12\" /><line x1=\"12\" x2=\"12.01\" y1=\"16\" y2=\"16\" />",
+    "trash-2": "<path d=\"M3 6h18\" /><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\" /><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\" /><line x1=\"10\" x2=\"10\" y1=\"11\" y2=\"17\" /><line x1=\"14\" x2=\"14\" y1=\"11\" y2=\"17\" />",
+    "corner-up-left": "<polyline points=\"9 14 4 9 9 4\" /><path d=\"M20 20v-7a4 4 0 0 0-4-4H4\" />",
+    "wand-sparkles": "<path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\" /><path d=\"m14 7 3 3\" /><path d=\"M5 6v4\" /><path d=\"M19 14v4\" /><path d=\"M10 2v2\" /><path d=\"M7 8H3\" /><path d=\"M21 16h-4\" /><path d=\"M11 3H9\" />",
     "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><polyline points=\"7 10 12 15 17 10\" /><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\" />"
   };
 
@@ -396,6 +425,12 @@
       { name: 'xl/worksheets/sheet1.xml', content: sheetXml }
     ];
 
+    return buildZipBlob(files, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  }
+
+
+  // მარტივი ZIP (შეკუმშვის გარეშე, "stored") - XLSX/DOCX ფაილებისთვის
+  function buildZipBlob(files, mimeType) {
     const enc = new TextEncoder();
     const localParts = [];
     const centralParts = [];
@@ -463,9 +498,49 @@
     edv.setUint32(16, offset, true);
     edv.setUint16(20, 0, true);
 
-    return new Blob(localParts.concat(centralParts, [eocd]), {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
+    return new Blob(localParts.concat(centralParts, [eocd]), { type: mimeType || 'application/zip' });
+  }
+
+  // Word (.docx) დოკუმენტი ტექსტიდან: თითო ხაზი - ცალკე აბზაცი; fontName - მაგ. "Sylfaen" ან "AcadNusx"
+  function buildDocxBlob(text, fontName) {
+    const font = xmlEscape(fontName || 'Sylfaen');
+    const rPr = '<w:rPr><w:rFonts w:ascii="' + font + '" w:hAnsi="' + font + '" w:cs="' + font + '" w:eastAsia="' + font + '"/><w:sz w:val="24"/></w:rPr>';
+    const paragraphs = String(text == null ? '' : text).replace(/\r\n?/g, '\n').split('\n').map(function (line) {
+      if (line === '') return '<w:p><w:pPr>' + rPr + '</w:pPr></w:p>';
+      const runs = line.split('\t').map(function (part, i) {
+        return (i > 0 ? '<w:r>' + rPr + '<w:tab/></w:r>' : '') +
+          (part ? '<w:r>' + rPr + '<w:t xml:space="preserve">' + xmlEscape(part) + '</w:t></w:r>' : '');
+      }).join('');
+      return '<w:p>' + runs + '</w:p>';
+    }).join('');
+    const files = [
+      {
+        name: '[Content_Types].xml',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'
+      },
+      {
+        name: '_rels/.rels',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'
+      },
+      {
+        name: 'word/document.xml',
+        content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + paragraphs +
+          '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="709" w:footer="709" w:gutter="0"/></w:sectPr></w:body></w:document>'
+      }
+    ];
+    return buildZipBlob(files, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  }
+
+  function downloadDocx(filename, text, fontName) {
+    const blob = buildDocxBlob(text, fontName);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = /\.docx$/i.test(filename) ? filename : (filename + '.docx');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
   }
 
   function downloadExcelXlsx(filename, sheetTitle, rows) {
@@ -535,7 +610,7 @@
     if (btn) {
       const freshBtn = btn.cloneNode(true);
       freshBtn.id = 'btn-export-loan-excel';
-      freshBtn.textContent = '📥 Excel-ში ჩამოტვირთვა (.xlsx)';
+      freshBtn.innerHTML = icon('file-down') + 'Excel-ში ჩამოტვირთვა (.xlsx)';
       btn.parentNode.replaceChild(freshBtn, btn);
       freshBtn.addEventListener('click', function (e) {
         e.preventDefault();
@@ -747,6 +822,8 @@
     if (el.classList.contains('zip-pill')) {
       const code = el.getAttribute('data-code') || '';
       el.innerHTML = '✓ ' + escapeHtml(code);
+    } else if (el.classList.contains('conv-icon-btn')) {
+      el.innerHTML = icon('clipboard-check');
     } else if (el.classList.contains('nbg-rate-pill')) {
       const rate = el.getAttribute('data-rate') || '';
       el.innerHTML = '✓ ' + escapeHtml(rate);
@@ -837,6 +914,9 @@
     parseMaskedNumber: parseMaskedNumber,
     formatNumberWithCommas: formatNumberWithCommas,
     downloadExcelXlsx: downloadExcelXlsx,
+    buildZipBlob: buildZipBlob,
+    buildDocxBlob: buildDocxBlob,
+    downloadDocx: downloadDocx,
     exportLoanScheduleFromDom: exportLoanScheduleFromDom
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

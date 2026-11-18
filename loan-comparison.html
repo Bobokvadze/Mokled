@@ -73,7 +73,7 @@
       <div class="lc-bars" id="lc-bars" aria-hidden="true"></div>
       <div class="btn-row">
         <button type="button" id="btn-lc-copy" class="btn btn-primary">შედეგის კოპირება</button>
-        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary"><i data-icon="printer"></i>ამობეჭდვა / PDF</button>
       </div>
       <p class="lc-note">
         გამოთვლა სავარაუდოა: ბანკის ოფიციალური გრაფიკი შეიძლება ოდნავ განსხვავდებოდეს დამრგვალების, დაზღვევის ან სხვა პირობების გამო.
@@ -163,7 +163,7 @@
 
           verdict.innerHTML = icon('trophy') + '<div><strong>ყველაზე ხელსაყრელია: ' + escapeHtml(best.name) + '</strong>' +
             '<span>' + (saving > 0.005
-              ? 'ჯამური ღირებულება ' + formatMoney(best.totalCost) + ' ' + escapeHtml(sym) + ' - დაზოგავთ ' + formatMoney(saving) + ' ' + escapeHtml(sym) + '-ს „' + escapeHtml(worst.name) + '“-თან შედარებით.'
+              ? 'ჯამური ღირებულება ' + formatMoney(best.totalCost) + '\u00a0' + escapeHtml(sym) + ' - დაზოგავთ ' + formatMoney(saving) + '\u00a0' + escapeHtml(sym) + '-ს „' + escapeHtml(worst.name) + '“-თან შედარებით.'
               : 'შეთავაზებები ჯამური ღირებულებით თანაბარია.') + '</span></div>';
           verdict.classList.remove('hidden');
 
@@ -185,13 +185,13 @@
             ['წლიური განაკვეთი', function (o) { return o.annualRate + '%'; }],
             ['ეფექტური წლიური განაკვეთი', function (o) { return '<strong>' + fmtRate(o.effectiveRate) + '</strong>'; }],
             ['ვადა', function (o) { return o.termMonths + ' თვე'; }],
-            ['პირველი შენატანი', function (o) { return formatMoney(o.firstPayment) + ' ' + escapeHtml(sym); }],
-            ['ბოლო შენატანი', function (o) { return formatMoney(o.lastPayment) + ' ' + escapeHtml(sym); }],
-            ['ჯამური პროცენტი', function (o) { return formatMoney(o.totalInterest) + ' ' + escapeHtml(sym); }],
-            ['საკომისიოები სულ', function (o) { return formatMoney(o.totalFees) + ' ' + escapeHtml(sym); }],
-            ['სესხის ღირებულება (პროცენტი + საკომისიო)', function (o) { return '<strong>' + formatMoney(o.totalCost) + ' ' + escapeHtml(sym) + '</strong>'; }],
-            ['სულ გადასახდელი', function (o) { return formatMoney(o.totalPaid) + ' ' + escapeHtml(sym); }],
-            ['საუკეთესოსთან სხვაობა', function (o) { return o.extraVsBest > 0.005 ? '<span class="lc-extra">+' + formatMoney(o.extraVsBest) + ' ' + escapeHtml(sym) + '</span>' : '—'; }]
+            ['პირველი შენატანი', function (o) { return formatMoney(o.firstPayment) + '\u00a0' + escapeHtml(sym); }],
+            ['ბოლო შენატანი', function (o) { return formatMoney(o.lastPayment) + '\u00a0' + escapeHtml(sym); }],
+            ['ჯამური პროცენტი', function (o) { return formatMoney(o.totalInterest) + '\u00a0' + escapeHtml(sym); }],
+            ['საკომისიოები სულ', function (o) { return formatMoney(o.totalFees) + '\u00a0' + escapeHtml(sym); }],
+            ['სესხის ღირებულება (პროცენტი + საკომისიო)', function (o) { return '<strong>' + formatMoney(o.totalCost) + '\u00a0' + escapeHtml(sym) + '</strong>'; }],
+            ['სულ გადასახდელი', function (o) { return formatMoney(o.totalPaid) + '\u00a0' + escapeHtml(sym); }],
+            ['საუკეთესოსთან სხვაობა', function (o) { return o.extraVsBest > 0.005 ? '<span class="lc-extra">+' + formatMoney(o.extraVsBest) + '\u00a0' + escapeHtml(sym) + '</span>' : '—'; }]
           ];
           tbody.innerHTML = rows.map(function (r) {
             return '<tr><th scope="row">' + r[0] + '</th>' + res.offers.map(function (o, i) {
@@ -204,12 +204,12 @@
             const pct = Math.max(2, Math.round(o.totalCost / maxCost * 100));
             return '<div class="lc-bar-row"><span class="lc-bar-label">' + escapeHtml(o.name) + '</span>' +
               '<span class="lc-bar-track"><span class="lc-bar' + (i === res.bestIndex ? ' best' : '') + '" style="width:' + pct + '%"></span></span>' +
-              '<span class="lc-bar-value">' + formatMoney(o.totalCost) + ' ' + escapeHtml(sym) + '</span></div>';
+              '<span class="lc-bar-value">' + formatMoney(o.totalCost) + '\u00a0' + escapeHtml(sym) + '</span></div>';
           }).join('');
 
-          lastText = 'სესხის თანხა: ' + formatMoney(res.principal) + ' ' + sym + '\n' + res.offers.map(function (o) {
+          lastText = 'სესხის თანხა: ' + formatMoney(res.principal) + '\u00a0' + sym + '\n' + res.offers.map(function (o) {
             return o.name + ': ' + o.annualRate + '% / ' + o.termMonths + ' თვე, ეფექტური ' + fmtRate(o.effectiveRate) +
-              ', შენატანი ' + formatMoney(o.firstPayment) + ' ' + sym + ', ღირებულება ' + formatMoney(o.totalCost) + ' ' + sym;
+              ', შენატანი ' + formatMoney(o.firstPayment) + '\u00a0' + sym + ', ღირებულება ' + formatMoney(o.totalCost) + '\u00a0' + sym;
           }).join('\n') + '\nყველაზე ხელსაყრელი: ' + best.name;
         } catch (err) {
           verdict.classList.add('hidden');

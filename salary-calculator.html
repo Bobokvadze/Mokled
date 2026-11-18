@@ -94,13 +94,13 @@
 
       <div class="alert alert-info" style="margin-top: 1rem;">
         <div><strong>გამოთვლის ფორმულა:</strong></div>
-        <div id="res-sal-formula" style="margin-top: 0.3rem; font-family: monospace;"></div>
+        <div id="res-sal-formula" class="formula-text"></div>
       </div>
 
       <div class="btn-row">
         <button type="button" id="btn-copy-sal" class="btn btn-primary">შედეგის კოპირება</button>
         <button type="button" id="btn-sal-to-words" class="btn btn-secondary">ხელზე ასაღები თანხა სიტყვიერად</button>
-        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary"><i data-icon="printer"></i>ამობეჭდვა / PDF</button>
       </div>
       <div id="sal-words-box" class="alert alert-success hidden" style="margin-top: 0.85rem;"></div>
     </section>
@@ -144,11 +144,11 @@
           });
           currentCalc = res;
 
-          resNet.textContent = formatMoney(res.net, 2) + ' ₾';
-          resGross.textContent = formatMoney(res.gross, 2) + ' ₾';
-          resTax.textContent = formatMoney(res.incomeTax, 2) + ' ₾';
-          resEmpPen.textContent = formatMoney(res.employeePension, 2) + ' ₾';
-          resTotalCost.textContent = formatMoney(res.totalEmployerCost, 2) + ' ₾';
+          resNet.textContent = formatMoney(res.net, 2) + '\u00a0₾';
+          resGross.textContent = formatMoney(res.gross, 2) + '\u00a0₾';
+          resTax.textContent = formatMoney(res.incomeTax, 2) + '\u00a0₾';
+          resEmpPen.textContent = formatMoney(res.employeePension, 2) + '\u00a0₾';
+          resTotalCost.textContent = formatMoney(res.totalEmployerCost, 2) + '\u00a0₾';
           resFormula.textContent = res.formula;
         } catch (err) {
           currentCalc = null;
@@ -170,7 +170,7 @@
           'დარიცხული (Gross): ' + formatMoney(currentCalc.gross, 2) + ' ₾\n' +
           'საშემოსავლო გადასახადი: ' + formatMoney(currentCalc.incomeTax, 2) + ' ₾\n' +
           'დასაქმებულის საპენსიო (2%): ' + formatMoney(currentCalc.employeePension, 2) + ' ₾\n' +
-          'დამსაქმებლის სრული ხარჯი: ' + formatMoney(currentCalc.totalEmployerCost, 2) + ' ₾';
+          'დამსაქმებლის სრული ხარჯი: ' + formatMoney(currentCalc.totalEmployerCost, 2) + '\u00a0₾';
         copyToClipboard(summary, 'ხელფასის გაანგარიშება დაკოპირდა!');
       });
 

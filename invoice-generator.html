@@ -96,7 +96,7 @@
       </div>
 
       <div class="btn-row">
-        <button type="button" id="btn-inv-print" class="btn btn-primary">📄 PDF-ად შენახვა / ამობეჭდვა</button>
+        <button type="button" id="btn-inv-print" class="btn btn-primary"><i data-icon="printer"></i>PDF-ად შენახვა / ამობეჭდვა</button>
         <button type="button" id="btn-inv-next" class="btn btn-secondary">შემდეგი ნომერი</button>
         <button type="button" id="btn-inv-clear" class="btn btn-danger">გასუფთავება</button>
       </div>
@@ -176,7 +176,7 @@
         const totals = calculateInvoiceTotals(items, { vatEnabled: vatCheck.checked, vatRate: vatRate, pricesIncludeVat: inclCheck.checked });
 
         itemsBody.querySelectorAll('.inv-line-total').forEach(function (td, i) {
-          td.textContent = formatMoney(totals.rows[i] ? totals.rows[i].lineTotal : 0) + ' ' + sym;
+          td.textContent = formatMoney(totals.rows[i] ? totals.rows[i].lineTotal : 0) + '\u00a0' + sym;
         });
 
         let words = '';
@@ -198,14 +198,14 @@
             '<div><strong>მყიდველი</strong>' + row('დასახელება', fields['buyer-name'].value) + row('ს/კ', fields['buyer-id'].value) +
               row('მისამართი', fields['buyer-address'].value) + '</div>' +
           '</div>' +
-          '<table class="inv-table"><thead><tr><th>#</th><th>დასახელება</th><th>ერთ.</th><th>რაოდ.</th><th>ფასი (' + sym + ')</th><th>ჯამი (' + sym + ')</th></tr></thead>' +
-            '<tbody>' + rowsHtml + '</tbody></table>' +
+          '<div class="inv-table-wrap"><table class="inv-table"><thead><tr><th>#</th><th>დასახელება</th><th>ერთ.</th><th>რაოდ.</th><th>ფასი (' + sym + ')</th><th>ჯამი (' + sym + ')</th></tr></thead>' +
+            '<tbody>' + rowsHtml + '</tbody></table></div>' +
           '<div class="inv-totals">' +
             (vatCheck.checked
-              ? '<div><span>ჯამი დღგ-ის გარეშე:</span><strong>' + formatMoney(totals.net) + ' ' + sym + '</strong></div>' +
-                '<div><span>დღგ (' + vatRate + '%):</span><strong>' + formatMoney(totals.vat) + ' ' + sym + '</strong></div>'
+              ? '<div><span>ჯამი დღგ-ის გარეშე:</span><strong>' + formatMoney(totals.net) + '\u00a0' + sym + '</strong></div>' +
+                '<div><span>დღგ (' + vatRate + '%):</span><strong>' + formatMoney(totals.vat) + '\u00a0' + sym + '</strong></div>'
               : '<div><span>დღგ:</span><strong>არ იბეგრება</strong></div>') +
-            '<div class="inv-grand"><span>სულ გადასახდელი:</span><strong>' + formatMoney(totals.gross) + ' ' + sym + '</strong></div>' +
+            '<div class="inv-grand"><span>სულ გადასახდელი:</span><strong>' + formatMoney(totals.gross) + '\u00a0' + sym + '</strong></div>' +
           '</div>' +
           (words ? '<p class="inv-words"><strong>სიტყვიერად:</strong> ' + escapeHtml(words) + '</p>' : '') +
           (fields['inv-note'].value.trim() ? '<p class="inv-note">' + escapeHtml(fields['inv-note'].value) + '</p>' : '') +

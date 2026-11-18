@@ -85,7 +85,7 @@
   <script src="js/postal-data.js"></script>
   <script>
     (function () {
-      const { initLayout, copyToClipboard, escapeHtml } = window.GeoCommon;
+      const { initLayout, copyToClipboard, escapeHtml, icon } = window.GeoCommon;
       const RAW_DATA = window.GeoPostalData || [];
       initLayout('postal-codes');
 
@@ -178,7 +178,7 @@
           const metaText = item.district ? (escapeHtml(item.city) + ' • ' + escapeHtml(item.district)) : escapeHtml(item.city);
           return (
             '<tr>' +
-              '<td><button type="button" class="zip-pill copy-zip-btn" data-code="' + escapeHtml(item.code) + '" title="დააწკაპუნეთ ინდექსის დასაკოპირებლად">📋 ' + escapeHtml(item.code) + '</button></td>' +
+              '<td><button type="button" class="zip-pill copy-zip-btn" data-code="' + escapeHtml(item.code) + '" title="დააწკაპუნეთ ინდექსის დასაკოპირებლად">' + icon('copy') + escapeHtml(item.code) + '</button></td>' +
               '<td><strong>' + escapeHtml(item.address) + '</strong><span class="mobile-meta">' + metaText + '</span></td>' +
               '<td class="col-city">' + escapeHtml(item.city) + '</td>' +
               '<td class="col-district">' + (item.district ? escapeHtml(item.district) : '<span style="color:var(--text-muted);">-</span>') + '</td>' +

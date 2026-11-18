@@ -79,7 +79,7 @@
 
       <div class="btn-row">
         <button type="button" id="btn-pen-copy" class="btn btn-primary">შედეგის კოპირება</button>
-        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary"><i data-icon="printer"></i>ამობეჭდვა / PDF</button>
       </div>
     </section>
   </main>
@@ -122,12 +122,12 @@
           const amount = parseMaskedNumber(amountInput.value);
           const res = calculateTaxPenalty(amount, dueInput.value, payInput.value, rateInput.value === '' ? 0 : Number(rateInput.value));
           out.days.textContent = res.days + ' დღე';
-          out.penalty.textContent = formatMoney(res.penalty) + ' ₾';
-          out.total.textContent = formatMoney(res.total) + ' ₾';
-          out.daily.textContent = formatMoney(res.dailyAmount) + ' ₾';
+          out.penalty.textContent = formatMoney(res.penalty) + '\u00a0₾';
+          out.total.textContent = formatMoney(res.total) + '\u00a0₾';
+          out.daily.textContent = formatMoney(res.dailyAmount) + '\u00a0₾';
           formulaBox.textContent = 'საურავი = ' + formatMoney(amount) + ' ₾ × ' + rateInput.value + '% × ' + res.days + ' დღე = ' + formatMoney(res.penalty) +
-            ' ₾ (ძირითადი თანხის ' + res.effectivePercent + '%)' + (res.days === 0 ? ' - გადახდა ვადაშია, საურავი არ ერიცხება.' : '');
-          lastText = 'გადასახადი: ' + formatMoney(amount) + ' ₾\nვადაგადაცილება: ' + res.days + ' დღე\nსაურავი: ' + formatMoney(res.penalty) + ' ₾\nსულ: ' + formatMoney(res.total) + ' ₾';
+            '\u00a0₾ (ძირითადი თანხის ' + res.effectivePercent + '%)' + (res.days === 0 ? ' - გადახდა ვადაშია, საურავი არ ერიცხება.' : '');
+          lastText = 'გადასახადი: ' + formatMoney(amount) + ' ₾\nვადაგადაცილება: ' + res.days + ' დღე\nსაურავი: ' + formatMoney(res.penalty) + ' ₾\nსულ: ' + formatMoney(res.total) + '\u00a0₾';
         } catch (err) {
           Object.keys(out).forEach(function (k) { out[k].textContent = '-'; });
           formulaBox.textContent = '-';

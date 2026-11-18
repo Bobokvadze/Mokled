@@ -75,13 +75,13 @@
 
       <div class="alert alert-info" style="margin-top: 1rem;">
         <div><strong>გამოთვლის ფორმულა და შუალედური შედეგები (4 ათწილადის სიზუსტით):</strong></div>
-        <div id="res-formula" style="margin-top: 0.35rem; font-family: monospace;"></div>
+        <div id="res-formula" class="formula-text"></div>
       </div>
 
       <div class="btn-row">
         <button type="button" id="btn-copy-vat" class="btn btn-primary">შედეგის კოპირება</button>
         <button type="button" id="btn-reset-vat" class="btn btn-secondary">სტანდარტულზე დაბრუნება (1,000 ₾ / 18%)</button>
-        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary"><i data-icon="printer"></i>ამობეჭდვა / PDF</button>
       </div>
     </section>
   </main>
@@ -112,9 +112,9 @@
         try {
           errorBox.classList.add('hidden');
           const res = calculateVAT(amountInput.value, modeSelect.value, rateInput.value);
-          resNet.textContent = formatMoney(res.net, 2) + ' ₾';
-          resVat.textContent = formatMoney(res.vat, 2) + ' ₾';
-          resGross.textContent = formatMoney(res.gross, 2) + ' ₾';
+          resNet.textContent = formatMoney(res.net, 2) + '\u00a0₾';
+          resVat.textContent = formatMoney(res.vat, 2) + '\u00a0₾';
+          resGross.textContent = formatMoney(res.gross, 2) + '\u00a0₾';
           resFormula.textContent = res.formula;
 
           lastSummaryText =

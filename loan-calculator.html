@@ -31,7 +31,7 @@
         გამოთვალეთ სესხის ყოველთვიური შენატანი, ჯამური პროცენტი, კონკრეტულ თვეს ერთჯერადი წინსწრების ეფექტი
         (ვადის ან შენატანის შემცირებით) და გადახდის დეტალური გრაფიკი.
       </p>
-      <div style="margin-top: 0.75rem;"><a href="loan-comparison.html" class="btn btn-secondary btn-sm" style="text-decoration:none;">⚖️ შეადარეთ რამდენიმე ბანკის შეთავაზება ↗</a></div>
+      <div style="margin-top: 0.75rem;"><a href="loan-comparison.html" class="btn btn-secondary btn-sm" style="text-decoration:none;"><i data-icon="scale"></i>შეადარეთ რამდენიმე ბანკის შეთავაზება</a></div>
     </div>
 
     <section class="panel">
@@ -83,8 +83,8 @@
       <!-- წინსწრებით დაფარვის პარამეტრები -->
       <div class="loan-prepay-box">
         <div class="loan-prepay-title">
-          <span>⚡ წინსწრებით დაფარვა (არასავალდებულო)</span>
-          <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted);">მიუთითეთ თანხა ვადის ან ყოველთვიური შენატანის კლების სანახავად</span>
+          <span><i data-icon="zap"></i>წინსწრებით დაფარვა (არასავალდებულო)</span>
+          <span class="loan-prepay-hint">მიუთითეთ თანხა ვადის ან ყოველთვიური შენატანის კლების სანახავად</span>
         </div>
         <div class="loan-prepay-grid" id="loan-prepay-grid">
           <div class="form-group">
@@ -144,9 +144,9 @@
       <div class="btn-row" style="margin-top: 1.15rem;">
         <button type="button" id="btn-calc-loan" class="btn btn-primary">გამოთვლა</button>
         <button type="button" id="btn-copy-loan-summary" class="btn btn-secondary">შედეგის კოპირება</button>
-        <button type="button" id="btn-share-loan" class="btn btn-secondary">🔗 ბმულის გაზიარება</button>
-        <button type="button" id="btn-export-loan-excel" class="btn btn-secondary">📥 Excel-ში ჩამოტვირთვა (.xlsx)</button>
-        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+        <button type="button" id="btn-share-loan" class="btn btn-secondary"><i data-icon="link"></i>ბმულის გაზიარება</button>
+        <button type="button" id="btn-export-loan-excel" class="btn btn-secondary"><i data-icon="file-down"></i>Excel-ში ჩამოტვირთვა (.xlsx)</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary"><i data-icon="printer"></i>ამობეჭდვა / PDF</button>
       </div>
     </section>
 
@@ -180,7 +180,7 @@
   <script>
     (function () {
       const { formatMoney } = window.GeoCore;
-      const { initLayout, copyToClipboard, copyShareUrl, parseMaskedNumber, formatNumberWithCommas, escapeHtml } = window.GeoCommon;
+      const { initLayout, copyToClipboard, copyShareUrl, parseMaskedNumber, formatNumberWithCommas, escapeHtml, icon } = window.GeoCommon;
 
       const principalInput = document.getElementById('loan-principal');
       const rateInput = document.getElementById('loan-rate');
@@ -384,30 +384,30 @@
         if (mode === 'guarantee') {
           statLblPayment.textContent = 'ყოველთვიური პროცენტი';
           if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + '\u00a0' + sym;
           } else {
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + '\u00a0' + sym;
           }
           statSubPayment.innerHTML = '<span class="stat-grace-pill">გარანტია: იფარება მხოლოდ პროცენტი (' + res.actualMonths + ' თვე)</span>';
           statLblPrincipal.textContent = 'გარანტიის ძირი თანხა';
         } else if (mode === 'grace' && res.graceMonths > 0) {
           statLblPayment.textContent = 'ძირითადი შენატანი (' + (res.graceMonths + 1) + '–' + res.actualMonths + ' თვე)';
           if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + '\u00a0' + sym;
           } else {
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + '\u00a0' + sym;
           }
-          statSubPayment.innerHTML = '<span class="stat-grace-pill">1–' + res.graceMonths + ' თვე (საშეღავათო): ' + formatMoney(res.firstGracePayment) + ' ' + escapeHtml(sym) + '</span>';
+          statSubPayment.innerHTML = '<span class="stat-grace-pill">1–' + res.graceMonths + ' თვე (საშეღავათო): ' + formatMoney(res.firstGracePayment) + '\u00a0' + escapeHtml(sym) + '</span>';
           statLblPrincipal.textContent = 'სესხის ძირი თანხა';
         } else {
           if (extra > 0 && prepayGoal === 'reduce_payment' && Math.abs(res.newPostGracePayment - res.origPostGracePayment) > 0.01) {
             statLblPayment.textContent = 'შენატანი (წინსწრებამდე → შემდეგ)';
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' → ' + formatMoney(res.newPostGracePayment) + '\u00a0' + sym;
             const diffPmt = Math.max(0, res.origPostGracePayment - res.newPostGracePayment);
-            statSubPayment.innerHTML = '<span class="stat-grace-pill">მცირდება -' + formatMoney(diffPmt) + ' ' + escapeHtml(sym) + '/თვეში</span>';
+            statSubPayment.innerHTML = '<span class="stat-grace-pill">მცირდება -' + formatMoney(diffPmt) + '\u00a0' + escapeHtml(sym) + '/თვეში</span>';
           } else {
             statLblPayment.textContent = 'ყოველთვიური შენატანი';
-            statMonthly.textContent = formatMoney(res.origPostGracePayment) + ' ' + sym;
+            statMonthly.textContent = formatMoney(res.origPostGracePayment) + '\u00a0' + sym;
             if (extra > 0 && prepayGoal === 'reduce_term' && baseNoExtra.actualMonths > res.actualMonths) {
               const savedM = baseNoExtra.actualMonths - res.actualMonths;
               statSubPayment.innerHTML = '<span class="stat-grace-pill">ვადა მცირდება -' + savedM + ' თვით (' + res.actualMonths + ' თვემდე)</span>';
@@ -418,9 +418,9 @@
           statLblPrincipal.textContent = 'სესხის ძირი თანხა';
         }
 
-        statPrincipal.textContent = formatMoney(res.principal) + ' ' + sym;
-        statInterest.textContent = formatMoney(res.totalInterest) + ' ' + sym;
-        statTotal.textContent = formatMoney(res.totalPayment) + ' ' + sym;
+        statPrincipal.textContent = formatMoney(res.principal) + '\u00a0' + sym;
+        statInterest.textContent = formatMoney(res.totalInterest) + '\u00a0' + sym;
+        statTotal.textContent = formatMoney(res.totalPayment) + '\u00a0' + sym;
 
         // ვაჩვენოთ წინსწრების ორივე ვარიანტის შედარებითი ბარათები
         if (extra > 0) {
@@ -433,30 +433,30 @@
           const savedInterestPmt = Math.max(0, baseNoExtra.totalInterest - resPayment.totalInterest);
 
           const prepayDesc = prepayType === 'onetime'
-            ? ('მე-' + prepayMonth + ' თვეს ' + formatMoney(extra) + ' ' + escapeHtml(sym) + ' ერთჯერადი წინსწრებისას')
-            : ('ყოველთვიურად +' + formatMoney(extra) + ' ' + escapeHtml(sym) + ' წინსწრებისას');
+            ? ('მე-' + prepayMonth + ' თვეს ' + formatMoney(extra) + '\u00a0' + escapeHtml(sym) + ' ერთჯერადი წინსწრებისას')
+            : ('ყოველთვიურად +' + formatMoney(extra) + '\u00a0' + escapeHtml(sym) + ' წინსწრებისას');
 
           prepayCompareWrap.innerHTML =
             '<div class="prepay-option-card ' + (prepayGoal === 'reduce_term' ? 'active' : '') + '" data-goal="reduce_term">' +
               '<div class="prepay-option-head">' +
-                '<span>⏱️ ვარიანტი 1: ვადის შემცირება</span>' +
+                '<span>' + icon('timer') + 'ვარიანტი 1: ვადის შემცირება</span>' +
                 '<span class="prepay-option-badge">' + (prepayGoal === 'reduce_term' ? '✓ არჩეულია გრაფიკში' : 'აირჩიეთ') + '</span>' +
               '</div>' +
               '<div class="prepay-option-metrics">' +
-                '<div>• <strong>ახალი ვადა:</strong> ' + baseNoExtra.actualMonths + ' თვე → <strong>' + resTerm.actualMonths + ' თვე</strong> (<span style="color:#16a34a;font-weight:700;">-' + savedMonthsTerm + ' თვე</span>)</div>' +
-                '<div>• <strong>ყოველთვიური შენატანი:</strong> უცვლელი (' + formatMoney(oldPmt) + ' ' + escapeHtml(sym) + ')</div>' +
-                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span style="color:#16a34a;font-weight:700;">' + formatMoney(savedInterestTerm) + ' ' + escapeHtml(sym) + '</span></div>' +
+                '<div>• <strong>ახალი ვადა:</strong> ' + baseNoExtra.actualMonths + ' თვე → <strong>' + resTerm.actualMonths + ' თვე</strong> (<span class="txt-success">-' + savedMonthsTerm + ' თვე</span>)</div>' +
+                '<div>• <strong>ყოველთვიური შენატანი:</strong> უცვლელი (' + formatMoney(oldPmt) + '\u00a0' + escapeHtml(sym) + ')</div>' +
+                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span class="txt-success">' + formatMoney(savedInterestTerm) + '\u00a0' + escapeHtml(sym) + '</span></div>' +
               '</div>' +
             '</div>' +
             '<div class="prepay-option-card ' + (prepayGoal === 'reduce_payment' ? 'active' : '') + '" data-goal="reduce_payment">' +
               '<div class="prepay-option-head">' +
-                '<span>📉 ვარიანტი 2: შენატანის შემცირება</span>' +
+                '<span>' + icon('trending-down') + 'ვარიანტი 2: შენატანის შემცირება</span>' +
                 '<span class="prepay-option-badge">' + (prepayGoal === 'reduce_payment' ? '✓ არჩეულია გრაფიკში' : 'აირჩიეთ') + '</span>' +
               '</div>' +
               '<div class="prepay-option-metrics">' +
-                '<div>• <strong>ახალი შენატანი:</strong> ' + formatMoney(oldPmt) + ' → <strong>' + formatMoney(newPmt) + ' ' + escapeHtml(sym) + '</strong> (<span style="color:#16a34a;font-weight:700;">-' + formatMoney(pmtDrop) + ' ' + escapeHtml(sym) + '/თვეში</span>)</div>' +
+                '<div>• <strong>ახალი შენატანი:</strong> ' + formatMoney(oldPmt) + ' → <strong>' + formatMoney(newPmt) + '\u00a0' + escapeHtml(sym) + '</strong> (<span class="txt-success">-' + formatMoney(pmtDrop) + '\u00a0' + escapeHtml(sym) + '/თვეში</span>)</div>' +
                 '<div>• <strong>სესხის ვადა:</strong> უცვლელი (' + resPayment.actualMonths + ' თვე)</div>' +
-                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span style="color:#16a34a;font-weight:700;">' + formatMoney(savedInterestPmt) + ' ' + escapeHtml(sym) + '</span></div>' +
+                '<div>• <strong>დაზოგილი პროცენტი:</strong> <span class="txt-success">' + formatMoney(savedInterestPmt) + '\u00a0' + escapeHtml(sym) + '</span></div>' +
               '</div>' +
             '</div>';
 
@@ -482,19 +482,19 @@
           }
           let monthLabel = String(row.month);
           if (row.isGraceMonth) {
-            monthLabel += ' <small style="color:var(--primary);font-weight:600;">(საშეღ.)</small>';
+            monthLabel += ' <small class="txt-primary">(საშეღ.)</small>';
           }
           if (row.hasExtra && prepayType === 'onetime') {
-            monthLabel += ' <small style="color:#16a34a;font-weight:700;">(წინსწრება)</small>';
+            monthLabel += ' <small class="txt-success">(წინსწრება)</small>';
           }
           return (
             '<tr' + rowClass + '>' +
               '<td>' + monthLabel + '</td>' +
-              '<td><strong>' + formatMoney(row.payment) + ' ' + sym + '</strong></td>' +
-              '<td>' + formatMoney(row.principal) + ' ' + sym + '</td>' +
-              '<td>' + formatMoney(row.interest) + ' ' + sym + '</td>' +
-              '<td>' + (row.extraPayment > 0 ? ('<strong style="color:#16a34a;">+' + formatMoney(row.extraPayment) + ' ' + sym + '</strong>') : (formatMoney(0) + ' ' + sym)) + '</td>' +
-              '<td>' + formatMoney(row.balance) + ' ' + sym + '</td>' +
+              '<td><strong>' + formatMoney(row.payment) + '\u00a0' + sym + '</strong></td>' +
+              '<td>' + formatMoney(row.principal) + '\u00a0' + sym + '</td>' +
+              '<td>' + formatMoney(row.interest) + '\u00a0' + sym + '</td>' +
+              '<td>' + (row.extraPayment > 0 ? ('<strong class="txt-success">+' + formatMoney(row.extraPayment) + '\u00a0' + sym + '</strong>') : (formatMoney(0) + '\u00a0' + sym)) + '</td>' +
+              '<td>' + formatMoney(row.balance) + '\u00a0' + sym + '</td>' +
             '</tr>'
           );
         }).join('');

@@ -2377,3 +2377,544 @@ tbody tr:last-child td { border-bottom: none; }
   .lc-table .lc-col-label { width: 128px; }
   .lc-table th[scope="row"] { min-width: 0; max-width: none; }
 }
+
+/* ===== საერთო: ხატულები ღილაკებში და ტექსტის ფერები ===== */
+.btn i[data-icon], .btn > .ico, .loan-prepay-title i[data-icon], .panel-title i[data-icon] { display: inline-flex; align-items: center; font-style: normal; }
+.btn .ico { width: 1.05em; height: 1.05em; }
+.btn-sm .ico { width: 0.95em; height: 0.95em; }
+.txt-success { color: var(--success); font-weight: 700; }
+.txt-primary { color: var(--primary); font-weight: 600; }
+.formula-text { margin-top: 0.35rem; font-variant-numeric: tabular-nums; line-height: 1.6; word-break: break-word; }
+.prepay-option-head span:first-child { display: inline-flex; align-items: center; gap: 0.4rem; }
+.prepay-option-head .ico { color: var(--primary); }
+
+/* ===== გვერდების დახვეწა v3 ===== */
+
+/* სექციის სათაური: ზოლი პირველ ხაზთან, როცა სათაური ორ ხაზზეა */
+.panel-title { align-items: flex-start; }
+.panel-title::before { margin-top: 0.22em; }
+
+/* შედეგის ბარათი სრულ სიგანეზე */
+.stats-grid > .stat-wide { grid-column: 1 / -1; }
+
+/* ფაილის არჩევა - ჩასაგდები არეს სტილი ყველა გვერდზე */
+input[type="file"].input {
+  min-height: 64px;
+  padding: 0.9rem 1rem;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  transition: border-color 0.15s, background 0.15s;
+}
+input[type="file"].input:hover { border-color: var(--primary); background: var(--primary-light); }
+input[type="file"]::file-selector-button {
+  background: var(--primary); color: #fff; border-color: var(--primary);
+  padding: 0.5rem 1rem;
+}
+input[type="file"]::file-selector-button:hover { background: var(--primary-hover); color: #fff; }
+
+/* DjVu ჩასაგდები არე */
+.dropzone { transition: border-color 0.15s, background 0.15s; }
+.dropzone:hover { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+.dropzone-icons { display: inline-flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
+.dropzone-icons .page-icon { width: 52px; height: 52px; border-radius: 14px; }
+.dropzone-icons .page-icon .ico { width: 26px; height: 26px; }
+.dropzone-arrow { display: inline-flex; color: var(--text-muted); }
+.dropzone-arrow .ico { width: 22px; height: 22px; }
+
+/* სესხის კალკულატორი: წინსწრების სათაური */
+.loan-prepay-title > span:first-child { display: inline-flex; align-items: center; gap: 0.4rem; }
+.loan-prepay-title .ico { color: var(--primary); }
+.loan-prepay-hint { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); text-align: right; }
+
+/* საფოსტო ინდექსის ღილაკი */
+.zip-pill { display: inline-flex; align-items: center; gap: 0.35rem; }
+.zip-pill .ico { width: 14px; height: 14px; opacity: 0.7; }
+
+/* ინვოისის ცხრილი */
+.inv-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.invoice-sheet .inv-table td:nth-child(n+4), .invoice-sheet .inv-table th:nth-child(n+4) { text-align: right; white-space: nowrap; }
+
+/* ფერის არჩევა (QR) */
+input[type="color"].input { padding: 0.3rem; cursor: pointer; }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
+
+/* 404 */
+.notfound {
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3rem 1.5rem 2.2rem;
+  margin: 1rem 0 2rem;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.14), transparent 55%),
+    var(--bg-surface);
+  box-shadow: var(--shadow-md);
+}
+.notfound-code {
+  font-size: 5rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em;
+  background: linear-gradient(90deg, var(--primary), #10b981);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-bottom: 0.6rem;
+}
+.notfound h1 { font-size: 1.6rem; margin-bottom: 0.6rem; }
+.notfound p { color: var(--text-muted); max-width: 540px; margin: 0 auto; }
+.notfound-actions { justify-content: center; margin-bottom: 1.6rem; }
+.notfound-links { max-width: 620px; margin: 0 auto; grid-template-columns: repeat(3, minmax(0, 1fr)); text-align: left; }
+
+@media (max-width: 640px) {
+  .loan-prepay-title { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+  .loan-prepay-hint { text-align: left; }
+  .invoice-sheet .inv-table th, .invoice-sheet .inv-table td { font-size: 0.78rem; padding: 0.35rem 0.4rem; }
+  .notfound { padding: 2.2rem 1rem 1.6rem; }
+  .notfound-code { font-size: 4rem; }
+  .notfound h1 { font-size: 1.35rem; }
+  .notfound-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .notfound-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .stats-grid { gap: 0.6rem; }
+  .stat-box { padding: 0.8rem 0.75rem; }
+  .stat-value { font-size: 1rem; letter-spacing: -0.01em; }
+  .stats-grid > .stat-box:first-child .stat-value { font-size: 1.08rem; }
+}
+
+/* თუ ჯგუფში სრული სიგანის ბარათია, დანარჩენი ორ თანაბარ სვეტად */
+.stats-grid:has(> .stat-wide) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* =====================================================================
+   ქართული ტექსტის კონვერტერი (v2)
+   ===================================================================== */
+
+/* კომპაქტური სათაური (~25% დაბალი) */
+.page-header--compact { padding: 1rem 1.3rem 0.95rem; margin-bottom: 1.1rem; }
+.page-header--compact .breadcrumb { margin-bottom: 0.4rem; font-size: 0.82rem; }
+.page-header--compact h1 { font-size: 1.42rem; margin-bottom: 0.3rem; gap: 0.65rem; }
+.page-header--compact .page-icon { width: 38px; height: 38px; border-radius: 11px; }
+.page-header--compact .page-icon .ico { width: 20px; height: 20px; }
+.page-header--compact p { font-size: 0.9rem; line-height: 1.5; }
+
+.conv-panel { padding: 1.25rem; }
+
+/* ---------- ფორმატები ---------- */
+.conv-formats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-subtle);
+}
+.conv-format { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.conv-format-label {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-muted); padding-left: 0.15rem;
+}
+.conv-select {
+  min-height: 48px;
+  font-size: 0.95rem; font-weight: 600;
+  border-radius: 12px;
+  background-color: var(--bg-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.conv-select:hover { border-color: var(--border-strong); box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06); }
+.conv-sample {
+  font-size: 0.76rem; color: var(--text-muted); opacity: 0.72;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding-left: 0.2rem; min-height: 1.2em;
+}
+.conv-swap {
+  width: 44px; height: 44px; margin-top: 0.7rem;
+  border-radius: 50%; border: none;
+  background: var(--primary); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.15s;
+}
+.conv-swap i { display: inline-flex; }
+.conv-swap .ico { width: 19px; height: 19px; }
+.conv-swap:hover { background: var(--primary-hover); transform: translateY(-1px) scale(1.05); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.34); }
+.conv-swap:active { transform: scale(0.96); }
+@keyframes conv-spin { from { transform: rotate(0deg); } to { transform: rotate(180deg); } }
+
+/* ---------- პარამეტრების ზოლი ---------- */
+.conv-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: 0.9rem 0; }
+.conv-chips {
+  display: inline-flex; flex-wrap: wrap; gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
+}
+.conv-chip {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.38rem 0.75rem 0.38rem 0.5rem;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  font-size: 0.84rem; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; user-select: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.conv-chip:hover { color: var(--text-main); }
+.conv-chip input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.conv-chip-mark {
+  width: 17px; height: 17px; flex-shrink: 0;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-surface);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.conv-chip-mark .ico { width: 12px; height: 12px; stroke-width: 3; }
+.conv-chip.is-on { background: var(--bg-surface); color: var(--text-main); border-color: var(--border); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08); }
+.conv-chip.is-on .conv-chip-mark { background: var(--primary); border-color: var(--primary); color: #fff; }
+.conv-chip:focus-within { box-shadow: var(--ring); }
+.conv-chip-sm { padding: 0.28rem 0.6rem 0.28rem 0.4rem; font-size: 0.8rem; border: 1px solid var(--border); }
+
+/* ---------- სამუშაო სივრცე ---------- */
+.conv-workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.conv-editor {
+  display: flex; flex-direction: column; min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.conv-editor:focus-within { border-color: var(--primary); box-shadow: var(--ring); }
+.conv-editor-head {
+  display: flex; align-items: center; gap: 0.5rem;
+  min-height: 52px;
+  padding: 0.45rem 0.5rem 0.45rem 0.95rem;
+  border-bottom: 1px solid var(--border);
+}
+.conv-editor-heading { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.conv-editor-title { font-size: 0.88rem; font-weight: 700; margin: 0; white-space: nowrap; }
+.conv-format-tag {
+  font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  padding: 0.08rem 0.5rem; border-radius: 999px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+}
+.conv-count { margin-left: auto; font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.conv-editor-out .conv-count { margin-left: 0; }
+.conv-actions { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+
+.conv-icon-btn {
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 9px; border: 1px solid transparent;
+  background: transparent; color: var(--text-muted);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.conv-icon-btn i { display: inline-flex; }
+.conv-icon-btn .ico { width: 17px; height: 17px; }
+.conv-icon-btn:hover { background: var(--bg-subtle); color: var(--primary); border-color: var(--border); }
+.conv-danger-btn:hover { color: var(--danger); }
+.conv-text-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  height: 32px; padding: 0 0.65rem;
+  border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-surface); color: var(--primary);
+  font-family: inherit; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.conv-text-btn i { display: inline-flex; }
+.conv-text-btn .ico { width: 15px; height: 15px; }
+.conv-text-btn:hover { background: var(--primary-light); border-color: rgba(37, 99, 235, 0.35); }
+.conv-danger-text { color: var(--text-muted); }
+.conv-danger-text:hover { color: var(--danger); background: var(--danger-bg); border-color: rgba(185, 28, 28, 0.3); }
+.conv-copy-main { min-height: 34px; padding: 0.35rem 0.85rem; border-radius: 9px; min-width: 112px; }
+.conv-copy-main:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+.conv-editor-body { position: relative; flex: 1; display: flex; }
+.conv-editor-body textarea {
+  flex: 1;
+  border: none; border-radius: 0 0 14px 14px; box-shadow: none !important;
+  background: transparent;
+  min-height: 320px;
+  padding: 1rem 1.1rem;
+  font-size: 1.02rem; line-height: 1.7;
+  resize: vertical;
+}
+.conv-editor-body textarea:hover, .conv-editor-body textarea:focus { border: none; }
+.conv-editor-out .conv-editor-body { background: rgba(37, 99, 235, 0.025); border-radius: 0 0 14px 14px; }
+
+/* ცარიელი მდგომარეობა */
+.conv-empty {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted); font-size: 0.82rem; line-height: 1.5;
+  pointer-events: none;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.18s, visibility 0.18s;
+}
+.conv-editor.is-empty .conv-empty { opacity: 1; visibility: visible; }
+.conv-editor.is-empty:focus-within .conv-empty { opacity: 0.55; }
+.conv-empty strong { font-size: 0.98rem; color: var(--text-main); }
+.conv-empty > span:not(.conv-empty-icon) { max-width: 330px; }
+.conv-empty-icon {
+  width: 46px; height: 46px; border-radius: 13px; margin-bottom: 0.3rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--primary-light); color: var(--primary);
+}
+.conv-empty-icon .ico { width: 22px; height: 22px; }
+.conv-empty-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 0.6rem; pointer-events: auto; }
+.conv-kbd-hints { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.7rem; font-size: 0.76rem; }
+.conv-kbd-hints kbd, .conv-empty kbd {
+  font-family: inherit; font-size: 0.7rem; font-weight: 700;
+  color: var(--text-main);
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px;
+  background: var(--bg-surface);
+}
+
+/* დამუშავება (დიდი ტექსტი) */
+.conv-editor-out.is-busy textarea { opacity: 0.5; }
+.conv-editor-out.is-busy .conv-editor-body::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  background-size: 50% 100%; background-repeat: no-repeat;
+  animation: conv-progress 0.9s linear infinite;
+}
+@keyframes conv-progress { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+
+/* სტატუსი */
+.conv-status {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  min-width: 0; max-width: 46%;
+  font-size: 0.76rem; font-weight: 600;
+  opacity: 0; transform: translateY(2px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.conv-status span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conv-status.show { opacity: 1; transform: none; }
+.conv-status .ico { width: 14px; height: 14px; flex-shrink: 0; }
+.conv-status.is-ok { color: var(--success); }
+.conv-status.is-error { color: var(--danger); }
+.conv-status.is-busy { color: var(--primary); }
+.conv-status.is-busy .ico { animation: conv-rotate 0.8s linear infinite; }
+@keyframes conv-rotate { to { transform: rotate(360deg); } }
+
+/* ჩამოტვირთვის მენიუ */
+.conv-menu-wrap { position: relative; }
+.conv-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30;
+  min-width: 230px;
+  padding: 0.35rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
+}
+.conv-menu button {
+  width: 100%;
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border: none; border-radius: 9px; background: transparent;
+  color: var(--text-main); font-family: inherit; text-align: left;
+  cursor: pointer;
+}
+.conv-menu button:hover, .conv-menu button:focus-visible { background: var(--bg-subtle); }
+.conv-menu i { display: inline-flex; color: var(--primary); }
+.conv-menu .ico { width: 18px; height: 18px; }
+.conv-menu strong { display: block; font-size: 0.86rem; }
+.conv-menu small { display: block; font-size: 0.74rem; color: var(--text-muted); }
+
+/* გაფრთხილებები და სადავო სიტყვები */
+.conv-notice {
+  margin-top: 1rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(180, 83, 9, 0.25); border-left: 3px solid var(--warning);
+  border-radius: 10px;
+  background: var(--warning-bg); color: var(--text-main);
+  font-size: 0.85rem; line-height: 1.55;
+}
+.conv-suggest {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
+}
+.conv-suggest-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.6rem; }
+.conv-suggest-title i { display: inline-flex; color: var(--warning); }
+.conv-suggest-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sugg-chip {
+  display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.35rem;
+  padding: 0.28rem 0.35rem 0.28rem 0.65rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-surface);
+  font-size: 0.85rem;
+}
+.sugg-chip .alt-word-btn { min-height: 28px; padding: 0.15rem 0.6rem; }
+
+/* სრული ეკრანი */
+body.conv-fs-open { overflow: hidden; }
+.conv-panel.is-fullscreen {
+  position: fixed; inset: 0; z-index: 1000;
+  margin: 0; border-radius: 0; border: none;
+  display: flex; flex-direction: column;
+  padding: 1rem 1.25rem;
+  overflow: auto;
+  background: var(--bg-page);
+}
+.conv-panel.is-fullscreen .conv-workspace { flex: 1; min-height: 0; }
+.conv-panel.is-fullscreen .conv-editor { min-height: 0; }
+.conv-panel.is-fullscreen .conv-editor-body textarea { min-height: 200px; resize: none; }
+.conv-fs-btn { border-color: var(--border); background: var(--bg-surface); }
+.conv-fs-btn[aria-pressed="true"] { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ---------- ისტორია ---------- */
+.conv-history { padding: 1.1rem 1.25rem; }
+.conv-history-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem; }
+.conv-history-title { display: flex; align-items: center; gap: 0.45rem; font-size: 1rem; }
+.conv-history-title i { display: inline-flex; color: var(--primary); }
+.conv-history-count {
+  font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.02rem 0.5rem;
+}
+.conv-history-controls { display: flex; align-items: center; gap: 0.4rem; }
+.conv-history-note { margin: 0.35rem 0 0.8rem; font-size: 0.78rem; color: var(--text-muted); }
+.conv-history-list { list-style: none; display: grid; gap: 0.45rem; }
+.conv-history-item {
+  display: flex; align-items: stretch; gap: 0.25rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--bg-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.conv-history-item:hover { border-color: var(--border-strong); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06); }
+.conv-history-restore {
+  flex: 1; min-width: 0;
+  display: grid; gap: 0.15rem;
+  padding: 0.6rem 0.8rem;
+  border: none; background: transparent; text-align: left;
+  font-family: inherit; color: var(--text-main);
+  cursor: pointer; border-radius: 12px;
+}
+.conv-history-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.conv-history-formats { font-size: 0.72rem; font-weight: 700; color: var(--primary); }
+.conv-history-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.conv-history-text, .conv-history-out { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conv-history-out { color: var(--text-muted); font-size: 0.8rem; }
+.conv-history-del { align-self: center; margin-right: 0.35rem; }
+.conv-history-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 0.8rem 0 0.4rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .conv-format-tag { display: none; }
+}
+@media (max-width: 860px) {
+  .conv-panel { padding: 0.9rem; }
+  .conv-formats { grid-template-columns: 1fr; gap: 0.45rem; padding: 0.8rem; }
+  .conv-swap { margin: 0.1rem auto; width: 40px; height: 40px; transform: rotate(90deg); }
+  .conv-swap:hover { transform: rotate(90deg) scale(1.05); }
+  .conv-workspace { grid-template-columns: 1fr; }
+  .conv-editor-body textarea { min-height: 200px; }
+  .conv-toolbar { align-items: flex-start; }
+  .conv-format-tag { display: inline-block; }
+  .conv-panel.is-fullscreen { padding: 0.75rem; }
+  .conv-panel.is-fullscreen .conv-formats, .conv-panel.is-fullscreen .conv-suggest, .conv-panel.is-fullscreen .conv-notice { display: none; }
+}
+@media (max-width: 560px) {
+  .page-header--compact h1 { font-size: 1.25rem; }
+  .conv-chips { display: grid; grid-template-columns: 1fr 1fr; flex: 1; }
+  .conv-chip { padding: 0.42rem 0.5rem; font-size: 0.8rem; }
+  .conv-editor-head { flex-wrap: wrap; row-gap: 0.15rem; padding-left: 0.8rem; }
+  .conv-editor-heading { flex: 1 1 auto; }
+  .conv-count { order: 5; flex-basis: 100%; margin-left: 0; padding-bottom: 0.15rem; }
+  .conv-editor-out .conv-status { order: 4; max-width: none; margin-left: 0; }
+  .conv-text-btn span { display: none; }
+  .conv-text-btn { width: 34px; padding: 0; justify-content: center; }
+  .conv-copy-main { min-width: 0; }
+  .conv-history-controls .conv-text-btn span { display: none; }
+}
+@media print {
+  .conv-toolbar, .conv-actions, .conv-empty, .conv-history, .conv-swap { display: none !important; }
+}
+@media (max-width: 560px) {
+  .page-header--compact { padding: 0.85rem 0.95rem 0.8rem; }
+  .page-header--compact p { font-size: 0.82rem; line-height: 1.45; }
+  .page-header--compact .breadcrumb { margin-bottom: 0.3rem; }
+}
+@media (max-width: 560px) {
+  /* ფორმატის ნიშანი სათაურში ზედმეტია (ჩანს ფორმატების ბლოკში) - ადგილი ღილაკებს რჩება */
+  .conv-format-tag { display: none !important; }
+  /* პარამეტრები - ერთ ხაზზე, ჰორიზონტალური გადახვევით */
+  .conv-toolbar { align-items: center; }
+  .conv-chips { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .conv-chips::-webkit-scrollbar { display: none; }
+  .conv-chip { flex-shrink: 0; white-space: nowrap; }
+}
+/* ცარიელი მდგომარეობა ქრება მყისიერად (ტექსტს არასდროს ედება), ჩნდება - ნაზად */
+.conv-empty { transition: none; }
+.conv-editor.is-empty .conv-empty { transition: opacity 0.18s, visibility 0.18s; }
+@media (max-width: 560px) {
+  .conv-toolbar { display: block; }
+  .conv-chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; width: 100%; }
+  .conv-chip { flex-direction: column; justify-content: center; text-align: center; gap: 0.3rem; padding: 0.5rem 0.25rem; white-space: normal; font-size: 0.76rem; line-height: 1.25; }
+  .conv-fs-btn { display: none; }
+}
+@media (max-width: 560px) {
+  /* მენიუ ზოლის მარჯვენა კიდეზე გასწორდება, ეკრანს არ გასცდება */
+  .conv-editor-head { position: relative; }
+  .conv-menu-wrap { position: static; }
+  .conv-menu { right: 0.5rem; left: auto; top: calc(100% + 4px); max-width: calc(100% - 1rem); }
+  /* ისტორიის „შენახვა“ - ჩვეულებრივი პატარა გადამრთველი */
+  .conv-history .conv-chip { flex-direction: row; padding: 0.28rem 0.6rem 0.28rem 0.4rem; font-size: 0.8rem; white-space: nowrap; }
+}
+
+/* ===== კონვერტერი: საბოლოო დახვეწა ===== */
+/* კოპირების ღილაკი ფიქსირებული სიგანისაა - „✓ დაკოპირდა“ მეზობელ ელემენტებს აღარ წევს */
+.conv-copy-main { width: 132px; min-width: 132px; flex-shrink: 0; justify-content: center; white-space: nowrap; }
+@media (max-width: 560px) {
+  .conv-copy-main { width: 118px; min-width: 118px; padding-left: 0.5rem; padding-right: 0.5rem; }
+}
+
+/* შედეგის ველი - თითქმის თეთრი, მხოლოდ ძალიან მსუბუქი განსხვავებით */
+.conv-editor-out .conv-editor-body { background: rgba(37, 99, 235, 0.012); }
+
+/* ორივე ველი - ერთნაირი საზღვარი, ჩრდილი და სათაურის ფონი */
+.conv-editor, .conv-editor-out {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.conv-editor-head { background: var(--bg-surface); border-radius: 14px 14px 0 0; }
+.conv-editor:focus-within { border-color: var(--primary); box-shadow: var(--ring); }
+
+/* გაცვლის ხატულა - რბილი 180° შემობრუნება დაჭერისას */
+.conv-swap .ico { transform-origin: 50% 50%; transform-box: fill-box; }
+
+/* ფორმატის არჩევა: chevron-down ხატულა მარჯვნივ (ბრაუზერის ისარი გამორთულია) */
+.conv-select-wrap { position: relative; }
+.conv-select-wrap .conv-select { background-image: none; padding-right: 2.6rem; cursor: pointer; }
+.conv-select-icon {
+  position: absolute; right: 0.85rem; top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex; pointer-events: none;
+  color: var(--text-muted); opacity: 0.75;
+  transition: color 0.15s, opacity 0.15s, transform 0.15s;
+}
+.conv-select-icon .ico { width: 17px; height: 17px; }
+.conv-select-wrap:hover .conv-select-icon { color: var(--primary); opacity: 1; transform: translateY(-40%); }
+.conv-select-wrap .conv-select:focus + .conv-select-icon { color: var(--primary); opacity: 1; }
+
+/* სტატუსი სათაურს აღარ ეჯახება */
+.conv-editor-heading { flex-shrink: 0; }
+.conv-editor-out .conv-status { margin-left: auto; padding-left: 0.5rem; max-width: 40%; }
