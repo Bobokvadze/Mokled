@@ -2607,7 +2607,7 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
 }
 .conv-count { margin-left: auto; font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.conv-editor-out .conv-count { margin-left: 0; }
+.conv-editor-out .conv-count { margin-left: auto; }
 .conv-actions { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
 
 .conv-icon-btn {
@@ -2918,3 +2918,35 @@ body.conv-fs-open { overflow: hidden; }
 /* სტატუსი სათაურს აღარ ეჯახება */
 .conv-editor-heading { flex-shrink: 0; }
 .conv-editor-out .conv-status { margin-left: auto; padding-left: 0.5rem; max-width: 40%; }
+
+/* კონვერტერის შეტყობინება: ეკრანის ქვედა ცენტრში, სრული ტექსტით, ტექსტს/ღილაკებს არ ფარავს და არაფერს წევს */
+.conv-status,
+.conv-editor-out .conv-status {
+  position: fixed; left: 50%; bottom: 1.5rem; z-index: 1100;
+  margin: 0; padding: 0.55rem 1rem;
+  max-width: min(92vw, 520px);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.86rem; font-weight: 600; line-height: 1.4;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; visibility: hidden;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  pointer-events: none;
+}
+.conv-status span { white-space: normal; overflow: visible; text-overflow: clip; }
+.conv-status.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.conv-status .ico { width: 17px; height: 17px; flex-shrink: 0; }
+.conv-status.is-ok { border-color: rgba(21, 128, 61, 0.35); }
+.conv-status.is-ok .ico { color: var(--success); }
+.conv-status.is-error { border-color: rgba(185, 28, 28, 0.35); background: var(--danger-bg); color: var(--danger); }
+.conv-status.is-busy .ico { color: var(--primary); }
+@media (max-width: 560px) {
+  .conv-status, .conv-editor-out .conv-status { bottom: 4.6rem; font-size: 0.82rem; }
+}
+@media print { .conv-status { display: none !important; } }
+.conv-status.is-ok, .conv-status.is-busy { color: var(--text-main); }
+@media (max-width: 560px) { .conv-editor-head .conv-actions { margin-left: auto; } }

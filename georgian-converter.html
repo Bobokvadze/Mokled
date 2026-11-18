@@ -122,7 +122,6 @@
             <div class="conv-editor-heading">
               <label class="conv-editor-title" for="conv-output">შედეგი</label>
             </div>
-            <span class="conv-status" id="conv-status" role="status" aria-live="polite"></span>
             <span class="conv-count" id="conv-output-count">0 სიმბოლო</span>
             <div class="conv-actions">
               <button type="button" id="btn-convert" class="conv-icon-btn" title="ხელახლა კონვერტაცია (Ctrl + Enter)" aria-label="ხელახლა კონვერტაცია"><i data-icon="rotate-cw"></i></button>
@@ -153,6 +152,9 @@
       </div>
 
       <div id="converter-warnings" class="conv-notice hidden" role="alert"></div>
+
+      <!-- მოკლე შეტყობინება (ჩანს ეკრანის ქვედა ნაწილში, თავისით ქრება) -->
+      <div class="conv-status" id="conv-status" role="status" aria-live="polite"></div>
 
       <div id="translit-suggestions-wrap" class="conv-suggest hidden">
         <div class="conv-suggest-title"><i data-icon="lightbulb"></i>სადავო სიტყვები - დააწკაპუნეთ სწორ ვარიანტზე:</div>
@@ -473,8 +475,8 @@
         const iconName = type === 'busy' ? 'loader-circle' : (type === 'error' ? 'circle-alert' : 'check');
         statusEl.className = 'conv-status' + (type ? ' is-' + type + ' show' : '');
         statusEl.innerHTML = type ? window.GeoCommon.icon(iconName) + '<span>' + escapeHtml(text) + '</span>' : '';
-        if (type === 'ok') {
-          statusTimer = setTimeout(function () { statusEl.classList.remove('show'); }, 1800);
+        if (type === 'ok' || type === 'error') {
+          statusTimer = setTimeout(function () { statusEl.classList.remove('show'); }, type === 'error' ? 3500 : 2000);
         }
       }
 
@@ -568,7 +570,25 @@
       /* ---------- კოპირება ---------- */
       function copyResult() {
         if (!convOutput.value) { setStatus('error', 'კოპირებისთვის შედეგი ცარიელია'); return; }
-        copyToClipboard(convOutput.value, 'კონვერტირებული ტექსტი დაკოპირდა!', copyBtn);
+        const text = convOutput.value;
+        function fallbackCopy() {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          let ok = false;
+          try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+          ta.remove();
+          if (ok) flashCopyButton(); else setStatus('error', 'კოპირება ვერ მოხერხდა - მონიშნეთ ტექსტი და დააჭირეთ Ctrl+C');
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(flashCopyButton).catch(fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
         saveHistoryNow();
       }
       copyBtn.addEventListener('click', copyResult);
@@ -601,7 +621,7 @@
           if (!navigator.clipboard || !navigator.clipboard.writeText) return;
           navigator.clipboard.writeText(text).then(function () {
             lastAutoCopied = text;
-            flashCopyButton();
+            setStatus('ok', 'შედეგი ავტომატურად დაკოპირდა');
           }).catch(function () {});
         }, 600);
       }
