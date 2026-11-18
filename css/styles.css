@@ -2166,3 +2166,206 @@ tbody tr:last-child td { border-bottom: none; }
   tbody tr:nth-child(even) td, tbody tr:hover td { background: none !important; }
 }
 .related-tools h2 .ico { color: var(--primary); }
+
+/* =====================================================================
+   მთავარი გვერდი v2 - ორსვეტიანი ჰერო, ჯგუფებად დალაგებული კატალოგი
+   ===================================================================== */
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 2.2rem;
+  align-items: center;
+}
+.home-hero-main .home-trust { border-top: none; padding-top: 0; margin-bottom: 0; }
+.home-search .home-search-kbd {
+  position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%);
+  font-family: inherit; font-size: 0.78rem; font-weight: 700;
+  color: var(--text-muted);
+  border: 1px solid var(--border); border-bottom-width: 2px;
+  border-radius: 6px; padding: 0.05rem 0.45rem;
+  background: var(--bg-subtle);
+  pointer-events: none;
+}
+.home-search .input { padding-right: 3rem; }
+.home-search .input:focus ~ .home-search-kbd { opacity: 0; }
+
+.home-popular {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-md);
+}
+.home-popular-head {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.1rem 0.3rem 0.7rem;
+}
+.popular-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; }
+.popular-tile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 0.65rem;
+  align-items: center;
+  padding: 0.65rem 0.7rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  color: var(--text-main);
+  text-decoration: none !important;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.popular-tile:hover { background: var(--bg-subtle); border-color: var(--border); transform: translateY(-1px); }
+.popular-tile .page-icon { grid-row: 1 / 3; width: 38px; height: 38px; border-radius: 10px; }
+.popular-tile .page-icon .ico { width: 19px; height: 19px; }
+.popular-tile strong { font-size: 0.9rem; line-height: 1.25; }
+.popular-tile small { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* თქვენი ხელსაწყოები */
+.home-mine { margin-bottom: 2.2rem; }
+.home-mine .related-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+
+/* კატალოგის ზოლი */
+.catalog-toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+}
+.catalog-toolbar .category-pills { flex: 1 1 auto; }
+.pill-btn { display: inline-flex; align-items: center; gap: 0.4rem; }
+.pill-count {
+  font-size: 0.72rem; font-weight: 700;
+  min-width: 1.45rem; padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--bg-subtle); color: var(--text-muted);
+}
+.pill-btn.active .pill-count { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+.catalog-group { margin-bottom: 2.3rem; }
+.catalog-group-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem; }
+.catalog-group-head .page-icon { width: 34px; height: 34px; border-radius: 10px; }
+.catalog-group-head .page-icon .ico { width: 18px; height: 18px; }
+.catalog-group-head h2 { font-size: 1.2rem; }
+.catalog-group-count {
+  font-size: 0.78rem; font-weight: 700; color: var(--text-muted);
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.05rem 0.55rem;
+}
+.catalog-group .cards-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1rem; margin-bottom: 0; }
+
+/* ბარათი (article + სათაურის ბმული, რომელიც მთელ ბარათს ფარავს) */
+.tool-card { padding: 1.2rem 1.25rem 1.1rem; justify-content: flex-start; }
+.tool-card .card-top { margin-bottom: 0.85rem; align-items: center; }
+.tool-card h3 { font-size: 1.02rem; line-height: 1.35; margin-bottom: 0.4rem; }
+.tool-card-link { color: inherit; text-decoration: none !important; }
+.tool-card-link::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
+.tool-card-link:focus-visible { box-shadow: none !important; }
+.tool-card:focus-within { border-color: var(--primary); box-shadow: var(--ring); }
+.tool-card p {
+  font-size: 0.86rem; line-height: 1.5; margin-bottom: 0.9rem;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tool-card .card-action { margin-top: auto; font-size: 0.85rem; }
+.tool-card .card-action .ico { width: 15px; height: 15px; }
+.tool-card .fav-btn { position: relative; z-index: 2; width: 32px; height: 32px; font-size: 1rem; }
+.tool-card .fav-btn:not(.active) { opacity: 0.55; }
+.tool-card:hover .fav-btn, .tool-card .fav-btn:focus-visible { opacity: 1; }
+
+@media (max-width: 980px) {
+  .home-hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+@media (max-width: 640px) {
+  .home-search .home-search-kbd { display: none; }
+  .home-search .input { padding-right: 0.9rem; }
+  .home-popular { padding: 0.75rem; }
+  .popular-tile { padding: 0.55rem; column-gap: 0.55rem; }
+  .catalog-toolbar { flex-direction: column; align-items: stretch; }
+  .catalog-toolbar #tools-count { align-self: flex-start; }
+  .catalog-group .cards-grid { grid-template-columns: 1fr; }
+  .tool-card .fav-btn:not(.active) { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .popular-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+  .popular-tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; padding: 0.6rem 0.25rem; }
+  .popular-tile .page-icon { width: 38px; height: 38px; }
+  .popular-tile small { display: none; }
+  .popular-tile strong { font-size: 0.8rem; line-height: 1.25; }
+}
+
+/* ===== სესხის შეთავაზებების შედარება ===== */
+.offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
+.offer-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem;
+  background: var(--bg-subtle);
+}
+.offer-card-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+.offer-letter {
+  flex-shrink: 0;
+  width: 34px; height: 34px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, var(--primary), #10b981);
+}
+.offer-card .offer-name { font-weight: 700; min-height: 40px; }
+.offer-remove { flex-shrink: 0; min-width: 34px; }
+.offer-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.7rem; }
+.offer-fields .form-group { margin-bottom: 0.75rem; }
+.offer-fields .form-label { font-size: 0.78rem; color: var(--text-muted); }
+
+.lc-verdict {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-md);
+  background: var(--success-bg);
+  border: 1px solid rgba(21, 128, 61, 0.3);
+  margin-bottom: 1.1rem;
+}
+.lc-verdict > .ico { width: 30px; height: 30px; color: var(--success); flex-shrink: 0; }
+.lc-verdict strong { display: block; font-size: 1.05rem; color: var(--success); }
+.lc-verdict span { font-size: 0.9rem; color: var(--text-main); }
+
+.lc-table-wrap { max-height: none; }
+.lc-table th[scope="row"] {
+  text-transform: none; letter-spacing: 0; font-size: 0.85rem; font-weight: 600;
+  color: var(--text-main); background: var(--bg-subtle); white-space: normal; position: static;
+  min-width: 160px;
+}
+.lc-table thead th { font-size: 0.85rem; text-transform: none; letter-spacing: 0; color: var(--text-main); }
+.lc-table td { white-space: nowrap; }
+.lc-table .lc-best { background: rgba(16, 185, 129, 0.08) !important; }
+.lc-best-badge {
+  display: inline-block; margin-left: 0.35rem;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.1rem 0.5rem; border-radius: 999px;
+  background: var(--success); color: #fff; vertical-align: middle;
+}
+.lc-extra { color: var(--danger); font-weight: 700; }
+
+.lc-bars { display: grid; gap: 0.6rem; margin-top: 1.2rem; }
+.lc-bar-row { display: grid; grid-template-columns: minmax(80px, 140px) 1fr auto; align-items: center; gap: 0.75rem; font-size: 0.86rem; }
+.lc-bar-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lc-bar-track { height: 12px; border-radius: 999px; background: var(--bg-subtle); border: 1px solid var(--border); overflow: hidden; }
+.lc-bar { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #94a3b8, #64748b); transition: width 0.25s; }
+.lc-bar.best { background: linear-gradient(90deg, #10b981, #059669); }
+.lc-bar-value { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.lc-note { margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); }
+
+@media (max-width: 640px) {
+  .offer-fields { grid-template-columns: 1fr 1fr; }
+  .lc-bar-row { grid-template-columns: 1fr auto; }
+  .lc-bar-track { grid-column: 1 / -1; grid-row: 2; }
+  .lc-verdict { align-items: flex-start; }
+}
+@media print {
+  .lc-bar.best, .lc-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+.lc-table th[scope="row"] { position: sticky; left: 0; z-index: 1; }
+@media (max-width: 640px) {
+  .lc-table th[scope="row"] { min-width: 118px; max-width: 130px; font-size: 0.78rem; padding: 0.5rem; }
+  .lc-table td, .lc-table thead th { font-size: 0.8rem; padding: 0.5rem; }
+  .lc-best-badge { display: block; width: fit-content; margin: 0.2rem 0 0; }
+}

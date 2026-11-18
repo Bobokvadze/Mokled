@@ -109,3 +109,36 @@ test('9. 17 მაისი (შრომის კოდექსი, მუხ
   assert.equal(dates(2026).length, 18);
   assert.equal(new Set(dates(2026)).size, 18);
 });
+
+test('10. სესხის შეთავაზებების შედარება და ეფექტური განაკვეთი', () => {
+  // საკომისიოს გარეშე ეფექტური განაკვეთი = (1 + 12%/12)^12 - 1 = 12.68%
+  const plain = GeoCore.compareLoanOffers(10000, [
+    { annualRate: 12, termMonths: 12 },
+    { annualRate: 12, termMonths: 12 }
+  ]);
+  assert.equal(plain.offers[0].effectiveRate, 12.68);
+  assert.equal(plain.offers[0].totalFees, 0);
+
+  // B-ს დაბალი განაკვეთი აქვს, მაგრამ დიდი საკომისიო - საბოლოოდ ძვირია
+  const res = GeoCore.compareLoanOffers('20,000', [
+    { name: 'A', annualRate: 14, termMonths: 36, upfrontFeePercent: 0 },
+    { name: 'B', annualRate: 13, termMonths: 36, upfrontFeePercent: 3, monthlyFee: 5 }
+  ]);
+  assert.equal(res.bestIndex, 0);
+  assert.equal(res.offers[1].upfrontFee, 600);
+  assert.equal(res.offers[1].totalFees, 780);
+  assert.ok(res.offers[1].effectiveRate > res.offers[0].effectiveRate);
+  assert.ok(res.offers[1].extraVsBest > 0);
+  assert.equal(res.offers[0].extraVsBest, 0);
+  assert.equal(res.offers[0].totalPaid, Math.round((20000 + res.offers[0].totalCost) * 100) / 100);
+
+  // კლებადი გრაფიკი ნაკლებ პროცენტს იხდის, ვიდრე ანუიტეტი იგივე პირობებით
+  const sched = GeoCore.compareLoanOffers(10000, [
+    { annualRate: 15, termMonths: 24, scheduleType: 'annuity' },
+    { annualRate: 15, termMonths: 24, scheduleType: 'declining' }
+  ]);
+  assert.equal(sched.bestIndex, 1);
+  assert.ok(sched.offers[1].firstPayment > sched.offers[0].firstPayment);
+
+  assert.throws(() => GeoCore.compareLoanOffers(10000, [{ annualRate: 10, termMonths: 12 }]));
+});

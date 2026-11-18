@@ -1958,6 +1958,90 @@
     };
   }
 
+  /* 16. სესხის შეთავაზებების შედარება */
+  // ეფექტური წლიური განაკვეთი: თვიური IRR ფულადი ნაკადებით (მიღებული თანხა საკომისიოს გამოკლებით,
+  // ყოველთვიური შენატანი + მომსახურების საფასური), შემდეგ (1 + r)^12 - 1
+  function effectiveAnnualRate(netReceived, monthlyOutflows) {
+    if (!(netReceived > 0) || !monthlyOutflows.length) return null;
+    function npv(r) {
+      let v = netReceived;
+      let df = 1;
+      for (let i = 0; i < monthlyOutflows.length; i++) {
+        df /= (1 + r);
+        v -= monthlyOutflows[i] * df;
+      }
+      return v;
+    }
+    let lo = -0.99;
+    let hi = 1;
+    if (npv(lo) > 0 || npv(hi) < 0) return null;
+    for (let i = 0; i < 200; i++) {
+      const mid = (lo + hi) / 2;
+      if (npv(mid) > 0) hi = mid; else lo = mid;
+      if (hi - lo < 1e-12) break;
+    }
+    const monthly = (lo + hi) / 2;
+    return (Math.pow(1 + monthly, 12) - 1) * 100;
+  }
+
+  function compareLoanOffers(principalInput, offers) {
+    const principal = Number(String(principalInput).trim().replace(/,/g, ''));
+    if (!Number.isFinite(principal) || principal <= 0) {
+      throw new Error('გთხოვთ შეიყვანოთ სესხის დადებითი თანხა.');
+    }
+    if (!Array.isArray(offers) || offers.length < 2) {
+      throw new Error('შესადარებლად საჭიროა მინიმუმ 2 შეთავაზება.');
+    }
+    function num(v) {
+      const n = Number(String(v === undefined || v === null ? '' : v).trim().replace(/,/g, ''));
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+
+    const results = offers.map(function (offer, idx) {
+      const name = String(offer.name || '').trim() || ('შეთავაზება ' + (idx + 1));
+      let loan;
+      try {
+        loan = calculateLoan(principal, offer.annualRate, offer.termMonths, {
+          scheduleType: offer.scheduleType === 'declining' ? 'declining' : 'annuity'
+        });
+      } catch (e) {
+        throw new Error('„' + name + '“: ' + e.message);
+      }
+      const upfrontFee = roundMoney(principal * num(offer.upfrontFeePercent) / 100 + num(offer.upfrontFeeFixed));
+      const monthlyFee = num(offer.monthlyFee);
+      const totalMonthlyFees = roundMoney(monthlyFee * loan.actualMonths);
+      const totalFees = roundMoney(upfrontFee + totalMonthlyFees);
+      const totalCost = roundMoney(loan.totalInterest + totalFees);
+      const outflows = loan.schedule.map(function (row) { return row.payment + monthlyFee; });
+      const ear = effectiveAnnualRate(principal - upfrontFee, outflows);
+      return {
+        name: name,
+        annualRate: loan.annualRate,
+        termMonths: loan.termMonths,
+        scheduleType: loan.scheduleType === 'declining' ? 'declining' : 'annuity',
+        firstPayment: roundMoney(loan.firstPayment + monthlyFee),
+        lastPayment: roundMoney(loan.lastPayment + monthlyFee),
+        totalInterest: loan.totalInterest,
+        upfrontFee: upfrontFee,
+        monthlyFee: roundMoney(monthlyFee),
+        totalFees: totalFees,
+        totalCost: totalCost,
+        totalPaid: roundMoney(principal + totalCost),
+        effectiveRate: ear === null ? null : Math.round(ear * 100) / 100
+      };
+    });
+
+    let bestIndex = 0;
+    for (let i = 1; i < results.length; i++) {
+      if (results[i].totalCost < results[bestIndex].totalCost - 0.005) bestIndex = i;
+    }
+    results.forEach(function (r) {
+      r.extraVsBest = roundMoney(r.totalCost - results[bestIndex].totalCost);
+    });
+
+    return { principal: roundMoney(principal), offers: results, bestIndex: bestIndex };
+  }
+
   /* 17. ინვოისის ჯამები */
   function calculateInvoiceTotals(items, options) {
     const opts = options || {};
@@ -2035,6 +2119,7 @@
     getGeorgianHolidaysForYear: getGeorgianHolidaysForYear,
     convertCurrency: convertCurrency,
     calculateDeposit: calculateDeposit,
+    compareLoanOffers: compareLoanOffers,
     calculateTaxPenalty: calculateTaxPenalty,
     calculateInvoiceTotals: calculateInvoiceTotals,
     generatePassword: generatePassword,

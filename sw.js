@@ -1,9 +1,10 @@
-const CACHE_NAME = 'mokled-cache-v56';
+const CACHE_NAME = 'mokled-cache-v58';
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/georgian-converter.html',
   '/loan-calculator.html',
+  '/loan-comparison.html',
   '/pdf-tools.html',
   '/djvu-to-pdf.html',
   '/postal-codes.html',

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>სესხის შეთავაზებების შედარება - ეფექტური განაკვეთი | Mokled - მოკლედ</title>
+  <meta name="description" content="შეადარეთ ბანკების სესხის შეთავაზებები ერთმანეთს: ყოველთვიური შენატანი, საკომისიოები, ჯამური ღირებულება და ეფექტური წლიური საპროცენტო განაკვეთი." />
+  <link rel="canonical" href="https://mokled.pages.dev/loan-comparison.html" />
+  <meta property="og:title" content="სესხის შეთავაზებების შედარება | Mokled - მოკლედ" />
+  <meta property="og:description" content="2-3 ბანკის სესხის შეთავაზების შედარება ჯამური ღირებულებით და ეფექტური განაკვეთით." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mokled.pages.dev/loan-comparison.html" />
+  <meta property="og:locale" content="ka_GE" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="assets/fonts/noto-sans-georgian-georgian-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"WebApplication","name":"სესხის შეთავაზებების შედარება","description":"2-3 ბანკის სესხის შეთავაზების შედარება: შენატანი, საკომისიოები, ჯამური ღირებულება და ეფექტური წლიური განაკვეთი.","url":"https://mokled.pages.dev/loan-comparison.html","applicationCategory":"FinanceApplication","operatingSystem":"Any (web browser)","browserRequirements":"Requires JavaScript","inLanguage":"ka","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"GEL"},"isPartOf":{"@type":"WebSite","@id":"https://mokled.pages.dev/#website","name":"Mokled - მოკლედ","url":"https://mokled.pages.dev/","inLanguage":"ka"}}</script>
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="index.html">მთავარი</a> / ფინანსები</div>
+      <h1>სესხის შეთავაზებების შედარება</h1>
+      <p>
+        შეიყვანეთ 2-3 ბანკის შეთავაზება და ნახეთ, რომელი ჯდება რეალურად ყველაზე იაფი - პროცენტის, ერთჯერადი საკომისიოსა და ყოველთვიური მომსახურების საფასურის ჩათვლით.
+      </p>
+    </div>
+
+    <div class="alert alert-info">
+      <strong>რატომ ეფექტური განაკვეთი?</strong> დაბალი წლიური განაკვეთი ყოველთვის არ ნიშნავს იაფ სესხს: საკომისიოები ზრდის რეალურ ღირებულებას.
+      ეფექტური წლიური განაკვეთი ითვალისწინებს ყველა გადასახდელს და ამიტომ შეთავაზებების შედარების ყველაზე სამართლიანი საზომია.
+    </div>
+
+    <section class="panel">
+      <div id="lc-error" class="alert alert-error hidden" role="alert"></div>
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="lc-amount">სესხის თანხა:</label>
+          <input type="text" id="lc-amount" class="input" data-mask="money" inputmode="decimal" value="20,000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lc-currency">ვალუტა:</label>
+          <select id="lc-currency" class="input">
+            <option value="₾" selected>₾ ლარი</option>
+            <option value="$">$ აშშ დოლარი</option>
+            <option value="€">€ ევრო</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="offer-grid" id="offer-grid"></div>
+      <div class="btn-row">
+        <button type="button" id="btn-add-offer" class="btn btn-secondary">+ მესამე შეთავაზების დამატება</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-live="polite">
+      <div class="section-header">
+        <h2 class="panel-title">შედარების შედეგი</h2>
+      </div>
+      <div id="lc-verdict" class="lc-verdict hidden"></div>
+      <div class="table-wrap lc-table-wrap">
+        <table class="lc-table">
+          <thead id="lc-thead"></thead>
+          <tbody id="lc-tbody"></tbody>
+        </table>
+      </div>
+      <div class="lc-bars" id="lc-bars" aria-hidden="true"></div>
+      <div class="btn-row">
+        <button type="button" id="btn-lc-copy" class="btn btn-primary">შედეგის კოპირება</button>
+        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ ამობეჭდვა / PDF</button>
+      </div>
+      <p class="lc-note">
+        გამოთვლა სავარაუდოა: ბანკის ოფიციალური გრაფიკი შეიძლება ოდნავ განსხვავდებოდეს დამრგვალების, დაზღვევის ან სხვა პირობების გამო.
+        ხელშეკრულებამდე შეადარეთ ბანკის მიერ მითითებული ეფექტური საპროცენტო განაკვეთი.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { compareLoanOffers, formatMoney } = window.GeoCore;
+      const { initLayout, copyToClipboard, parseMaskedNumber, escapeHtml, icon } = window.GeoCommon;
+
+      initLayout('loan-comparison');
+
+      const amountInput = document.getElementById('lc-amount');
+      const currencySel = document.getElementById('lc-currency');
+      const offerGrid = document.getElementById('offer-grid');
+      const addBtn = document.getElementById('btn-add-offer');
+      const errorBox = document.getElementById('lc-error');
+      const verdict = document.getElementById('lc-verdict');
+      const thead = document.getElementById('lc-thead');
+      const tbody = document.getElementById('lc-tbody');
+      const bars = document.getElementById('lc-bars');
+      let lastText = '';
+
+      const DEFAULTS = [
+        { name: 'ბანკი A', annualRate: '14', termMonths: '36', scheduleType: 'annuity', upfrontFeePercent: '0', upfrontFeeFixed: '0', monthlyFee: '0' },
+        { name: 'ბანკი B', annualRate: '13', termMonths: '36', scheduleType: 'annuity', upfrontFeePercent: '2', upfrontFeeFixed: '0', monthlyFee: '5' },
+        { name: 'ბანკი C', annualRate: '15', termMonths: '48', scheduleType: 'declining', upfrontFeePercent: '0', upfrontFeeFixed: '100', monthlyFee: '0' }
+      ];
+      let offers = DEFAULTS.slice(0, 2).map(function (o) { return Object.assign({}, o); });
+
+      const LETTERS = ['A', 'B', 'C'];
+
+      function field(idx, key, label, type, extra) {
+        const id = 'offer-' + idx + '-' + key;
+        const val = escapeHtml(offers[idx][key]);
+        if (type === 'select') {
+          return '<div class="form-group"><label class="form-label" for="' + id + '">' + label + '</label>' +
+            '<select id="' + id + '" class="input" data-idx="' + idx + '" data-key="' + key + '">' +
+              '<option value="annuity"' + (offers[idx][key] === 'annuity' ? ' selected' : '') + '>ანუიტეტი (თანაბარი)</option>' +
+              '<option value="declining"' + (offers[idx][key] === 'declining' ? ' selected' : '') + '>კლებადი</option>' +
+            '</select></div>';
+        }
+        return '<div class="form-group"><label class="form-label" for="' + id + '">' + label + '</label>' +
+          '<input id="' + id + '" class="input" type="' + type + '" value="' + val + '" data-idx="' + idx + '" data-key="' + key + '"' + (extra || '') + ' /></div>';
+      }
+
+      function renderOffers() {
+        offerGrid.innerHTML = offers.map(function (o, idx) {
+          return '<article class="offer-card" data-idx="' + idx + '">' +
+            '<div class="offer-card-head">' +
+              '<span class="offer-letter">' + LETTERS[idx] + '</span>' +
+              '<input class="input offer-name" type="text" value="' + escapeHtml(o.name) + '" data-idx="' + idx + '" data-key="name" aria-label="შეთავაზების სახელი" maxlength="40" />' +
+              (idx >= 2 ? '<button type="button" class="btn btn-secondary btn-sm offer-remove" data-remove="' + idx + '" aria-label="შეთავაზების წაშლა">✕</button>' : '') +
+            '</div>' +
+            '<div class="offer-fields">' +
+              field(idx, 'annualRate', 'წლიური განაკვეთი (%)', 'number', ' min="0" max="200" step="0.01"') +
+              field(idx, 'termMonths', 'ვადა (თვე)', 'number', ' min="1" max="600" step="1"') +
+              field(idx, 'scheduleType', 'გრაფიკის ტიპი', 'select') +
+              field(idx, 'upfrontFeePercent', 'ერთჯერადი საკომისიო (%)', 'number', ' min="0" max="100" step="0.1"') +
+              field(idx, 'upfrontFeeFixed', 'ერთჯერადი საკომისიო (თანხა)', 'number', ' min="0" step="1"') +
+              field(idx, 'monthlyFee', 'ყოველთვიური საფასური', 'number', ' min="0" step="0.5"') +
+            '</div>' +
+          '</article>';
+        }).join('');
+        addBtn.classList.toggle('hidden', offers.length >= 3);
+      }
+
+      function fmtRate(v) {
+        return v === null || v === undefined ? '-' : v.toFixed(2) + '%';
+      }
+
+      function run() {
+        errorBox.classList.add('hidden');
+        const sym = currencySel.value;
+        try {
+          const res = compareLoanOffers(parseMaskedNumber(amountInput.value), offers);
+          const best = res.offers[res.bestIndex];
+          const worst = res.offers.reduce(function (w, o) { return o.totalCost > w.totalCost ? o : w; }, res.offers[0]);
+          const saving = worst.totalCost - best.totalCost;
+
+          verdict.innerHTML = icon('trophy') + '<div><strong>ყველაზე ხელსაყრელია: ' + escapeHtml(best.name) + '</strong>' +
+            '<span>' + (saving > 0.005
+              ? 'ჯამური ღირებულება ' + formatMoney(best.totalCost) + ' ' + escapeHtml(sym) + ' - დაზოგავთ ' + formatMoney(saving) + ' ' + escapeHtml(sym) + '-ს „' + escapeHtml(worst.name) + '“-თან შედარებით.'
+              : 'შეთავაზებები ჯამური ღირებულებით თანაბარია.') + '</span></div>';
+          verdict.classList.remove('hidden');
+
+          thead.innerHTML = '<tr><th></th>' + res.offers.map(function (o, i) {
+            return '<th class="' + (i === res.bestIndex ? 'lc-best' : '') + '">' + escapeHtml(o.name) + (i === res.bestIndex ? ' <span class="lc-best-badge">საუკეთესო</span>' : '') + '</th>';
+          }).join('') + '</tr>';
+
+          const rows = [
+            ['წლიური განაკვეთი', function (o) { return o.annualRate + '%'; }],
+            ['ეფექტური წლიური განაკვეთი', function (o) { return '<strong>' + fmtRate(o.effectiveRate) + '</strong>'; }],
+            ['ვადა', function (o) { return o.termMonths + ' თვე'; }],
+            ['პირველი შენატანი', function (o) { return formatMoney(o.firstPayment) + ' ' + escapeHtml(sym); }],
+            ['ბოლო შენატანი', function (o) { return formatMoney(o.lastPayment) + ' ' + escapeHtml(sym); }],
+            ['ჯამური პროცენტი', function (o) { return formatMoney(o.totalInterest) + ' ' + escapeHtml(sym); }],
+            ['საკომისიოები სულ', function (o) { return formatMoney(o.totalFees) + ' ' + escapeHtml(sym); }],
+            ['სესხის ღირებულება (პროცენტი + საკომისიო)', function (o) { return '<strong>' + formatMoney(o.totalCost) + ' ' + escapeHtml(sym) + '</strong>'; }],
+            ['სულ გადასახდელი', function (o) { return formatMoney(o.totalPaid) + ' ' + escapeHtml(sym); }],
+            ['საუკეთესოსთან სხვაობა', function (o) { return o.extraVsBest > 0.005 ? '<span class="lc-extra">+' + formatMoney(o.extraVsBest) + ' ' + escapeHtml(sym) + '</span>' : '—'; }]
+          ];
+          tbody.innerHTML = rows.map(function (r) {
+            return '<tr><th scope="row">' + r[0] + '</th>' + res.offers.map(function (o, i) {
+              return '<td class="' + (i === res.bestIndex ? 'lc-best' : '') + '">' + r[1](o) + '</td>';
+            }).join('') + '</tr>';
+          }).join('');
+
+          const maxCost = Math.max.apply(null, res.offers.map(function (o) { return o.totalCost; })) || 1;
+          bars.innerHTML = res.offers.map(function (o, i) {
+            const pct = Math.max(2, Math.round(o.totalCost / maxCost * 100));
+            return '<div class="lc-bar-row"><span class="lc-bar-label">' + escapeHtml(o.name) + '</span>' +
+              '<span class="lc-bar-track"><span class="lc-bar' + (i === res.bestIndex ? ' best' : '') + '" style="width:' + pct + '%"></span></span>' +
+              '<span class="lc-bar-value">' + formatMoney(o.totalCost) + ' ' + escapeHtml(sym) + '</span></div>';
+          }).join('');
+
+          lastText = 'სესხის თანხა: ' + formatMoney(res.principal) + ' ' + sym + '\n' + res.offers.map(function (o) {
+            return o.name + ': ' + o.annualRate + '% / ' + o.termMonths + ' თვე, ეფექტური ' + fmtRate(o.effectiveRate) +
+              ', შენატანი ' + formatMoney(o.firstPayment) + ' ' + sym + ', ღირებულება ' + formatMoney(o.totalCost) + ' ' + sym;
+          }).join('\n') + '\nყველაზე ხელსაყრელი: ' + best.name;
+        } catch (err) {
+          verdict.classList.add('hidden');
+          thead.innerHTML = '';
+          tbody.innerHTML = '';
+          bars.innerHTML = '';
+          lastText = '';
+          errorBox.textContent = err.message;
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      offerGrid.addEventListener('input', function (e) {
+        const el = e.target;
+        const idx = el.getAttribute('data-idx');
+        const key = el.getAttribute('data-key');
+        if (idx === null || !key) return;
+        offers[Number(idx)][key] = el.value;
+        run();
+      });
+      offerGrid.addEventListener('change', function (e) {
+        if (e.target.tagName === 'SELECT') {
+          offers[Number(e.target.getAttribute('data-idx'))][e.target.getAttribute('data-key')] = e.target.value;
+          run();
+        }
+      });
+      offerGrid.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-remove]');
+        if (!btn) return;
+        offers.splice(Number(btn.getAttribute('data-remove')), 1);
+        renderOffers();
+        run();
+      });
+      addBtn.addEventListener('click', function () {
+        if (offers.length >= 3) return;
+        offers.push(Object.assign({}, DEFAULTS[offers.length]));
+        renderOffers();
+        run();
+      });
+      amountInput.addEventListener('input', run);
+      currencySel.addEventListener('change', run);
+      document.getElementById('btn-lc-copy').addEventListener('click', function () {
+        copyToClipboard(lastText, 'შედარების შედეგი დაკოპირდა!');
+      });
+
+      renderOffers();
+      run();
+    })();
+  </script>
+</body>
+</html>

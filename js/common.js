@@ -35,6 +35,8 @@
     "star": "<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\" />",
     "sparkles": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\" /><path d=\"M20 3v4\" /><path d=\"M22 5h-4\" /><path d=\"M4 17v2\" /><path d=\"M5 18H3\" />",
     "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\" />",
+    "scale": "<path d=\"m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\" /><path d=\"m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\" /><path d=\"M7 21h10\" /><path d=\"M12 3v18\" /><path d=\"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\" />",
+    "trophy": "<path d=\"M6 9H4.5a2.5 2.5 0 0 1 0-5H6\" /><path d=\"M18 9h1.5a2.5 2.5 0 0 0 0-5H18\" /><path d=\"M4 22h16\" /><path d=\"M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22\" /><path d=\"M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22\" /><path d=\"M18 2H6v7a6 6 0 0 0 12 0V2Z\" />",
     "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><polyline points=\"7 10 12 15 17 10\" /><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\" />"
   };
 
@@ -55,6 +57,7 @@
   const TOOLS_CATALOG = [
     { id: 'georgian-converter', title: 'ქართული ტექსტის კონვერტერი', shortTitle: 'კონვერტერი', url: 'georgian-converter.html', category: 'ტექსტი', icon: 'languages', description: 'ქართული ტექსტის სწრაფი გადაყვანა სხვადასხვა ფონტებს, კოდირებებსა და ლათინურ ტრანსლიტერაციას შორის.' },
     { id: 'loan-calculator', title: 'სესხის კალკულატორი', shortTitle: 'სესხის კალკულატორი', url: 'loan-calculator.html', category: 'ფინანსები', icon: 'house', description: 'სესხის ყოველთვიური შენატანის, საშეღავათო პერიოდის, გარანტიისა და წინსწრებით დაფარვის ზუსტი კალკულატორი.' },
+    { id: 'loan-comparison', title: 'სესხის შეთავაზებების შედარება', shortTitle: 'სესხების შედარება', url: 'loan-comparison.html', category: 'ფინანსები', icon: 'scale', description: '2-3 ბანკის სესხის შეთავაზების შედარება: შენატანი, საკომისიოები, ჯამური ღირებულება და ეფექტური წლიური განაკვეთი.' },
     { id: 'pdf-tools',
      title: 'PDF ხელსაწყოების ნაკრები', shortTitle: 'PDF ხელსაწყოები', url: 'pdf-tools.html', category: 'მედია', icon: 'file-text', description: 'PDF ფაილების გაერთიანება, შეკუმშვა, გვერდების ამოღება/გადალაგება, შემობრუნება და სურათების PDF-ად გადაქცევა პირდაპირ ბრაუზერში, სერვერზე ატვირთვის გარეშე.' },
     { id: 'djvu-to-pdf', title: 'DjVu → PDF კონვერტერი', shortTitle: 'DjVu → PDF', url: 'djvu-to-pdf.html', category: 'მედია', icon: 'book-open', description: 'DjVu (.djvu, .djv) ფორმატის წიგნებისა და დოკუმენტების სწრაფი გადაყვანა სტანდარტულ PDF ფაილად პირდაპირ ბრაუზერში.' },
@@ -76,7 +79,7 @@
   ];
 
   const NAV_GROUPS = [
-    { label: 'ფინანსები', ids: ['loan-calculator', 'deposit-calculator', 'currency-converter', 'salary-calculator', 'vat-calculator', 'tax-penalty-calculator', 'invoice-generator', 'number-to-words', 'iban-validator'] },
+    { label: 'ფინანსები', ids: ['loan-calculator', 'loan-comparison', 'deposit-calculator', 'currency-converter', 'salary-calculator', 'vat-calculator', 'tax-penalty-calculator', 'invoice-generator', 'number-to-words', 'iban-validator'] },
     { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
     { label: 'PDF და მედია', ids: ['pdf-tools', 'djvu-to-pdf', 'image-tools', 'qr-generator'] },
     { label: 'მონაცემები და სხვა', ids: ['postal-codes', 'date-calculator', 'data-converter', 'password-generator'] }
@@ -816,6 +819,7 @@
 
   root.GeoCommon = {
     TOOLS_CATALOG: TOOLS_CATALOG,
+    NAV_GROUPS: NAV_GROUPS,
     icon: icon,
     hydrateIcons: hydrateIcons,
     escapeHtml: escapeHtml,
