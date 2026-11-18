@@ -63,7 +63,7 @@ test('6. მართლმადიდებლური აღდგომა 
   assert.equal(diff.workingDays, 7);
 });
 
-test('7. ვალუტა, ანაბარი, საურავი, ბიზნესის გადასახადი, ინვოისი', () => {
+test('7. ვალუტა, ანაბარი, საურავი, ინვოისი', () => {
   const rates = { USD: { rate: 2.7, quantity: 1 }, JPY: { rate: 1.8, quantity: 100 } };
   assert.equal(GeoCore.convertCurrency(100, 'USD', 'GEL', rates).result, 270);
   assert.equal(Math.round(GeoCore.convertCurrency(270, 'GEL', 'JPY', rates).result), 15000);
@@ -79,9 +79,6 @@ test('7. ვალუტა, ანაბარი, საურავი, ბ�
   assert.equal(pen.days, 10);
   assert.equal(pen.penalty, 5);
 
-  assert.equal(GeoCore.calculateBusinessTax(100000, { mode: 'small' }).tax, 1000);
-  assert.equal(GeoCore.calculateBusinessTax(600000, { mode: 'small' }).tax, 8000);
-  assert.equal(GeoCore.calculateBusinessTax(50000, { mode: 'standard', expenses: 20000 }).tax, 6000);
 
   const inv = GeoCore.calculateInvoiceTotals([{ name: 'a', qty: 2, price: 50 }], { vatRate: 18 });
   assert.deepEqual([inv.net, inv.vat, inv.gross], [100, 18, 118]);

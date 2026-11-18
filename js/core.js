@@ -1958,58 +1958,6 @@
     };
   }
 
-  /* 16. მცირე ბიზნესის / ინდ. მეწარმის გადასახადი */
-  function calculateBusinessTax(incomeInput, options) {
-    const opts = options || {};
-    const mode = opts.mode || 'small';
-    const income = Number(String(incomeInput).trim().replace(/,/g, ''));
-    const expenses = Math.max(0, Number(String(opts.expenses || 0).replace(/,/g, '')) || 0);
-    if (!Number.isFinite(income) || income < 0) throw new Error('გთხოვთ შეიყვანოთ დადებითი შემოსავალი.');
-
-    const warnings = [];
-    let tax = 0;
-    let base = income;
-    let formula = '';
-
-    if (mode === 'small') {
-      const threshold = opts.threshold !== undefined ? Number(opts.threshold) : 500000;
-      const rate = opts.rate !== undefined ? Number(opts.rate) : 1;
-      const excessRate = opts.excessRate !== undefined ? Number(opts.excessRate) : 3;
-      const within = Math.min(income, threshold);
-      const excess = Math.max(0, income - threshold);
-      tax = within * rate / 100 + excess * excessRate / 100;
-      formula = formatMoney(within) + ' × ' + rate + '%' + (excess > 0 ? ' + ' + formatMoney(excess) + ' × ' + excessRate + '%' : '') + ' = ' + formatMoney(tax) + ' ₾';
-      if (excess > 0) {
-        warnings.push('შემოსავალმა გადააჭარბა ' + formatMoney(threshold, 0) + ' ₾-ს: ზღვრის ზემოთ თანხა იბეგრება ' + excessRate + '%-ით და მცირე ბიზნესის სტატუსი შესაძლოა შეწყდეს.');
-      }
-    } else if (mode === 'micro') {
-      const microThreshold = opts.microThreshold !== undefined ? Number(opts.microThreshold) : 30000;
-      tax = 0;
-      formula = 'მიკრო ბიზნესის შემოსავალი გათავისუფლებულია საშემოსავლო გადასახადისგან (0 ₾).';
-      if (income > microThreshold) {
-        warnings.push('შემოსავალი აღემატება მიკრო ბიზნესის ზღვარს (' + formatMoney(microThreshold, 0) + ' ₾) - ამ შემთხვევაში მიკრო ბიზნესის სტატუსი არ ვრცელდება.');
-      }
-    } else if (mode === 'standard') {
-      const rate = opts.rate !== undefined ? Number(opts.rate) : 20;
-      base = Math.max(0, income - expenses);
-      tax = base * rate / 100;
-      formula = '(' + formatMoney(income) + ' - ' + formatMoney(expenses) + ') × ' + rate + '% = ' + formatMoney(tax) + ' ₾';
-    } else {
-      throw new Error('უცნობი დაბეგვრის რეჟიმი.');
-    }
-
-    return {
-      mode: mode,
-      income: roundMoney(income),
-      taxableBase: roundMoney(base),
-      tax: roundMoney(tax),
-      netIncome: roundMoney(income - tax - (mode === 'standard' ? expenses : 0)),
-      effectiveRate: income > 0 ? Math.round(tax / income * 10000) / 100 : 0,
-      formula: formula,
-      warnings: warnings
-    };
-  }
-
   /* 17. ინვოისის ჯამები */
   function calculateInvoiceTotals(items, options) {
     const opts = options || {};
@@ -2088,7 +2036,6 @@
     convertCurrency: convertCurrency,
     calculateDeposit: calculateDeposit,
     calculateTaxPenalty: calculateTaxPenalty,
-    calculateBusinessTax: calculateBusinessTax,
     calculateInvoiceTotals: calculateInvoiceTotals,
     generatePassword: generatePassword,
     formatNumber: formatNumber,

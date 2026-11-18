@@ -68,7 +68,6 @@
     { id: 'date-calculator', title: 'თარიღების კალკულატორი', shortTitle: 'თარიღები', url: 'date-calculator.html', category: 'დრო და თარიღი', icon: 'calendar-days', description: 'ორ თარიღს შორის კალენდარული და სამუშაო დღეების დათვლა, თარიღზე დღეების დამატება/გამოკლება საქართველოს უქმეების (აღდგომის ჩათვლით) გათვალისწინებით.' },
     { id: 'currency-converter', title: 'ვალუტის კონვერტერი (სებ-ის კურსით)', shortTitle: 'ვალუტის კონვერტერი', url: 'currency-converter.html', category: 'ფინანსები', icon: 'coins', description: 'ვალუტების გადაყვანა საქართველოს ეროვნული ბანკის ოფიციალური კურსით, ნებისმიერი თარიღისთვის და ყველა ვალუტის კურსის ცხრილით.' },
     { id: 'deposit-calculator', title: 'ანაბრის (დეპოზიტის) კალკულატორი', shortTitle: 'ანაბარი', url: 'deposit-calculator.html', category: 'ფინანსები', icon: 'piggy-bank', description: 'ანაბრის შემოსავლის გამოთვლა რთული პროცენტით (კაპიტალიზაციით), ყოველთვიური შევსებითა და პროცენტზე გადასახადის გათვალისწინებით.' },
-    { id: 'business-tax-calculator', title: 'მცირე ბიზნესის (1%) / ინდ. მეწარმის გადასახადი', shortTitle: 'მცირე ბიზნესი 1%', url: 'business-tax-calculator.html', category: 'ფინანსები', icon: 'store', description: 'ინდ. მეწარმის საშემოსავლო გადასახადი მცირე ბიზნესის (1% / 3%), მიკრო ბიზნესის ან ჩვეულებრივი (20%) რეჟიმით.' },
     { id: 'tax-penalty-calculator', title: 'საურავის კალკულატორი', shortTitle: 'საურავი', url: 'tax-penalty-calculator.html', category: 'ფინანსები', icon: 'alarm-clock', description: 'ვადაგადაცილებულ გადასახადზე დარიცხული საურავის გამოთვლა გადახდის ვადისა და ფაქტობრივი გადახდის თარიღის მიხედვით.' },
     { id: 'invoice-generator', title: 'ინვოისის გენერატორი', shortTitle: 'ინვოისი', url: 'invoice-generator.html', category: 'ფინანსები', icon: 'receipt', description: 'ინვოისის შექმნა გამყიდველისა და მყიდველის მონაცემებით, პოზიციებით, დღგ-ით, თანხით სიტყვიერად და PDF-ად შენახვით.' },
     { id: 'data-converter', title: 'CSV / Excel ⇄ JSON კონვერტერი', shortTitle: 'CSV / Excel ⇄ JSON', url: 'data-converter.html', category: 'მონაცემები', icon: 'file-spreadsheet', description: 'CSV და Excel (XLSX) ცხრილების გადაყვანა JSON-ად და პირიქით, ცხრილის წინასწარი ნახვით, პირდაპირ ბრაუზერში.' },
@@ -77,7 +76,7 @@
   ];
 
   const NAV_GROUPS = [
-    { label: 'ფინანსები', ids: ['loan-calculator', 'deposit-calculator', 'currency-converter', 'salary-calculator', 'vat-calculator', 'business-tax-calculator', 'tax-penalty-calculator', 'invoice-generator', 'number-to-words', 'iban-validator'] },
+    { label: 'ფინანსები', ids: ['loan-calculator', 'deposit-calculator', 'currency-converter', 'salary-calculator', 'vat-calculator', 'tax-penalty-calculator', 'invoice-generator', 'number-to-words', 'iban-validator'] },
     { label: 'ტექსტი', ids: ['georgian-converter', 'text-tools'] },
     { label: 'PDF და მედია', ids: ['pdf-tools', 'djvu-to-pdf', 'image-tools', 'qr-generator'] },
     { label: 'მონაცემები და სხვა', ids: ['postal-codes', 'date-calculator', 'data-converter', 'password-generator'] }
